@@ -1,0 +1,2782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 The Emotional Anchor | Navigating Intense Moments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root {
+            --ocean-gradient: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            --wave-gradient: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            --storm-gradient: linear-gradient(135deg, #4a6572 0%, #344955 100%);
+            --calm-gradient: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+            --crisis-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            --card-shadow: 0 10px 30px rgba(26, 41, 128, 0.1);
+            --border-radius: 20px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--wave-gradient);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* QUICK SUPPORT FLOATING BUTTON - Discreet */
+        .quick-support-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--crisis-gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.25);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        
+        .quick-support-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.35);
+            gap: 12px;
+            padding-right: 22px;
+        }
+        
+        .quick-support-btn i {
+            font-size: 1.1rem;
+        }
+        
+        /* QUICK SUPPORT MODAL */
+        .quick-support-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 450px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: var(--crisis-gradient);
+            color: white;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .support-option {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        
+        .support-option:hover {
+            border-color: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        
+        .support-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        
+        .support-icon.crisis {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .support-icon.warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .support-icon.emergency {
+            background: linear-gradient(135deg, #e74c3c, #e74c3c);
+            color: white;
+        }
+        
+        .support-info {
+            flex-grow: 1;
+        }
+        
+        .support-info h4 {
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .support-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .support-action-btn {
+            background: var(--ocean-gradient);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .support-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 41, 128, 0.2);
+        }
+        
+        .support-action-btn.emergency {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .modal-footer {
+            margin-top: 25px;
+            padding-top: 18px;
+            border-top: 1px solid #ecf0f1;
+            text-align: center;
+        }
+        
+        .disclaimer {
+            color: #95a5a6;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        /* HEADER & NAVIGATION */
+        .header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--ocean-gradient);
+        }
+        
+        .title {
+            background: var(--ocean-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #4a6572;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        /* DECISION TREE - Beautifully Integrated */
+        .decision-tree {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--card-shadow);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+        
+        .decision-tree::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--ocean-gradient);
+            border-radius: calc(var(--border-radius) + 2px);
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .tree-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .tree-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            transition: var(--transition);
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tree-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tree-card.mild {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+        }
+        
+        .tree-card.moderate {
+            border-color: #FF9800;
+            background: linear-gradient(135deg, #fffde7 0%, #fff3e0 100%);
+        }
+        
+        .tree-card.high {
+            border-color: #F44336;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        }
+        
+        .tree-card.crisis {
+            border-color: #9C27B0;
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            animation: gentleGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes gentleGlow {
+            0%, 100% { box-shadow: 0 5px 15px rgba(156, 39, 176, 0.1); }
+            50% { box-shadow: 0 5px 25px rgba(156, 39, 176, 0.2); }
+        }
+        
+        .tree-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* SKILLS NAVIGATION */
+        .skills-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .skill-tab {
+            background: white;
+            border: 2px solid #bbdefb;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--ocean-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .skill-tab:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .skill-tab:hover {
+            transform: translateY(-5px);
+            border-color: #26d0ce;
+            box-shadow: 0 10px 20px rgba(38, 208, 206, 0.15);
+        }
+        
+        .skill-tab.active {
+            background: var(--ocean-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 10px 25px rgba(26, 41, 128, 0.2);
+        }
+        
+        .skill-tab.active::before {
+            display: none;
+        }
+        
+        .skill-icon {
+            font-size: 2.2rem;
+            transition: var(--transition);
+        }
+        
+        .skill-tab:hover .skill-icon {
+            transform: scale(1.1);
+        }
+        
+        /* SECTIONS */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* CARDS */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 50px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--ocean-gradient);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card-icon {
+            font-size: 3.2rem;
+            width: 90px;
+            height: 90px;
+            background: var(--ocean-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(38, 208, 206, 0.3);
+        }
+        
+        /* WAVES DECORATION */
+        .wave-divider {
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%231a2980' fill-opacity='0.1'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            margin: 40px 0;
+            border-radius: 10px;
+        }
+        
+        /* MEDICAL WARNING - Beautiful Design */
+        .medical-warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffebee 100%);
+            border: 2px solid #ff9800;
+            border-radius: var(--border-radius);
+            padding: 35px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .medical-warning::before {
+            content: '⚠️';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+        
+        .warning-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: #d32f2f;
+        }
+        
+        .warning-icon {
+            font-size: 2.5rem;
+        }
+        
+        .warning-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .warning-column ul {
+            margin-left: 25px;
+            line-height: 1.8;
+        }
+        
+        .warning-column li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 10px;
+        }
+        
+        .warning-column li::before {
+            content: '•';
+            color: #d32f2f;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+        }
+        
+        .safer-alternatives {
+            background: #fff8e1;
+            border: 2px dashed #ffa000;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        
+        /* EXERCISE BOXES */
+        .exercise {
+            background: linear-gradient(135deg, #f8fdff 0%, #f0f7ff 100%);
+            border: 2px solid #e3f2fd;
+            border-radius: 20px;
+            padding: 35px;
+            margin: 35px 0;
+            position: relative;
+        }
+        
+        .exercise::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--ocean-gradient);
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0.05;
+        }
+        
+        .exercise-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .exercise-badge {
+            background: var(--ocean-gradient);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(26, 41, 128, 0.2);
+        }
+        
+        /* STEPS */
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .step {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e3f2fd;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: #26d0ce;
+            box-shadow: 0 10px 25px rgba(38, 208, 206, 0.15);
+        }
+        
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--ocean-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .step:hover::before {
+            opacity: 1;
+        }
+        
+        .step-number {
+            background: var(--ocean-gradient);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(26, 41, 128, 0.2);
+        }
+        
+        /* PROS/CONS - Enhanced Design */
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .pros-box, .cons-box {
+            padding: 30px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pros-box::before, .cons-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+        
+        .pros-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #4CAF50;
+        }
+        
+        .pros-box::before {
+            background: #4CAF50;
+        }
+        
+        .cons-box {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border: 2px solid #F44336;
+        }
+        
+        .cons-box::before {
+            background: #F44336;
+        }
+        
+        /* ACTION COMMITMENT - Beautiful Design */
+        .action-commitment {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 2px solid #ffb300;
+            border-radius: var(--border-radius);
+            padding: 35px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-commitment::before {
+            content: '🎯';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            font-size: 10rem;
+            opacity: 0.1;
+            transform: rotate(20deg);
+        }
+        
+        .commitment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .commitment-option {
+            background: white;
+            border: 2px solid #ffd54f;
+            border-radius: 15px;
+            padding: 25px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .commitment-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 183, 77, 0.2);
+            border-color: #ffb300;
+        }
+        
+        .commitment-option.selected {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+            border-color: #ff8f00;
+            box-shadow: 0 10px 25px rgba(255, 143, 0, 0.2);
+        }
+        
+        /* REFLECTION AREAS */
+        .reflection-box {
+            background: linear-gradient(135deg, #f8fdff 0%, #e3f2fd 100%);
+            border: 2px solid #bbdefb;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .reflection-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--ocean-gradient);
+            border-radius: 17px;
+            z-index: -1;
+            opacity: 0.05;
+        }
+        
+        textarea, input[type="text"] {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            border: 2px solid #bbdefb;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            resize: vertical;
+            transition: var(--transition);
+            font-family: inherit;
+            background: white;
+            line-height: 1.6;
+        }
+        
+        input[type="text"] {
+            min-height: auto;
+            padding: 15px 20px;
+        }
+        
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #26d0ce;
+            box-shadow: 0 0 0 4px rgba(38, 208, 206, 0.1);
+        }
+        
+        /* BUTTONS */
+        .action-btn {
+            background: var(--ocean-gradient);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin: 15px 0;
+            box-shadow: 0 8px 20px rgba(26, 41, 128, 0.2);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(26, 41, 128, 0.3);
+        }
+        
+        .action-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        /* TIP BOXES */
+        .tip-box {
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            border-left: 5px solid #ffd54f;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tip-box::before {
+            content: '💡';
+            position: absolute;
+            top: -25px;
+            right: -25px;
+            font-size: 8rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+        
+        /* COPING CARDS */
+        .coping-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .coping-card {
+            background: white;
+            border: 2px solid #bbdefb;
+            border-radius: 10px;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .coping-card:hover {
+            border-color: #26d0ce;
+            transform: translateY(-3px);
+        }
+        
+        .coping-card.selected {
+            background: var(--ocean-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(26, 41, 128, 0.2);
+        }
+        
+        /* STOP INDICATORS */
+        .stop-indicator {
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-top: 15px;
+            font-weight: bold;
+            animation: fadeInOut 2s ease;
+        }
+        
+        .stop-s { background: #e74c3c; color: white; }
+        .stop-t { background: #f39c12; color: white; }
+        .stop-o { background: #3498db; color: white; }
+        .stop-p { background: #2ecc71; color: white; }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.8); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+        
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 30px;
+            }
+            
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .quick-support-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .quick-support-btn i {
+                font-size: 1rem;
+            }
+            
+            .tree-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            .warning-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-nav {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .card-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 20px;
+            }
+            
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .commitment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .coping-cards {
+                justify-content: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card {
+                padding: 25px 20px;
+            }
+            
+            .action-btn {
+                font-size: 1.1rem;
+                padding: 18px;
+            }
+            
+            textarea, input[type="text"] {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            
+            .quick-support-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+                gap: 8px;
+            }
+            
+            .quick-support-btn span {
+                display: none;
+            }
+            
+            .quick-support-btn i {
+                font-size: 1.2rem;
+                margin-right: 0;
+            }
+            
+            .quick-support-btn:hover span {
+                display: inline;
+                margin-left: 8px;
+            }
+        }
+        
+        /* ANCHOR ANIMATION */
+        @keyframes anchorFloat {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            33% { transform: translateY(-10px) rotate(3deg); }
+            66% { transform: translateY(5px) rotate(-3deg); }
+        }
+        
+        .floating-anchor {
+            animation: anchorFloat 4s ease-in-out infinite;
+            font-size: 4rem;
+            margin-bottom: 25px;
+            display: inline-block;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* PRINT STYLES */
+        @media print {
+            .quick-support-btn,
+            .quick-support-modal,
+            .action-btn,
+            .floating-anchor,
+            .skills-nav,
+            .skill-tab:not(.active) {
+                display: none !important;
+            }
+            
+            .section {
+                display: block !important;
+                page-break-after: always;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .card::before {
+                height: 3px;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- QUICK SUPPORT FLOATING BUTTON - Discreet -->
+    <div id="quickSupportBtn" class="quick-support-btn">
+        <i class="fas fa-life-ring"></i>
+        <span>Quick Support</span>
+    </div>
+    
+    <!-- QUICK SUPPORT MODAL -->
+    <div id="quickSupportModal" class="quick-support-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-life-ring"></i> Immediate Support Options</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="support-option">
+                    <div class="support-icon crisis">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>988 Suicide & Crisis Lifeline</h4>
+                        <p>Call or text 988 for free, confidential support 24/7</p>
+                        <a href="tel:988" class="support-action-btn">
+                            <i class="fas fa-phone"></i> Call 988
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon warning">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>Crisis Text Line</h4>
+                        <p>Text HOME to 741741 for free crisis counseling</p>
+                        <button class="support-action-btn" onclick="alert('Text HOME to 741741')">
+                            <i class="fas fa-sms"></i> Text HOME to 741741
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon emergency">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>Emergency Services</h4>
+                        <p>Call 911 or go to the nearest emergency room</p>
+                        <a href="tel:911" class="support-action-btn emergency">
+                            <i class="fas fa-ambulance"></i> Call 911
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <p class="disclaimer"><small>This resource is not a substitute for professional medical care. In crisis, reach out to trained professionals.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="floating-anchor">⚓</div>
+            <h1 class="title">The Emotional Anchor</h1>
+            <p class="subtitle">Skills for Navigating Life's Stormy Moments</p>
+            
+            <div class="wave-divider"></div>
+            
+            <div>
+                <h2>When the Waves Get Too High</h2>
+                <p>Everyone experiences moments when emotions feel overwhelming—like being caught in a storm at sea. These distress tolerance skills are your <strong>emotional anchor</strong>, helping you ride out intense feelings without making things worse.</p>
+                
+                <div class="reflection-box">
+                    <h3>💭 When to Use These Skills:</h3>
+                    <ul style="padding-left: 25px; margin-top: 15px;">
+                        <li>When emotions feel too intense to handle</li>
+                        <li>When you're tempted to do something harmful</li>
+                        <li>When you need to survive a crisis moment</li>
+                        <li>When you can't solve the problem right now</li>
+                        <li>When you need to create space before responding</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>⚠️ Important Reminder:</h3>
+                    <p>These skills are for <strong>surviving</strong> difficult moments, not necessarily solving them. Sometimes the most skillful thing we can do is simply make it through without making things worse.</p>
+                </div>
+            </div>
+        </header>
+        
+        <!-- DECISION TREE - Beautifully Integrated -->
+        <div class="decision-tree">
+            <h2 style="text-align: center; margin-bottom: 25px; color: #1a2980;">
+                <i class="fas fa-compass"></i> Quick Distress Triage – Which Skill First?
+            </h2>
+            
+            <div class="tree-grid">
+                <div class="tree-card mild">
+                    <span class="tree-emoji">😌</span>
+                    <h3>1-3: Mild Discomfort</h3>
+                    <p>You probably don't need crisis skills. Try:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Mindfulness</li>
+                        <li>Gentle problem-solving</li>
+                        <li>Journaling</li>
+                    </ul>
+                </div>
+                
+                <div class="tree-card moderate">
+                    <span class="tree-emoji">😟</span>
+                    <h3>4-6: Moderate Distress</h3>
+                    <p>Try these gentler skills:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Self-Soothe</strong> (comfort yourself)</li>
+                        <li><strong>IMPROVE</strong> the moment</li>
+                        <li><strong>Distraction</strong> (ACCEPTS)</li>
+                    </ul>
+                </div>
+                
+                <div class="tree-card high">
+                    <span class="tree-emoji">😰</span>
+                    <h3>7-8: High Distress</h3>
+                    <p>Strong emotions – try these:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>ACCEPTS</strong> Distraction</li>
+                        <li><strong>Pros & Cons</strong> analysis</li>
+                        <li><strong>Radical Acceptance</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="tree-card crisis">
+                    <span class="tree-emoji">🚨</span>
+                    <h3>9-10: CRISIS</h3>
+                    <p>Overwhelming urge to harm – use this sequence:</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>STOP</strong> skill FIRST</li>
+                        <li>Then <strong>TIPP</strong> to reset body</li>
+                        <li>If urges persist: Use Quick Support button →</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 25px; font-style: italic; color: #666;">
+                <i class="fas fa-lightbulb"></i> This is a suggested starting point – use what feels most helpful to you right now.
+            </p>
+        </div>
+        
+        <!-- SKILLS NAVIGATION -->
+        <nav class="skills-nav">
+            <div class="skill-tab active" onclick="showSection('intro')">
+                <span class="skill-icon">🌊</span>
+                <h3>Introduction</h3>
+                <p>Getting Started</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('distract')">
+                <span class="skill-icon">🌀</span>
+                <h3>Distraction</h3>
+                <p>Temporary Relief</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('self-soothe')">
+                <span class="skill-icon">🛁</span>
+                <h3>Self-Soothe</h3>
+                <p>Comfort Yourself</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('improve')">
+                <span class="skill-icon">🌅</span>
+                <h3>Improve</h3>
+                <p>Find Relief Now</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('proscons')">
+                <span class="skill-icon">⚖️</span>
+                <h3>Pros & Cons</h3>
+                <p>Weigh Options</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('radical')">
+                <span class="skill-icon">🌿</span>
+                <h3>Acceptance</h3>
+                <p>Release Resistance</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('tipp')">
+                <span class="skill-icon">🧊</span>
+                <h3>TIPP</h3>
+                <p>Body Reset</p>
+            </div>
+            
+            <div class="skill-tab" onclick="showSection('stop')">
+                <span class="skill-icon">⚠️</span>
+                <h3>STOP</h3>
+                <p>Mindful Pause</p>
+            </div>
+        </nav>
+        
+        <!-- INTRODUCTION SECTION -->
+        <section id="intro" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚓</div>
+                    <div>
+                        <h2>Your Distress Tolerance Toolkit</h2>
+                        <p>Understanding how to navigate emotional storms</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>What Are Distress Tolerance Skills?</h3>
+                <p>Distress tolerance skills help you <strong>survive</strong> intense emotional moments without resorting to harmful behaviors. They're like having a life raft when you're in emotional waters that feel too deep or turbulent.</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>Not Problem-Solving</h4>
+                        <p>These skills aren't about fixing the problem—they're about getting through the moment when you can't fix it right now.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>Creating Space</h4>
+                        <p>They create distance between intense feelings and your actions, preventing impulsive decisions you might regret.</p>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>Reducing Suffering</h4>
+                        <p>They help you bear pain without adding extra suffering through resistance or judgment.</p>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>📝 Your Current Distress Level</h3>
+                    <p>Rate your typical distress level in difficult moments:</p>
+                    
+                    <div style="text-align: center; margin: 25px 0;">
+                        <input type="range" id="distressLevel" min="1" max="10" value="5" style="width: 80%;">
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <span style="color: #4CAF50;">Calm Waters</span>
+                            <span style="color: #FF9800;">Choppy Seas</span>
+                            <span style="color: #F44336;">Hurricane Force</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <p><strong>What situations typically trigger high distress for you?</strong></p>
+                        <textarea id="triggers" placeholder="Describe situations where you feel overwhelmed..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>💡 How to Use This Guide:</h3>
+                    <p>1. <strong>Explore each skill</strong> when you're calm to learn them<br>
+                    2. <strong>Practice regularly</strong> so they're familiar when needed<br>
+                    3. <strong>Start with the skill</strong> that feels most accessible in the moment<br>
+                    4. <strong>Be gentle with yourself</strong>—these are skills that take practice</p>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('intro')">
+                    <i class="fas fa-save"></i> Save Your Starting Point
+                </button>
+            </div>
+        </section>
+        
+        <!-- DISTRACTION SKILL -->
+        <section id="distract" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌀</div>
+                    <div>
+                        <h2>Skill 1: Temporary Distraction</h2>
+                        <p>Creating space from overwhelming feelings</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>When to Use Distraction</h3>
+                <p>Distraction is helpful when emotions feel too intense to face directly. It's not about avoiding problems forever, but about <strong>taking a break</strong> so you can return to them with more resources.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 1</span>
+                        <h3>The ACCEPTS Method</h3>
+                    </div>
+                    
+                    <p>A structured way to distract yourself using different categories:</p>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">A</div>
+                            <h4>Activities</h4>
+                            <p>Do something engaging: clean, organize, exercise, work on a project</p>
+                            <textarea id="activities" placeholder="What activities could you do?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">C</div>
+                            <h4>Contributing</h4>
+                            <p>Help someone else: volunteer, do a favor, send encouragement</p>
+                            <textarea id="contributing" placeholder="How could you contribute?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">C</div>
+                            <h4>Comparisons</h4>
+                            <p>Compare to a harder time or others' struggles (use compassionately)</p>
+                            <textarea id="comparisons" placeholder="What puts this in perspective?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">E</div>
+                            <h4>Emotions</h4>
+                            <p>Create different emotions: watch comedy, listen to uplifting music</p>
+                            <textarea id="emotions" placeholder="What evokes different emotions?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">P</div>
+                            <h4>Pushing Away</h4>
+                            <p>Temporarily block painful thoughts: visualize a wall, set a worry time</p>
+                            <textarea id="pushing" placeholder="How can you pause these thoughts?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">T</div>
+                            <h4>Thoughts</h4>
+                            <p>Engage your mind: puzzles, counting, reading, word games</p>
+                            <textarea id="thoughts" placeholder="What mental tasks engage you?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">S</div>
+                            <h4>Sensations</h4>
+                            <p>Create strong sensations: cold shower, spicy food, textured objects</p>
+                            <textarea id="sensations" placeholder="What intense sensations are safe for you?"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DISTRACTION TIME LIMITS -->
+                <div class="tip-box">
+                    <h3>⏱️ Distraction Time Limits</h3>
+                    <p><strong>Distraction is meant to be temporary.</strong> Set a time limit:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 10px;">
+                            <h4>Short Distraction</h4>
+                            <p><strong>5-15 minutes</strong><br>Enough to lower intensity from 9 to 6</p>
+                        </div>
+                        
+                        <div style="background: #fff3e0; padding: 20px; border-radius: 10px;">
+                            <h4>Medium Distraction</h4>
+                            <p><strong>30 min - 2 hours</strong><br>When you need more space to calm</p>
+                        </div>
+                        
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
+                            <h4>Extended Break</h4>
+                            <p><strong>A few hours to a day</strong><br>For overwhelming situations</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <p><strong>After distracting, check in:</strong></p>
+                        <textarea id="distractionCheckin" placeholder="Is the crisis passed? Can I problem-solve now? Do I need another skill?"></textarea>
+                    </div>
+                    
+                    <div class="warning-box" style="margin-top: 20px;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Avoidance Warning Signs</h4>
+                        <p>You're distracting for days/weeks, avoiding thinking about the problem entirely, using distraction as your ONLY coping skill. If this is happening, consider reaching out to a therapist.</p>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Your Distraction Plan</h3>
+                    <p><strong>Which ACCEPTS categories work best for you?</strong> Select 2-3 to focus on:</p>
+                    
+                    <div class="coping-cards" id="acceptsCards">
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="activities">Activities</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="contributing">Contributing</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="comparisons">Comparisons</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="emotions">Different Emotions</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="pushing">Pushing Away</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="thoughts">Thoughts</div>
+                        <div class="coping-card" onclick="toggleCard(this)" data-category="sensations">Sensations</div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <p><strong>Create your go-to distraction plan:</strong></p>
+                        <textarea id="distractionPlan" placeholder="When distressed, I will: 1) ... 2) ... 3) ..." style="min-height: 120px;"></textarea>
+                    </div>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('distract')">
+                    <i class="fas fa-save"></i> Save My Distraction Plan
+                </button>
+            </div>
+        </section>
+        
+        <!-- SELF-SOOTHE SKILL -->
+        <section id="self-soothe" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🛁</div>
+                    <div>
+                        <h2>Skill 2: Self-Soothing</h2>
+                        <p>Comforting yourself through the five senses</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>The Healing Power of Your Senses</h3>
+                <p>Self-soothing uses your five senses to provide comfort and reduce distress. It's like giving yourself the care you'd give a loved one who's hurting.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 2</span>
+                        <h3>Sensory Comfort Menu</h3>
+                    </div>
+                    
+                    <p>Create your personalized comfort menu for each sense:</p>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">👁️</div>
+                            <h4>Vision</h4>
+                            <p>Beautiful, calming things to look at</p>
+                            <textarea id="vision" placeholder="Favorite views, art, colors, nature scenes..."></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">👂</div>
+                            <h4>Hearing</h4>
+                            <p>Soothing sounds and music</p>
+                            <textarea id="hearing" placeholder="Calming music, nature sounds, favorite songs..."></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">👃</div>
+                            <h4>Smell</h4>
+                            <p>Comforting aromas and scents</p>
+                            <textarea id="smell" placeholder="Favorite candles, essential oils, baked goods..."></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">👅</div>
+                            <h4>Taste</h4>
+                            <p>Comforting flavors and treats</p>
+                            <textarea id="taste" placeholder="Warm drinks, comforting foods, favorite treats..."></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">✋</div>
+                            <h4>Touch</h4>
+                            <p>Pleasant textures and physical comfort</p>
+                            <textarea id="touch" placeholder="Soft blankets, warm bath, massage, cozy clothes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- HEALTHY VS HARMFUL SOOTHING -->
+                <div class="warning-box">
+                    <h3 class="warning-header">
+                        <i class="fas fa-balance-scale warning-icon"></i>
+                        <span>Healthy vs. Harmful Soothing</span>
+                    </h3>
+                    <p><strong>Self-soothing should be temporary and safe.</strong> Watch out for these red flags:</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 20px 0;">
+                        <div>
+                            <h4>✅ Healthy Soothing</h4>
+                            <ul style="margin-left: 20px;">
+                                <li>A warm cup of tea</li>
+                                <li>Listening to calming music</li>
+                                <li>Using a weighted blanket</li>
+                                <li>Looking at nature photos</li>
+                                <li>Applying scented lotion</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4>❌ Harmful Soothing</h4>
+                            <ul style="margin-left: 20px;">
+                                <li>Using substances to numb</li>
+                                <li>Binge eating when not hungry</li>
+                                <li>Overspending significantly</li>
+                                <li>Isolating for days</li>
+                                <li>Any behavior creating new problems</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Healthy soothing</strong> calms you without negative consequences.</p>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Create Your Self-Soothing Kit</h3>
+                    <p><strong>What items could you gather for a self-soothing kit?</strong></p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 25px 0;">
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
+                            <h4><i class="fas fa-eye"></i> For Vision</h4>
+                            <textarea id="kitVision" placeholder="Items to include..." style="min-height: 80px;"></textarea>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
+                            <h4><i class="fas fa-ear"></i> For Hearing</h4>
+                            <textarea id="kitHearing" placeholder="Items to include..." style="min-height: 80px;"></textarea>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
+                            <h4><i class="fas fa-wind"></i> For Smell</h4>
+                            <textarea id="kitSmell" placeholder="Items to include..." style="min-height: 80px;"></textarea>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
+                            <h4><i class="fas fa-cookie-bite"></i> For Taste</h4>
+                            <textarea id="kitTaste" placeholder="Items to include..." style="min-height: 80px;"></textarea>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
+                            <h4><i class="fas fa-hands"></i> For Touch</h4>
+                            <textarea id="kitTouch" placeholder="Items to include..." style="min-height: 80px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>💡 Self-Soothing Practice</h3>
+                    <p><strong>Try this 5-minute exercise:</strong><br>
+                    1. Choose one sense to focus on<br>
+                    2. Gather comforting items for that sense<br>
+                    3. Spend 5 minutes fully engaging with that sense<br>
+                    4. Notice any shifts in your emotional state</p>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('self-soothe')">
+                    <i class="fas fa-heart"></i> Save My Self-Soothing Menu
+                </button>
+            </div>
+        </section>
+        
+        <!-- IMPROVE THE MOMENT -->
+        <section id="improve" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌅</div>
+                    <div>
+                        <h2>Skill 3: Improve the Moment</h2>
+                        <p>Finding relief in difficult situations</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>Making the Present More Bearable</h3>
+                <p>This skill helps you find ways to make a difficult moment slightly better, even if you can't change the situation itself.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 3</span>
+                        <h3>The IMPROVE Method</h3>
+                    </div>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">I</div>
+                            <h4>Imagery</h4>
+                            <p>Visualize a safe, peaceful place or a positive outcome</p>
+                            <textarea id="imagery" placeholder="What calming imagery helps you?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">M</div>
+                            <h4>Meaning</h4>
+                            <p>Find purpose or meaning in the pain</p>
+                            <textarea id="meaning" placeholder="What meaning could this have?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">P</div>
+                            <h4>Prayer</h4>
+                            <p>Connect with something greater, whatever that means to you</p>
+                            <textarea id="prayer" placeholder="What brings spiritual comfort?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">R</div>
+                            <h4>Relaxation</h4>
+                            <p>Practice relaxation techniques</p>
+                            <textarea id="relaxation" placeholder="How do you relax your body?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">O</div>
+                            <h4>One Thing</h4>
+                            <p>Focus on just one thing in the moment</p>
+                            <textarea id="oneThing" placeholder="What can you focus on right now?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">V</div>
+                            <h4>Vacation</h4>
+                            <p>Take a brief break from the situation</p>
+                            <textarea id="vacation" placeholder="What mini-vacation could you take?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">E</div>
+                            <h4>Encouragement</h4>
+                            <p>Give yourself pep talks and affirmations</p>
+                            <textarea id="encouragement" placeholder="What encouraging words help?"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Current Challenge Application</h3>
+                    <p><strong>Think of a current difficulty. How could you apply IMPROVE?</strong></p>
+                    
+                    <div style="margin: 25px 0;">
+                        <p><strong>Current challenging situation:</strong></p>
+                        <textarea id="currentSituation" placeholder="Describe the situation..."></textarea>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0;">
+                        <div>
+                            <h4>Which IMPROVE skill fits this situation?</h4>
+                            <select id="improveSkill" style="width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb; margin-top: 10px; font-size: 1.05rem;">
+                                <option>Imagery</option>
+                                <option>Meaning</option>
+                                <option>Prayer/Connection</option>
+                                <option>Relaxation</option>
+                                <option>One Thing</option>
+                                <option>Vacation</option>
+                                <option>Encouragement</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <h4>How will you apply it?</h4>
+                            <textarea id="improveApplication" placeholder="Specific application..." style="min-height: 120px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>💡 Quick IMPROVE Practice</h3>
+                    <p><strong>Right now:</strong> Take one minute to practice "One Thing." Focus completely on your breathing or on an object in the room. Notice any shift in your awareness.</p>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('improve')">
+                    <i class="fas fa-sun"></i> Save My IMPROVE Practice
+                </button>
+            </div>
+        </section>
+        
+        <!-- PROS AND CONS -->
+        <section id="proscons" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚖️</div>
+                    <div>
+                        <h2>Skill 4: Pros and Cons</h2>
+                        <p>Thinking through difficult decisions</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>Weighing Your Options</h3>
+                <p>When emotions are high, it's hard to think clearly. Listing pros and cons helps you make decisions based on reason rather than impulse.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 4</span>
+                        <h3>Decision Balance Sheet</h3>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <p><strong>Current decision or impulse you're considering:</strong></p>
+                        <textarea id="decision" placeholder="Describe the action or decision..." style="min-height: 100px;"></textarea>
+                    </div>
+                    
+                    <div class="pros-cons">
+                        <div class="pros-box">
+                            <h3><i class="fas fa-check-circle"></i> Pros of Doing It</h3>
+                            <p>Short-term benefits (right now):</p>
+                            <textarea id="prosShort" placeholder="List immediate benefits..." style="min-height: 120px;"></textarea>
+                            
+                            <p style="margin-top: 20px;">Long-term benefits (future):</p>
+                            <textarea id="prosLong" placeholder="List future benefits..." style="min-height: 120px;"></textarea>
+                        </div>
+                        
+                        <div class="cons-box">
+                            <h3><i class="fas fa-times-circle"></i> Cons of Doing It</h3>
+                            <p>Short-term costs (right now):</p>
+                            <textarea id="consShort" placeholder="List immediate costs..." style="min-height: 120px;"></textarea>
+                            
+                            <p style="margin-top: 20px;">Long-term costs (future):</p>
+                            <textarea id="consLong" placeholder="List future costs..." style="min-height: 120px;"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="pros-cons" style="margin-top: 40px;">
+                        <div class="pros-box" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-color: #2196F3;">
+                            <h3><i class="fas fa-check-circle"></i> Pros of NOT Doing It</h3>
+                            <p>Short-term benefits of resisting:</p>
+                            <textarea id="notProsShort" placeholder="Benefits of not acting..." style="min-height: 120px;"></textarea>
+                            
+                            <p style="margin-top: 20px;">Long-term benefits of resisting:</p>
+                            <textarea id="notProsLong" placeholder="Future benefits of not acting..." style="min-height: 120px;"></textarea>
+                        </div>
+                        
+                        <div class="cons-box" style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border-color: #FFC107;">
+                            <h3><i class="fas fa-times-circle"></i> Cons of NOT Doing It</h3>
+                            <p>Short-term costs of resisting:</p>
+                            <textarea id="notConsShort" placeholder="Costs of not acting..." style="min-height: 120px;"></textarea>
+                            
+                            <p style="margin-top: 20px;">Long-term costs of resisting:</p>
+                            <textarea id="notConsLong" placeholder="Future costs of not acting..." style="min-height: 120px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ACTION COMMITMENT -->
+                <div class="action-commitment">
+                    <h3>🎯 Decision Checkpoint – Your Commitment</h3>
+                    <p><strong>Based on your analysis, what will you do?</strong></p>
+                    
+                    <div class="commitment-options">
+                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="wait">
+                            <h4><i class="fas fa-clock"></i> Wait</h4>
+                            <p>I will wait before acting (delay 10 min / 1 hour / 24 hours)</p>
+                            <input type="text" placeholder="How long will you wait?" style="margin-top: 10px; display: none;">
+                        </div>
+                        
+                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="act">
+                            <h4><i class="fas fa-play"></i> Act Skillfully</h4>
+                            <p>I will act, but skillfully using another distress tolerance skill</p>
+                            <select style="width: 100%; margin-top: 10px; display: none;">
+                                <option>STOP first</option>
+                                <option>Self-Soothe</option>
+                                <option>ACCEPTS distraction</option>
+                                <option>IMPROVE</option>
+                                <option>Radical Acceptance</option>
+                            </select>
+                        </div>
+                        
+                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="resist">
+                            <h4><i class="fas fa-shield-alt"></i> Resist Completely</h4>
+                            <p>I will resist this urge completely using distress tolerance skills</p>
+                        </div>
+                        
+                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="modify">
+                            <h4><i class="fas fa-adjust"></i> Modified Version</h4>
+                            <p>I will do a modified, less harmful version of this action</p>
+                            <input type="text" placeholder="What's the modified version?" style="margin-top: 10px; display: none;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <h4>📋 My Final Commitment:</h4>
+                        <textarea id="finalDecision" placeholder="Based on this analysis, I commit to..." style="min-height: 120px;"></textarea>
+                    </div>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('proscons')">
+                    <i class="fas fa-balance-scale"></i> Save This Analysis
+                </button>
+            </div>
+        </section>
+        
+        <!-- RADICAL ACCEPTANCE -->
+        <section id="radical" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌿</div>
+                    <div>
+                        <h2>Skill 5: Radical Acceptance</h2>
+                        <p>Stop fighting reality to reduce suffering</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <!-- THE CORE IDEA -->
+                <div class="tip-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-left: 5px solid #4CAF50;">
+                    <h3>📌 The Core Idea (One Sentence)</h3>
+                    <p style="font-size: 1.3rem; font-weight: bold; text-align: center; margin: 20px 0;">
+                        <em>Radical acceptance means completely acknowledging reality as it is right now, 
+                        without fighting it, even though you don't like it and didn't choose it.</em>
+                    </p>
+                </div>
+                
+                <h3>The Quicksand Metaphor</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0;">
+                    <div class="reflection-box" style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);">
+                        <h4><i class="fas fa-times-circle"></i> Fighting Reality (Resistance)</h4>
+                        <p>Like struggling in quicksand—it makes you sink faster.</p>
+                        <ul style="margin-left: 25px; margin-top: 15px;">
+                            <li>"This shouldn't be happening!"</li>
+                            <li>"It's not fair!"</li>
+                            <li>"Why me?"</li>
+                            <li>Creates <strong>extra suffering</strong></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="reflection-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
+                        <h4><i class="fas fa-check-circle"></i> Accepting Reality</h4>
+                        <p>Like stopping the struggle—you can think clearly about escape.</p>
+                        <ul style="margin-left: 25px; margin-top: 15px;">
+                            <li>"This is happening, even though I hate it."</li>
+                            <li>"This is real."</li>
+                            <li>"Okay, this is where I am."</li>
+                            <li>Reduces suffering, frees energy for <strong>effective action</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- THE TWO PAINS -->
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 5</span>
+                        <h3>The Two Pains: Pain vs. Suffering</h3>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 25px 0;">
+                        <div style="text-align: center; padding: 25px; border: 2px solid #bbdefb; border-radius: 15px; background: white;">
+                            <div style="font-size: 3.5rem; margin-bottom: 15px;">💔</div>
+                            <h4>PAIN</h4>
+                            <p><strong>The hurt from what happened</strong></p>
+                            <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Natural, unavoidable, decreases over time</p>
+                            <div class="reflection-box" style="margin-top: 20px; background: #f8fdff;">
+                                <p><strong>Example:</strong> "I lost my job"</p>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; padding: 25px; border: 2px solid #ffcdd2; border-radius: 15px; background: white;">
+                            <div style="font-size: 3.5rem; margin-bottom: 15px;">🔥</div>
+                            <h4>SUFFERING</h4>
+                            <p><strong>The extra hurt from fighting reality</strong></p>
+                            <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Optional, avoidable, makes pain worse</p>
+                            <div class="reflection-box" style="margin-top: 20px; background: #ffebee;">
+                                <p><strong>Example:</strong> "This shouldn't have happened! It's not fair! My life is ruined!"</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="reflection-box" style="margin-top: 25px;">
+                        <h4>Your Turn: Separate Your Pain from Your Suffering</h4>
+                        <p><strong>Current difficult reality:</strong></p>
+                        <textarea id="currentReality" placeholder="What happened that's hard to accept?" style="min-height: 100px;"></textarea>
+                        
+                        <p style="margin-top: 20px;"><strong>The PAIN (just the facts):</strong></p>
+                        <textarea id="justThePain" placeholder="What's the unavoidable hurt?" style="min-height: 100px;"></textarea>
+                        
+                        <p style="margin-top: 20px;"><strong>The SUFFERING (the fight):</strong></p>
+                        <textarea id="theSuffering" placeholder="What extra hurt am I adding by fighting reality?" style="min-height: 100px;"></textarea>
+                    </div>
+                </div>
+                
+                <!-- ACCEPTANCE TEST -->
+                <h3>The Acceptance Test: Are You Arguing with Reality?</h3>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number" style="background: #F44336;">❌</div>
+                        <h4>Signs You're NOT Accepting</h4>
+                        <ul style="margin-left: 25px; margin-top: 15px;">
+                            <li>"This shouldn't be happening"</li>
+                            <li>"Why me? This isn't fair!"</li>
+                            <li>"I can't believe this is real"</li>
+                            <li>Replaying the past, wishing it were different</li>
+                            <li>Getting angry at unchangeable facts</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number" style="background: #4CAF50;">✅</div>
+                        <h4>Signs You ARE Accepting</h4>
+                        <ul style="margin-left: 25px; margin-top: 15px;">
+                            <li>"I don't like this, but it's what's happening"</li>
+                            <li>"Okay, this is where I am. What now?"</li>
+                            <li>Feeling sad but not shocked/outraged</li>
+                            <li>Focusing on what you can control</li>
+                            <li>Energy available for next steps</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- SIMPLE LANGUAGE SCRIPTS -->
+                <div class="reflection-box">
+                    <h3>💬 Simple Language Scripts</h3>
+                    <p>Try these statements when reality feels unacceptable:</p>
+                    
+                    <div style="margin: 25px 0;">
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #bbdefb;">
+                            <h4>The Reality Check</h4>
+                            <p><em>"I don't have to like this. I don't have to want this. But fighting the fact that it happened only makes me hurt more. It happened. That's the reality."</em></p>
+                            <textarea placeholder="Rewrite this in your own words..." style="min-height: 80px; margin-top: 15px;"></textarea>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #bbdefb;">
+                            <h4>The Control Distinction</h4>
+                            <p><em>"I can't change that this happened. But I CAN change what I do next."</em></p>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                                <div>
+                                    <p><strong>What I CAN'T control:</strong></p>
+                                    <textarea placeholder="The past, others' actions, certain facts..." style="min-height: 100px;"></textarea>
+                                </div>
+                                <div>
+                                    <p><strong>What I CAN control:</strong></p>
+                                    <textarea placeholder="My response, my attitude, my next action..." style="min-height: 100px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; border: 2px solid #bbdefb;">
+                            <h4>The Both/And Statement</h4>
+                            <p><em>"This is terrible AND it's real. I hate this AND I can survive it. This isn't fair AND it's what I'm dealing with."</em></p>
+                            <textarea placeholder="Create your own Both/And statement..." style="min-height: 80px; margin-top: 15px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- THE PRACTICE STEPS -->
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Practice</span>
+                        <h3>The 6-Step Acceptance Practice</h3>
+                    </div>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>Notice Resistance</h4>
+                            <p>Check: "Am I arguing with reality?"</p>
+                            <textarea placeholder="What resistance thoughts are present?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>Name the Facts</h4>
+                            <p>State reality without judgment</p>
+                            <textarea placeholder="The facts are..."></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>Acknowledge the Pain</h4>
+                            <p>"This hurts. I don't like this."</p>
+                            <textarea placeholder="What hurts about this?"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <h4>Make Acceptance Statement</h4>
+                            <p>"AND... this is what's real."</p>
+                            <textarea placeholder="Complete: 'This is real because...'"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <h4>Breathe Into It</h4>
+                            <p>Take a deep breath and "allow" reality to exist</p>
+                            <div style="text-align: center; margin-top: 15px;">
+                                <button onclick="startAcceptanceBreathing()" class="action-btn" style="padding: 12px 25px; font-size: 1rem;">
+                                    <i class="fas fa-wind"></i> Start Acceptance Breathing
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">6</div>
+                            <h4>Shift to Action</h4>
+                            <p>"What CAN I do now?"</p>
+                            <textarea placeholder="My next effective step is..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>🎯 The Elevator Pitch</h3>
+                    <p style="font-style: italic; font-size: 1.2rem; margin: 20px 0; text-align: center;">
+                        "Radical acceptance is choosing to stop slamming your head against a wall that won't move. 
+                        The wall is still there. It still sucks. But you stop hurting yourself by fighting it, 
+                        and you free up energy to find a door instead."
+                    </p>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('radical')">
+                    <i class="fas fa-leaf"></i> Save My Acceptance Practice
+                </button>
+            </div>
+        </section>
+        
+        <!-- TIPP SKILL -->
+        <section id="tipp" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧊</div>
+                    <div>
+                        <h2>Skill 6: TIPP - The Body Chemistry Reset</h2>
+                        <p>Changing your physiology to change your emotions</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <!-- MEDICAL WARNING - Beautifully Designed -->
+                <div class="medical-warning">
+                    <div class="warning-header">
+                        <i class="fas fa-heartbeat warning-icon"></i>
+                        <h3>MEDICAL SAFETY CHECK – READ BEFORE USING TIPP</h3>
+                    </div>
+                    
+                    <p><strong>DO NOT use TIPP if you have any of these conditions:</strong></p>
+                    
+                    <div class="warning-grid">
+                        <div class="warning-column">
+                            <ul>
+                                <li>Heart conditions or irregular heartbeat</li>
+                                <li>Recent heart attack or heart surgery</li>
+                                <li>High or low blood pressure</li>
+                                <li><em>Especially if on beta-blockers</em></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="warning-column">
+                            <ul>
+                                <li>Raynaud's disease or cold urticaria</li>
+                                <li>Respiratory issues (asthma, COPD)</li>
+                                <li>Pregnancy (consult doctor first)</li>
+                                <li>Eating disorders (can be triggering)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 25px; font-weight: bold; color: #d32f2f; text-align: center;">
+                        <i class="fas fa-exclamation-triangle"></i> When in doubt: Skip TIPP and use STOP + ACCEPTS instead, or use the Quick Support button.
+                    </p>
+                    
+                    <div class="safer-alternatives">
+                        <h4><i class="fas fa-shield-alt"></i> Safer Alternatives to TIPP:</h4>
+                        <ul style="margin-left: 25px; margin-top: 15px;">
+                            <li><strong>Instead of cold water:</strong> Splash cool (not cold) water, use damp cloth on neck</li>
+                            <li><strong>Instead of intense exercise:</strong> Gentle stretching, walking slowly</li>
+                            <li><strong>Instead of breath-holding:</strong> Gentle 4-7-8 breathing without holding</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>For Moments of Extreme Crisis</h3>
+                <p><strong>TIPP</strong> is designed for when emotions feel completely overwhelming—like a "10/10" on the distress scale. It works by rapidly changing your body's physical state, which in turn can short-circuit intense emotional pain.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 6</span>
+                        <h3>The TIPP Breakdown</h3>
+                    </div>
+                    
+                    <div class="steps-container">
+                        <!-- T - Temperature -->
+                        <div class="step">
+                            <div class="step-number">T</div>
+                            <h4>Temperature</h4>
+                            <p>Change your body temperature to activate the "dive reflex" and calm your nervous system.</p>
+                            <p><strong>Safe ideas:</strong> Splash cold water on your face, hold an ice pack to your cheeks or wrists, take a cool shower.</p>
+                            <div class="reflection-box" style="margin-top: 15px; padding: 20px;">
+                                <label><strong>Choose your intensity:</strong></label>
+                                <div style="display: flex; align-items: center; gap: 15px; margin-top: 12px;">
+                                    <span style="color: #4CAF50;">Mild</span>
+                                    <input type="range" id="tempIntensity" min="1" max="3" value="2" style="flex-grow: 1;">
+                                    <span style="color: #F44336;">Intense</span>
+                                </div>
+                                <p style="margin-top: 15px; font-size: 0.95rem; color: #666;">
+                                    Selected: <span id="tempLabel">Moderate (Cold water splash)</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- I - Intense Exercise -->
+                        <div class="step">
+                            <div class="step-number">I</div>
+                            <h4>Intense Exercise</h4>
+                            <p>Engage in short, vigorous activity to burn off adrenaline and release endorphins.</p>
+                            <p><strong>Safe ideas:</strong> Run in place for 2 minutes, do jumping jacks, sprint up and down stairs, vigorous dancing.</p>
+                            <textarea id="intenseExercisePlan" placeholder="My go-to 2-minute exercise is... (e.g., 30 jumping jacks, 20 high knees)" style="min-height: 100px;"></textarea>
+                        </div>
+                        
+                        <!-- P - Paced Breathing -->
+                        <div class="step">
+                            <div class="step-number">P</div>
+                            <h4>Paced Breathing</h4>
+                            <p>Slow, deliberate breathing to regulate your heart rate and calm your mind.</p>
+                            <p><strong>Try 4-7-8 breathing:</strong> Inhale for 4 counts, hold for 7, exhale slowly for 8.</p>
+                            <div class="breathing-guide" style="text-align: center; padding: 25px; background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); border-radius: 15px; margin-top: 15px;">
+                                <div class="breath-timer" id="breathTimer" style="font-size: 3.5rem; color: #1a2980; margin: 15px 0;">4</div>
+                                <button onclick="startBreathingGuide()" class="action-btn" style="padding: 15px 30px; font-size: 1.1rem;">
+                                    <i class="fas fa-play"></i> Start Breathing Guide
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- P - Paired Muscle Relaxation -->
+                        <div class="step">
+                            <div class="step-number">P</div>
+                            <h4>Paired Muscle Relaxation</h4>
+                            <p>Tense muscle groups tightly, then release, pairing the release with an exhale.</p>
+                            <p><strong>Sequence:</strong> Clench fists (hold 5 sec) → exhale and release. Tense shoulders (hold) → exhale and drop.</p>
+                            <textarea id="muscleRelaxNotes" placeholder="Note areas where you hold the most tension (e.g., jaw, shoulders)..." style="min-height: 100px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>🧠 Create Your TIPP Crisis Plan</h3>
+                    <p>When I'm at a "9 or 10" distress level and need to reset fast, I will try these techniques in this order:</p>
+                    <ol style="margin-left: 30px; margin-top: 15px;">
+                        <li><input type="text" id="tippStep1" placeholder="First, I will..." style="width: 90%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;"></li>
+                        <li><input type="text" id="tippStep2" placeholder="Then, I will..." style="width: 90%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;"></li>
+                        <li><input type="text" id="tippStep3" placeholder="If needed, I will..." style="width: 90%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;"></li>
+                    </ol>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 30px 0;">
+                    <div class="reflection-box">
+                        <h4>Body Check-In: Before TIPP</h4>
+                        <p>Rate your physical sensations <strong>before</strong> practicing:</p>
+                        <p>Heart Racing: <input type="range" id="heartBefore" min="1" max="10" value="7"> <span id="heartBeforeVal">7</span>/10</p>
+                        <p>Muscle Tension: <input type="range" id="tensionBefore" min="1" max="10" value="6"> <span id="tensionBeforeVal">6</span>/10</p>
+                    </div>
+                    
+                    <div class="reflection-box">
+                        <h4>Body Check-In: After TIPP</h4>
+                        <p>Rate your physical sensations <strong>after</strong> practicing:</p>
+                        <p>Heart Racing: <input type="range" id="heartAfter" min="1" max="10" value="4"> <span id="heartAfterVal">4</span>/10</p>
+                        <p>Muscle Tension: <input type="range" id="tensionAfter" min="1" max="10" value="3"> <span id="tensionAfterVal">3</span>/10</p>
+                    </div>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('tipp')">
+                    <i class="fas fa-bolt"></i> Save My TIPP Plan
+                </button>
+            </div>
+        </section>
+        
+        <!-- STOP SKILL -->
+        <section id="stop" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚠️</div>
+                    <div>
+                        <h2>Skill 7: STOP - The Mindful Emergency Brake</h2>
+                        <p>Creating space between trigger and reaction</p>
+                    </div>
+                </div>
+                
+                <div class="wave-divider"></div>
+                
+                <h3>Prevent Impulsive Reactions</h3>
+                <p>The <strong>STOP</strong> skill is your instant pause button. It's designed to be used in the heat of the moment when you feel an overwhelming urge to act (to argue, to send that text, to escape, to self-harm). It creates vital seconds of space to choose a more thoughtful response.</p>
+                
+                <div class="exercise">
+                    <div class="exercise-title">
+                        <span class="exercise-badge">Worksheet 7</span>
+                        <h3>Practice the STOP Sequence</h3>
+                    </div>
+                    
+                    <!-- Interactive STOP Buttons -->
+                    <div class="steps-container">
+                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('S')">
+                            <div class="step-number" style="background: #e74c3c;">S</div>
+                            <h4>STOP!</h4>
+                            <p><strong>Freeze.</strong> Don't move a muscle. Don't say a word. Literally pause your body as if someone hit pause on a remote.</p>
+                            <div id="stopSIndicator" class="stop-indicator stop-s" style="display: none;">
+                                <i class="fas fa-check-circle"></i> Action Paused
+                            </div>
+                        </div>
+                        
+                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('T')">
+                            <div class="step-number" style="background: #f39c12;">T</div>
+                            <h4>Take a Step Back</h4>
+                            <p><strong>Physically & mentally step back.</strong> Take one literal step backwards. Take a deep breath. You are not your urge.</p>
+                            <div id="stopTIndicator" class="stop-indicator stop-t" style="display: none;">
+                                <i class="fas fa-footstep"></i> Stepped Back
+                            </div>
+                        </div>
+                        
+                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('O')">
+                            <div class="step-number" style="background: #3498db;">O</div>
+                            <h4>Observe</h4>
+                            <p><strong>Become a curious scientist.</strong> What's happening inside you? What's happening around you? Just notice without judgment.</p>
+                            <div id="stopOIndicator" class="stop-indicator stop-o" style="display: none;">
+                                <i class="fas fa-eye"></i> Observing
+                            </div>
+                        </div>
+                        
+                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('P')">
+                            <div class="step-number" style="background: #2ecc71;">P</div>
+                            <h4>Proceed Mindfully</h4>
+                            <p><strong>Act with awareness.</strong> Ask: "What is the most effective thing to do right now, considering my goals?" Then do that.</p>
+                            <div id="stopPIndicator" class="stop-indicator stop-p" style="display: none;">
+                                <i class="fas fa-forward"></i> Proceeding
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- WHAT COMES AFTER STOP -->
+                <div class="reflection-box">
+                    <h3>🔄 After STOP: Your Next Move</h3>
+                    <p>You've paused. You've observed. Now what? Choose your next skillful action:</p>
+                    
+                    <div class="steps-container">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>Use Another Skill</h4>
+                            <p>Which distress tolerance skill fits this moment?</p>
+                            <select id="nextSkill" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #bbdefb; margin-top: 10px;">
+                                <option>TIPP (if still at 9-10)</option>
+                                <option>Distract with ACCEPTS</option>
+                                <option>Self-Soothe</option>
+                                <option>IMPROVE the moment</option>
+                                <option>Pros & Cons</option>
+                                <option>Radical Acceptance</option>
+                            </select>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>Problem-Solve</h4>
+                            <p>If distress is lower and you CAN solve the problem, what's one step you could take?</p>
+                            <textarea placeholder="One concrete action..." style="min-height: 100px;"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>Reach Out</h4>
+                            <p>Who could you contact for support?</p>
+                            <textarea placeholder="Person to call/text..." style="min-height: 100px;"></textarea>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <h4>Opposite Action</h4>
+                            <p>What would the OPPOSITE of your urge be? (Sometimes this is the wise choice)</p>
+                            <textarea placeholder="Opposite action..." style="min-height: 100px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>⏱️ Practice Delaying the Urge</h3>
+                    <p>When you feel a strong impulse, practice delaying it. Start small and build your tolerance.</p>
+                    <div style="text-align: center; margin: 25px 0;">
+                        <div class="delay-timer" id="delayTimerDisplay" style="font-size: 3rem;">01:00</div>
+                        <div>
+                            <button onclick="startDelayTimer(60)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-start"></i> Delay 1 min</button>
+                            <button onclick="startDelayTimer(300)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-half"></i> Delay 5 min</button>
+                            <button onclick="startDelayTimer(600)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-end"></i> Delay 10 min</button>
+                        </div>
+                        <p id="timerMessage" style="margin-top: 15px; font-style: italic; color: #666;">Timer not started.</p>
+                    </div>
+                    <textarea id="urgeNotes" placeholder="What was the urge? What did you notice during the delay? Did the intensity change?" style="min-height: 120px;"></textarea>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>🔍 Mindful Observation Checklist</h3>
+                    <p>During the <strong>O</strong> step, use this checklist to gather data:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div><input type="checkbox" id="observeThoughts"> <label for="observeThoughts"><i class="fas fa-brain"></i> My thoughts are...</label></div>
+                        <div><input type="checkbox" id="observeBody"> <label for="observeBody"><i class="fas fa-heartbeat"></i> Bodily sensations are...</label></div>
+                        <div><input type="checkbox" id="observeEmotions"> <label for="observeEmotions"><i class="fas fa-smile"></i> Primary emotion is...</label></div>
+                        <div><input type="checkbox" id="observeOthers"> <label for="observeOthers"><i class="fas fa-users"></i> Others around me are...</label></div>
+                        <div><input type="checkbox" id="observeImpulse"> <label for="observeImpulse"><i class="fas fa-running"></i> The urge wants me to...</label></div>
+                    </div>
+                    <textarea id="observationSummary" placeholder="Summary of what I observed..." style="margin-top: 20px; min-height: 120px;"></textarea>
+                </div>
+                
+                <div class="tip-box">
+                    <h3>💡 STOP in Action</h3>
+                    <p><strong>Example:</strong> You receive a critical text and feel heat rush to your face with the urge to reply angrily.<br>
+                    • <strong>S</strong>: Put the phone down. Don't move.<br>
+                    • <strong>T</strong>: Walk to another room. Breathe.<br>
+                    • <strong>O</strong>: "I feel hot. My heart is pounding. I'm thinking 'how dare they.' The urge is to attack back."<br>
+                    • <strong>P</strong>: My goal is to resolve this, not win a fight. I will wait 20 minutes, then reply calmly asking for clarification.
+                    </p>
+                </div>
+                
+                <button class="action-btn" onclick="saveSection('stop')">
+                    <i class="fas fa-shield-alt"></i> Save My STOP Practice
+                </button>
+            </div>
+        </section>
+        
+        <!-- FOOTER -->
+        <footer style="text-align: center; padding: 40px; color: #4a6572;">
+            <div class="wave-divider"></div>
+            <p style="margin-top: 25px; font-size: 1.1rem;"><strong>Remember:</strong> These skills are like muscles—they get stronger with practice. Be patient with yourself as you learn to navigate emotional storms.</p>
+            <p style="font-size: 0.95rem; margin-top: 15px;">Practice when calm so the skills are available when you need them most.</p>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e3f2fd;">
+                <p style="font-size: 0.9rem; color: #888;">The Emotional Anchor | A distress tolerance guide | Not a substitute for professional care</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ========== QUICK SUPPORT MODAL FUNCTIONALITY ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickSupportBtn = document.getElementById('quickSupportBtn');
+            const quickSupportModal = document.getElementById('quickSupportModal');
+            const closeBtn = quickSupportModal.querySelector('.close-btn');
+            
+            // Show modal when button is clicked
+            quickSupportBtn.addEventListener('click', function() {
+                quickSupportModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close modal when X is clicked
+            closeBtn.addEventListener('click', function() {
+                quickSupportModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal when clicking outside
+            quickSupportModal.addEventListener('click', function(e) {
+                if (e.target === quickSupportModal) {
+                    quickSupportModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && quickSupportModal.style.display === 'flex') {
+                    quickSupportModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Mobile: Show icon only, show text on hover
+            if (window.innerWidth <= 480) {
+                const quickSupportBtnText = quickSupportBtn.querySelector('span');
+                quickSupportBtnText.style.display = 'none';
+                
+                quickSupportBtn.addEventListener('mouseenter', function() {
+                    quickSupportBtnText.style.display = 'inline';
+                    quickSupportBtnText.style.marginLeft = '8px';
+                });
+                
+                quickSupportBtn.addEventListener('mouseleave', function() {
+                    quickSupportBtnText.style.display = 'none';
+                });
+            }
+        });
+        
+        // ========== CORE FUNCTIONS ==========
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            const tabs = document.querySelectorAll('.skill-tab');
+            for (let tab of tabs) {
+                if (tab.getAttribute('onclick') === `showSection('${sectionId}')`) {
+                    tab.classList.add('active');
+                    break;
+                }
+            }
+            localStorage.setItem('lastActiveDistressTab', sectionId);
+        }
+        
+        function toggleCard(card) {
+            card.classList.toggle('selected');
+            localStorage.setItem(`card_${card.dataset.category}`, card.classList.contains('selected'));
+        }
+        
+        function saveSection(section) {
+            const btn = event.target;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully!';
+            btn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+            btn.disabled = true;
+            
+            const sectionEl = document.getElementById(section);
+            const inputs = sectionEl.querySelectorAll('textarea, input[type="text"], input[type="range"], select, input[type="checkbox"]');
+            
+            inputs.forEach(el => {
+                const val = el.type === 'checkbox' ? el.checked : el.value;
+                localStorage.setItem(`dt_${section}_${el.id}`, val);
+                
+                // Update slider displays
+                if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.tagName === 'SPAN') {
+                    el.nextElementSibling.textContent = val;
+                }
+            });
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 2000);
+        }
+        
+        // ========== COMMITMENT SELECTION ==========
+        function selectCommitment(element) {
+            document.querySelectorAll('.commitment-option').forEach(opt => {
+                opt.classList.remove('selected');
+                const extraInput = opt.querySelector('input, select');
+                if (extraInput) extraInput.style.display = 'none';
+            });
+            
+            element.classList.add('selected');
+            const extraInput = element.querySelector('input, select');
+            if (extraInput) {
+                extraInput.style.display = 'block';
+                extraInput.style.marginTop = '15px';
+            }
+            
+            localStorage.setItem('selected_commitment', element.dataset.value);
+        }
+        
+        // ========== TIPP FUNCTIONS ==========
+        // Temperature Slider
+        const tempSlider = document.getElementById('tempIntensity');
+        const tempLabel = document.getElementById('tempLabel');
+        const tempOptions = {
+            '1': 'Mild (Cool cloth on neck)',
+            '2': 'Moderate (Cold water splash)',
+            '3': 'Intense (Ice pack on cheeks)'
+        };
+        
+        if (tempSlider && tempLabel) {
+            tempSlider.addEventListener('input', function() {
+                tempLabel.textContent = tempOptions[this.value];
+                tempLabel.style.color = this.value == '3' ? '#F44336' : (this.value == '2' ? '#FF9800' : '#4CAF50');
+            });
+            
+            // Load saved value
+            const savedTemp = localStorage.getItem('dt_tipp_tempIntensity');
+            if (savedTemp) {
+                tempSlider.value = savedTemp;
+                tempLabel.textContent = tempOptions[savedTemp];
+                tempLabel.style.color = savedTemp == '3' ? '#F44336' : (savedTemp == '2' ? '#FF9800' : '#4CAF50');
+            }
+            
+            // Save on change
+            tempSlider.addEventListener('change', function() {
+                localStorage.setItem('dt_tipp_tempIntensity', this.value);
+            });
+        }
+        
+        // Body check-in sliders
+        function setupSlider(sliderId, valueSpanId) {
+            const slider = document.getElementById(sliderId);
+            const span = document.getElementById(valueSpanId);
+            
+            if (slider && span) {
+                slider.addEventListener('input', function() {
+                    span.textContent = this.value;
+                    span.style.color = this.value >= 7 ? '#F44336' : (this.value >= 4 ? '#FF9800' : '#4CAF50');
+                });
+                
+                // Load saved value
+                const saved = localStorage.getItem(`dt_tipp_${sliderId}`);
+                if (saved) {
+                    slider.value = saved;
+                    span.textContent = saved;
+                    span.style.color = saved >= 7 ? '#F44336' : (saved >= 4 ? '#FF9800' : '#4CAF50');
+                }
+                
+                // Save on change
+                slider.addEventListener('change', function() {
+                    localStorage.setItem(`dt_tipp_${sliderId}`, this.value);
+                });
+            }
+        }
+        
+        ['heartBefore', 'tensionBefore', 'heartAfter', 'tensionAfter'].forEach(id => {
+            setupSlider(id, id + 'Val');
+        });
+        
+        // Breathing Guide
+        function startBreathingGuide() {
+            let count = 4;
+            let phase = 'Inhale';
+            const timerEl = document.getElementById('breathTimer');
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guided Breathing...';
+            btn.disabled = true;
+            
+            const cycle = [
+                {phase: 'Inhale', duration: 4, color: '#4CAF50'},
+                {phase: 'Hold', duration: 7, color: '#FF9800'},
+                {phase: 'Exhale', duration: 8, color: '#2196F3'}
+            ];
+            let cycleIndex = 0;
+            
+            const interval = setInterval(() => {
+                if (count > 0) {
+                    timerEl.textContent = count;
+                    timerEl.style.color = cycle[cycleIndex].color;
+                    count--;
+                } else {
+                    cycleIndex = (cycleIndex + 1) % 3;
+                    count = cycle[cycleIndex].duration;
+                    timerEl.textContent = cycle[cycleIndex].phase;
+                    timerEl.style.color = cycle[cycleIndex].color;
+                }
+            }, 1000);
+            
+            // Stop after 1 minute (2 full breathing cycles)
+            setTimeout(() => {
+                clearInterval(interval);
+                timerEl.textContent = '4';
+                timerEl.style.color = '#1a2980';
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('Breathing practice complete! Notice how your body feels.');
+            }, 60000);
+        }
+        
+        // ========== STOP FUNCTIONS ==========
+        function triggerStop(step) {
+            const indicators = {
+                'S': 'stopSIndicator',
+                'T': 'stopTIndicator',
+                'O': 'stopOIndicator',
+                'P': 'stopPIndicator'
+            };
+            
+            const indicator = document.getElementById(indicators[step]);
+            if (indicator) {
+                indicator.style.display = 'block';
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 2000);
+            }
+            
+            localStorage.setItem('dt_stop_lastStep', step);
+        }
+        
+        // Urge Delay Timer
+        let delayTimer;
+        function startDelayTimer(seconds) {
+            clearInterval(delayTimer);
+            
+            let timeLeft = seconds;
+            const display = document.getElementById('delayTimerDisplay');
+            const message = document.getElementById('timerMessage');
+            
+            display.textContent = formatTime(timeLeft);
+            display.style.color = '#1a2980';
+            message.textContent = "Urge delay in progress. Observe without acting.";
+            message.style.color = '#4CAF50';
+            
+            delayTimer = setInterval(() => {
+                timeLeft--;
+                display.textContent = formatTime(timeLeft);
+                
+                // Change color as time decreases
+                if (timeLeft <= 10) {
+                    display.style.color = timeLeft <= 5 ? '#F44336' : '#FF9800';
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(delayTimer);
+                    message.textContent = "Time's up! Well done. Check in with your urge now.";
+                    message.style.color = '#4CAF50';
+                    localStorage.setItem('dt_stop_lastDelay', seconds);
+                }
+            }, 1000);
+            
+            localStorage.setItem('dt_stop_timerRunning', 'true');
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // ========== RADICAL ACCEPTANCE BREATHING ==========
+        function startAcceptanceBreathing() {
+            const phases = [
+                {text: "Notice Resistance", duration: 4},
+                {text: "Name Facts", duration: 4},
+                {text: "Acknowledge Pain", duration: 4},
+                {text: "Accept Reality", duration: 6},
+                {text: "Find Next Step", duration: 4}
+            ];
+            
+            let phaseIndex = 0;
+            let timeLeft = phases[0].duration;
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            
+            // Create or update breathing display
+            let display = document.getElementById('acceptanceBreathingDisplay');
+            if (!display) {
+                display = document.createElement('div');
+                display.id = 'acceptanceBreathingDisplay';
+                display.style.cssText = 'text-align: center; padding: 30px; background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border-radius: 15px; margin: 20px 0;';
+                btn.parentElement.parentElement.appendChild(display);
+            }
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Practicing Acceptance...';
+            btn.disabled = true;
+            
+            const updateDisplay = () => {
+                display.innerHTML = `
+                    <h3 style="color: #1a2980;">${phases[phaseIndex].text}</h3>
+                    <div style="font-size: 3.5rem; margin: 15px 0; color: #4CAF50; font-weight: bold;">${timeLeft > 0 ? timeLeft : phases[phaseIndex].text}</div>
+                    <p style="color: #666;">Breathe in... and out...</p>
+                    <div style="margin-top: 15px; font-size: 0.9rem; color: #888;">
+                        <i class="fas fa-heart"></i> Allow reality to exist exactly as it is
+                    </div>
+                `;
+            };
+            
+            updateDisplay();
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                
+                if (timeLeft <= 0) {
+                    phaseIndex++;
+                    if (phaseIndex >= phases.length) {
+                        clearInterval(interval);
+                        display.innerHTML = '<h3>Practice Complete</h3><p>Well done. Notice any shift in your relationship to reality.</p>';
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        return;
+                    }
+                    timeLeft = phases[phaseIndex].duration;
+                }
+                
+                updateDisplay();
+            }, 1000);
+        }
+        
+        // ========== PAGE LOAD ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Restore last active tab
+            const lastTab = localStorage.getItem('lastActiveDistressTab') || 'intro';
+            showSection(lastTab);
+            
+            // Restore all saved data
+            document.querySelectorAll('textarea, input[type="text"], input[type="range"], select, input[type="checkbox"]').forEach(el => {
+                const saved = localStorage.getItem(`dt_${el.closest('.section').id}_${el.id}`);
+                if (saved !== null) {
+                    if (el.type === 'checkbox') {
+                        el.checked = saved === 'true';
+                    } else {
+                        el.value = saved;
+                        
+                        // Update slider value displays
+                        if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.tagName === 'SPAN') {
+                            el.nextElementSibling.textContent = saved;
+                            
+                            // Set color based on value for heart/tension sliders
+                            if (el.id.includes('heart') || el.id.includes('tension')) {
+                                el.nextElementSibling.style.color = 
+                                    saved >= 7 ? '#F44336' : 
+                                    saved >= 4 ? '#FF9800' : '#4CAF50';
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Restore selected cards
+            document.querySelectorAll('.coping-card').forEach(card => {
+                const saved = localStorage.getItem(`card_${card.dataset.category}`);
+                if (saved === 'true') {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Restore selected commitment
+            const savedCommitment = localStorage.getItem('selected_commitment');
+            if (savedCommitment) {
+                const commitmentOpt = document.querySelector(`.commitment-option[data-value="${savedCommitment}"]`);
+                if (commitmentOpt) {
+                    commitmentOpt.classList.add('selected');
+                    const extraInput = commitmentOpt.querySelector('input, select');
+                    if (extraInput) extraInput.style.display = 'block';
+                }
+            }
+            
+            // Set up the distress meter in intro section
+            const distressSlider = document.getElementById('distressLevel');
+            if (distressSlider) {
+                const savedDistress = localStorage.getItem('dt_intro_distressLevel');
+                if (savedDistress) {
+                    distressSlider.value = savedDistress;
+                }
+                
+                distressSlider.addEventListener('change', function() {
+                    localStorage.setItem('dt_intro_distressLevel', this.value);
+                });
+            }
+            
+            // Set up temperature slider labels
+            if (tempSlider && tempLabel) {
+                const savedTemp = localStorage.getItem('dt_tipp_tempIntensity') || '2';
+                tempSlider.value = savedTemp;
+                tempLabel.textContent = tempOptions[savedTemp];
+                tempLabel.style.color = savedTemp == '3' ? '#F44336' : (savedTemp == '2' ? '#FF9800' : '#4CAF50');
+            }
+        });
+    </script>
+</body>
+</html>
