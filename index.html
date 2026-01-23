@@ -240,11 +240,10 @@
     
     <script>
         // ====== ANTI-FREEZE SOLUTION ======
-        // Cache textarea values to prevent re-renders on every keystroke
         let textareaCache = {};
         let renderTimeout = null;
         
-        // State with enhanced store functionality
+        // State remains the same
         let state = {
             coins: 250,
             user: {
@@ -771,7 +770,6 @@
         // ====== OPTIMIZED FUNCTIONS ======
         function updateState(newState) {
             state = { ...state, ...newState };
-            
             if (renderTimeout) clearTimeout(renderTimeout);
             renderTimeout = setTimeout(render, 16);
         }
@@ -912,7 +910,9 @@
             if (currentIndex < steps.length - 1) updateState({ currentStep: steps[currentIndex + 1] });
         }
 
+        // FIX: Add scroll to top on navigation
         function navigateTo(screen) {
+            window.scrollTo(0, 0); // ← THIS FIXES THE SCROLL ISSUE
             updateState({ screen });
         }
 
