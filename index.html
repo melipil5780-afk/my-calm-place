@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindPath - Complete Mindfulness Training</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
        
@@ -155,11 +156,6 @@
             min-width: 44px;
         }
        
-        /* Better text contrast */
-        .text-contrast {
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-       
         /* Purchase confirmation animation */
         @keyframes purchase-confirm {
             0% { transform: scale(0.8); opacity: 0; }
@@ -218,6 +214,62 @@
                 font-size: 1.3rem;
             }
         }
+
+        /* NEW: Checkbox styling */
+        .practice-checkbox {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px dashed #d1d5db;
+            background: #f3f4f6;
+        }
+       
+        .practice-checkbox.checked {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: 2px solid #10b981;
+        }
+       
+        /* NEW: Locked skill styling */
+        .skill-locked {
+            opacity: 0.6;
+            filter: grayscale(30%);
+            position: relative;
+        }
+       
+        .skill-locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+        }
+
+        /* NEW: Streak animation */
+        .streak-flame {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* NEW: Achievement glow */
+        .achievement-glow {
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -243,7 +295,36 @@
         let textareaCache = {};
         let renderTimeout = null;
         
-        // State remains the same
+        // ====== PERSISTENT STORAGE ======
+        function saveState() {
+            localStorage.setItem('mindpath_state', JSON.stringify(state));
+            localStorage.setItem('mindpath_journal', JSON.stringify(journalEntries));
+            localStorage.setItem('mindpath_practice_tracker', JSON.stringify(practiceTracker));
+            localStorage.setItem('mindpath_daily_checkin', JSON.stringify(dailyCheckin));
+            localStorage.setItem('mindpath_achievements', JSON.stringify(achievements));
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem('mindpath_state');
+            const savedJournal = localStorage.getItem('mindpath_journal');
+            const savedPractice = localStorage.getItem('mindpath_practice_tracker');
+            const savedCheckin = localStorage.getItem('mindpath_daily_checkin');
+            const savedAchievements = localStorage.getItem('mindpath_achievements');
+            
+            if (savedState) {
+                const parsed = JSON.parse(savedState);
+                // Merge with defaults to ensure new properties exist
+                state = { ...state, ...parsed };
+                updateDailyStreak(); // Check streak when loading
+            }
+            
+            if (savedJournal) journalEntries = JSON.parse(savedJournal);
+            if (savedPractice) practiceTracker = JSON.parse(savedPractice);
+            if (savedCheckin) dailyCheckin = JSON.parse(savedCheckin);
+            if (savedAchievements) achievements = JSON.parse(savedAchievements);
+        }
+
+        // ====== ENHANCED STATE ======
         let state = {
             coins: 250,
             user: {
@@ -253,7 +334,10 @@
                 xp: 0,
                 streak: 0,
                 totalPractices: 0,
-                name: 'Mindful Explorer'
+                name: 'Mindful Explorer',
+                lastPracticeDate: null,
+                consecutiveDays: 0,
+                comboMultiplier: 1
             },
             activeSkill: null,
             currentStep: 'intro',
@@ -272,7 +356,114 @@
             lastPurchase: null
         };
 
-        // FULL DETAILED SKILLS - kept all content exactly as provided
+        // ====== NEW FEATURES DATA ======
+        let journalEntries = [];
+        let practiceTracker = {};
+        let dailyCheckin = {
+            lastCheckin: null,
+            streak: 0
+        };
+        let achievements = {
+            firstBadge: false,
+            fiveSkills: false,
+            tenDays: false,
+            masterCombo: false
+        };
+
+        // ====== ANIMATION FUNCTIONS ======
+        function triggerConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function triggerAchievementConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // ====== DAILY STREAK SYSTEM ======
+        function updateDailyStreak() {
+            const today = new Date().toDateString();
+            const lastDate = state.user.lastPracticeDate ? new Date(state.user.lastPracticeDate).toDateString() : null;
+            
+            if (lastDate === today) return; // Already checked today
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            
+            if (lastDate === yesterdayStr) {
+                // Consecutive day
+                state.user.consecutiveDays++;
+                if (state.user.consecutiveDays % 3 === 0) {
+                    state.user.comboMultiplier = Math.min(3, Math.floor(state.user.consecutiveDays / 3));
+                    showAchievement(`🔥 ${state.user.consecutiveDays}-Day Combo! ${state.user.comboMultiplier}x Coins!`);
+                }
+            } else if (lastDate && lastDate !== today) {
+                // Broken streak
+                state.user.consecutiveDays = 1;
+                state.user.comboMultiplier = 1;
+            }
+            
+            state.user.lastPracticeDate = new Date().toISOString();
+            saveState();
+        }
+
+        function checkDailyCheckin() {
+            const today = new Date().toDateString();
+            if (dailyCheckin.lastCheckin !== today) {
+                // Award bonus for daily checkin
+                earnCoins(50 * state.user.comboMultiplier);
+                dailyCheckin.streak++;
+                dailyCheckin.lastCheckin = today;
+                showPurchaseModal('Daily Check-in!', `🎯 +${50 * state.user.comboMultiplier} coins! Streak: ${dailyCheckin.streak} days`);
+                saveState();
+                return true;
+            }
+            return false;
+        }
+
+        // ====== ACHIEVEMENT SYSTEM ======
+        function checkAchievements() {
+            const completedCount = state.completedSkills.length;
+            
+            // First badge achievement
+            if (completedCount >= 1 && !achievements.firstBadge) {
+                achievements.firstBadge = true;
+                showAchievement('🏆 First Badge Unlocked!');
+            }
+            
+            // Five skills achievement
+            if (completedCount >= 5 && !achievements.fiveSkills) {
+                achievements.fiveSkills = true;
+                earnCoins(500);
+                showAchievement('🌟 5 Skills Mastered! +500 coins!');
+            }
+            
+            // Ten days streak
+            if (dailyCheckin.streak >= 10 && !achievements.tenDays) {
+                achievements.tenDays = true;
+                earnCoins(1000);
+                showAchievement('🔥 10-Day Streak! +1000 coins!');
+            }
+            
+            saveState();
+        }
+
+        function showAchievement(message) {
+            triggerAchievementConfetti();
+            setTimeout(() => {
+                showPurchaseModal('Achievement Unlocked!', message);
+            }, 500);
+        }
+
+        // ====== FULL DETAILED SKILLS (with prerequisites) ======
         const skills = [
             {
                 id: 'observe',
@@ -343,7 +534,8 @@
                     ],
                     trackerHint: 'Notice 5+ times today to really feel the shift'
                 },
-                badge: { emoji: '👁️', name: 'Quiet Observer', color: 'purple' }
+                badge: { emoji: '👁️', name: 'Quiet Observer', color: 'purple' },
+                prerequisite: null // First skill, no prerequisite
             },
             {
                 id: 'describe',
@@ -411,7 +603,8 @@
                     ],
                     trackerHint: 'Rephrase at least 3 times today'
                 },
-                badge: { emoji: '📰', name: 'Clear Reporter', color: 'blue' }
+                badge: { emoji: '📰', name: 'Clear Reporter', color: 'blue' },
+                prerequisite: 'observe'
             },
             {
                 id: 'participate',
@@ -479,7 +672,8 @@
                     ],
                     trackerHint: 'Do this fully at least twice today'
                 },
-                badge: { emoji: '🌿', name: 'Fully Present', color: 'green' }
+                badge: { emoji: '🌿', name: 'Fully Present', color: 'green' },
+                prerequisite: 'observe'
             },
             {
                 id: 'nonjudgment',
@@ -546,7 +740,8 @@
                     ],
                     trackerHint: 'Catch and reframe judgment 5+ times today'
                 },
-                badge: { emoji: '🔬', name: 'Nonjudging Mind', color: 'orange' }
+                badge: { emoji: '🔬', name: 'Nonjudging Mind', color: 'orange' },
+                prerequisite: 'describe'
             },
             {
                 id: 'onemindfully',
@@ -614,7 +809,8 @@
                     ],
                     trackerHint: 'Do this mindfully at least once today'
                 },
-                badge: { emoji: '🎯', name: 'Laser Focus', color: 'indigo' }
+                badge: { emoji: '🎯', name: 'Laser Focus', color: 'indigo' },
+                prerequisite: 'participate'
             },
             {
                 id: 'effectively',
@@ -681,7 +877,8 @@
                     ],
                     trackerHint: 'Apply this at least once today'
                 },
-                badge: { emoji: '♟️', name: 'Wise Strategist', color: 'pink' }
+                badge: { emoji: '♟️', name: 'Wise Strategist', color: 'pink' },
+                prerequisite: 'nonjudgment'
             },
             {
                 id: 'checkin',
@@ -748,7 +945,8 @@
                     ],
                     trackerHint: 'Complete 3+ check-ins today'
                 },
-                badge: { emoji: '🧭', name: 'Inner Compass', color: 'teal' }
+                badge: { emoji: '🧭', name: 'Inner Compass', color: 'teal' },
+                prerequisite: 'onemindfully'
             }
         ];
 
@@ -771,16 +969,18 @@
         function updateState(newState) {
             state = { ...state, ...newState };
             if (renderTimeout) clearTimeout(renderTimeout);
-            renderTimeout = setTimeout(render, 16);
+            renderTimeout = setTimeout(() => {
+                render();
+                saveState();
+            }, 16);
         }
 
         // OPTIMIZED: Local cache only - NO RE-RENDER on typing
         function updateWorksheetData(key, value) {
-            // ONLY update cache - NO STATE UPDATE = NO RE-RENDER
             textareaCache[key] = value;
         }
 
-        // NEW: Sync cached data to state (call when leaving field or step)
+        // NEW: Sync cached data to state
         function syncWorksheetData() {
             if (Object.keys(textareaCache).length > 0) {
                 updateState({ 
@@ -789,17 +989,18 @@
             }
         }
 
-        // NEW: Get current value (checks cache first, then state)
+        // NEW: Get current value
         function getWorksheetValue(key) {
             return textareaCache[key] || state.worksheetData[key] || '';
         }
 
         function earnCoins(amount) {
+            const bonusAmount = amount * state.user.comboMultiplier;
             updateState({
-                coinAmount: amount,
+                coinAmount: bonusAmount,
                 showCoinAnimation: true,
-                coins: state.coins + amount,
-                user: { ...state.user, xp: state.user.xp + amount * 2 }
+                coins: state.coins + bonusAmount,
+                user: { ...state.user, xp: state.user.xp + bonusAmount * 2 }
             });
             setTimeout(() => updateState({ showCoinAnimation: false }), 1500);
         }
@@ -869,6 +1070,12 @@
         function startSkill(id) {
             const skill = skills.find(s => s.id === id);
             if (skill) {
+                // Check if skill is locked
+                if (skill.prerequisite && !state.completedSkills.includes(skill.prerequisite)) {
+                    showPurchaseModal('Skill Locked', `Complete "${skills.find(s => s.id === skill.prerequisite)?.name}" first to unlock this skill!`);
+                    return;
+                }
+                
                 // Clear cache when starting new skill
                 textareaCache = {};
                 
@@ -888,6 +1095,7 @@
             }
         }
 
+        // ====== FIXED: Scroll to top on step change ======
         function completeStep() {
             const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
             const currentIndex = steps.indexOf(state.currentStep);
@@ -896,7 +1104,11 @@
             syncWorksheetData();
 
             const rewards = { intro: 10, experience: 15, revelation: 20, modeA: 10, modeB: 25, worksheet: 40, mission: 100 };
-            if (rewards[state.currentStep]) earnCoins(rewards[state.currentStep]);
+            if (rewards[state.currentStep]) {
+                const baseReward = rewards[state.currentStep];
+                const comboReward = baseReward * state.user.comboMultiplier;
+                earnCoins(comboReward);
+            }
 
             if (state.currentStep === 'mission' && state.activeSkill && !state.completedSkills.includes(state.activeSkill.id)) {
                 const badge = state.activeSkill.badge;
@@ -905,14 +1117,82 @@
                     inventory: { ...state.inventory, badges: [...state.inventory.badges, badge] },
                     user: { ...state.user, totalPractices: state.user.totalPractices + 1, level: Math.floor((state.user.totalPractices + 1) / 3) + 1 }
                 });
+                
+                // Save journal entry
+                journalEntries.push({
+                    skill: state.activeSkill.name,
+                    date: new Date().toISOString(),
+                    responses: state.worksheetData
+                });
+                
+                // Trigger celebration
+                triggerConfetti();
+                
+                // Check achievements
+                checkAchievements();
             }
 
-            if (currentIndex < steps.length - 1) updateState({ currentStep: steps[currentIndex + 1] });
+            if (currentIndex < steps.length - 1) {
+                updateState({ currentStep: steps[currentIndex + 1] });
+                // FIX: Scroll to top when changing steps
+                setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 50);
+            }
         }
 
-        // FIX: Add scroll to top on navigation
+        // ====== NEW: Practice tracker functions ======
+        function togglePracticeCheck(skillId, index) {
+            if (!practiceTracker[skillId]) practiceTracker[skillId] = [];
+            if (practiceTracker[skillId][index]) {
+                practiceTracker[skillId][index] = false;
+            } else {
+                practiceTracker[skillId][index] = true;
+                // Award small bonus for each practice
+                earnCoins(5 * state.user.comboMultiplier);
+            }
+            saveState();
+            render();
+        }
+
+        function getPracticeChecks(skillId) {
+            return practiceTracker[skillId] || Array(12).fill(false);
+        }
+
+        // ====== NEW: Quick practice mode ======
+        function getRandomPractice() {
+            if (state.completedSkills.length === 0) return null;
+            const randomSkillId = state.completedSkills[Math.floor(Math.random() * state.completedSkills.length)];
+            return skills.find(s => s.id === randomSkillId);
+        }
+
+        // ====== NEW: Share progress ======
+        function shareProgress() {
+            const progress = {
+                skills: state.completedSkills.length,
+                total: skills.length,
+                level: state.user.level,
+                streak: dailyCheckin.streak,
+                coins: state.coins
+            };
+            
+            const shareText = `🎯 I've mastered ${progress.skills}/7 mindfulness skills on MindPath! Level ${progress.level}, ${progress.streak}-day streak, ${progress.coins} coins earned. Try it yourself!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Mindfulness Progress',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                showPurchaseModal('Copied to Clipboard!', 'Share your progress with friends!');
+            }
+        }
+
+        // ====== FIXED: Scroll to top on navigation ======
         function navigateTo(screen) {
-            window.scrollTo(0, 0); // ← THIS FIXES THE SCROLL ISSUE
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             updateState({ screen });
         }
 
@@ -944,11 +1224,14 @@
             `;
         }
 
-        // Render screens
+        // ====== ENHANCED RENDER FUNCTIONS ======
         function renderHomeScreen() {
             const themeClass = `theme-${state.user.theme}`;
             const completed = state.completedSkills.length;
             const progress = Math.round((completed / skills.length) * 100);
+            const randomPractice = getRandomPractice();
+            const today = new Date().toDateString();
+            const showDailyCheckin = dailyCheckin.lastCheckin !== today;
 
             return `
                 <div class="min-h-screen ${themeClass} safe-top pb-20">
@@ -967,8 +1250,27 @@
                             <div class="bg-white/20 px-4 py-2 rounded-full flex items-center gap-2">
                                 <span class="text-xl">🪙</span>
                                 <span class="text-white font-bold text-lg">${state.coins}</span>
+                                ${state.user.comboMultiplier > 1 ? `<span class="text-xs bg-yellow-500 text-white px-2 py-1 rounded-full">${state.user.comboMultiplier}x</span>` : ''}
                             </div>
                         </div>
+
+                        ${showDailyCheckin ? `
+                            <div class="mb-6">
+                                <button onclick="checkDailyCheckin()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-2xl p-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-3xl">🔥</div>
+                                        <div>
+                                            <p class="font-bold text-lg">Daily Check-in</p>
+                                            <p class="text-white/80 text-sm">Tap for bonus coins!</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-black text-xl">+${50 * state.user.comboMultiplier} 🪙</p>
+                                        <p class="text-xs opacity-80">${dailyCheckin.streak} day streak</p>
+                                    </div>
+                                </button>
+                            </div>
+                        ` : ''}
 
                         <div class="grid grid-cols-2 gap-3 mb-6">
                             <div class="bg-white/20 rounded-2xl p-4 text-center">
@@ -976,7 +1278,10 @@
                                 <p class="text-white/80 text-xs mt-1">Skills Mastered</p>
                             </div>
                             <div class="bg-white/20 rounded-2xl p-4 text-center">
-                                <p class="text-3xl font-bold text-white">${state.user.streak}</p>
+                                <div class="flex items-center justify-center gap-2">
+                                    <p class="text-3xl font-bold text-white ${state.user.consecutiveDays >= 3 ? 'streak-flame' : ''}">${state.user.consecutiveDays}</p>
+                                    ${state.user.consecutiveDays >= 3 ? `<span class="text-2xl">🔥</span>` : ''}
+                                </div>
                                 <p class="text-white/80 text-xs mt-1">Day Streak</p>
                             </div>
                         </div>
@@ -991,12 +1296,39 @@
                             </div>
                         </div>
 
-                        <h3 class="text-white font-bold text-xl mb-4">7 Core Mindfulness Skills</h3>
+                        ${randomPractice ? `
+                            <div class="mb-6">
+                                <div class="bg-white/20 rounded-2xl p-4">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h3 class="text-white font-bold text-lg">📝 Today's Practice</h3>
+                                        <span class="text-xs bg-purple-500 text-white px-2 py-1 rounded-full">Quick Review</span>
+                                    </div>
+                                    <div class="bg-white/30 rounded-xl p-3 mb-3">
+                                        <p class="text-white font-bold mb-1">${randomPractice.name}</p>
+                                        <p class="text-white/80 text-sm">${randomPractice.realWorld.mission}</p>
+                                    </div>
+                                    <button onclick="startSkill('${randomPractice.id}')" class="w-full bg-white/30 text-white py-2 rounded-xl text-sm font-bold">
+                                        Practice Again
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-white font-bold text-xl">7 Core Mindfulness Skills</h3>
+                            <button onclick="shareProgress()" class="text-white/80 text-sm bg-white/20 px-3 py-1 rounded-full">
+                                Share Progress
+                            </button>
+                        </div>
                         <div class="space-y-3">
                             ${skills.map(skill => {
                                 const done = state.completedSkills.includes(skill.id);
+                                const locked = skill.prerequisite && !state.completedSkills.includes(skill.prerequisite);
+                                const canAccess = !locked || done;
+                                
                                 return `
-                                    <button onclick="startSkill('${skill.id}')" class="w-full bg-white rounded-2xl p-4 text-left hover:shadow-lg transition-smooth ${done ? 'border-2 border-green-400' : ''}">
+                                    <button onclick="${canAccess ? `startSkill('${skill.id}')` : ''}" 
+                                            class="w-full bg-white rounded-2xl p-4 text-left hover:shadow-lg transition-smooth ${done ? 'border-2 border-green-400' : ''} ${!canAccess ? 'skill-locked' : ''}">
                                         <div class="flex gap-3">
                                             <div class="w-14 h-14 bg-gradient-to-br ${skill.color} rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
                                                 ${skill.icon}
@@ -1005,11 +1337,17 @@
                                                 <div class="flex items-center gap-2 mb-1">
                                                     <h4 class="text-base font-bold text-gray-800">${skill.name}</h4>
                                                     ${done ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">✓</span>' : ''}
+                                                    ${locked && !done ? '<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-bold">🔒</span>' : ''}
                                                 </div>
                                                 <p class="text-gray-700 text-sm font-medium mb-1">${skill.tagline}</p>
                                                 <p class="text-gray-600 text-xs">${skill.simpleExplain}</p>
+                                                ${locked && !done ? `
+                                                    <p class="text-xs text-red-500 mt-1">
+                                                        Complete "${skills.find(s => s.id === skill.prerequisite)?.name}" first
+                                                    </p>
+                                                ` : ''}
                                             </div>
-                                            <div class="self-center text-xl text-gray-400">${done ? '🎉' : '▶️'}</div>
+                                            <div class="self-center text-xl text-gray-400">${done ? '🎉' : (locked ? '🔒' : '▶️')}</div>
                                         </div>
                                     </button>
                                 `;
@@ -1051,7 +1389,7 @@
                             </div>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Begin Experience → Earn 10 Coins
+                            Begin Experience → Earn ${10 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
@@ -1084,7 +1422,7 @@
                             >${getWorksheetValue('exp')}</textarea>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Continue → Earn 15 Coins
+                            Continue → Earn ${15 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
@@ -1103,7 +1441,7 @@
                             <p class="text-blue-800 whitespace-pre-line leading-relaxed">${skill.revelation.analogy.text}</p>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            I Get It → Earn 20 Coins
+                            I Get It → Earn ${20 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
@@ -1130,7 +1468,7 @@
                             <p class="text-red-800">${skill.modeA.feeling}</p>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Show Me the Better Way → Earn 10 Coins
+                            Show Me the Better Way → Earn ${10 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
@@ -1157,7 +1495,7 @@
                             <p class="text-green-800">${skill.modeB.feeling}</p>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Try This Way Now → Earn 25 Coins
+                            Try This Way Now → Earn ${25 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
@@ -1214,11 +1552,12 @@
                             }).join('')}
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Submit Reflection → Earn 40 Coins
+                            Submit Reflection → Earn ${40 * state.user.comboMultiplier} Coins
                         </button>
                     </div>
                 `;
             } else if (state.currentStep === 'mission') {
+                const checks = getPracticeChecks(skill.id);
                 content = `
                     <div class="space-y-6">
                         <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 text-white">
@@ -1241,16 +1580,22 @@
                             <div class="text-center">
                                 <p class="text-gray-600 italic mb-4 text-sm">${skill.realWorld.trackerHint || 'Practice multiple times to build the habit'}</p>
                                 <div class="grid grid-cols-6 gap-2 max-w-xs mx-auto">
-                                    ${Array(12).fill().map(() => `
-                                        <div class="aspect-square bg-gray-200 rounded-lg border-2 border-dashed border-gray-400"></div>
-                                    `).join('')}
+                                    ${Array(12).fill().map((_, i) => {
+                                        const checked = checks[i];
+                                        return `
+                                            <div onclick="togglePracticeCheck('${skill.id}', ${i})" 
+                                                 class="practice-checkbox ${checked ? 'checked' : ''}">
+                                                ${checked ? '✓' : '+'}
+                                            </div>
+                                        `;
+                                    }).join('')}
                                 </div>
-                                <p class="text-xs text-gray-500 mt-2">Tap to mark each practice</p>
+                                <p class="text-xs text-gray-500 mt-2">Tap to mark each practice (+5 coins each!)</p>
                             </div>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth flex items-center justify-center gap-3">
                             <span class="text-2xl">🏆</span>
-                            Master This Skill → Earn 100 Coins + Badge
+                            Master This Skill → Earn ${100 * state.user.comboMultiplier} Coins + Badge
                         </button>
                     </div>
                 `;
@@ -1427,6 +1772,8 @@
         function renderProfileScreen() {
             const themeClass = `theme-${state.user.theme}`;
             const completed = state.completedSkills.length;
+            const showJournal = journalEntries.length > 0;
+            
             return `
                 <div class="min-h-screen ${themeClass} pb-20 safe-top">
                     <div class="max-w-md mx-auto p-4">
@@ -1434,7 +1781,9 @@
                             <div class="flex items-center justify-between">
                                 <button onclick="navigateTo('home')" class="text-2xl text-white">←</button>
                                 <h1 class="text-xl font-black text-white">Your Profile</h1>
-                                <div></div>
+                                <button onclick="shareProgress()" class="text-white text-sm bg-white/20 px-3 py-1 rounded-full">
+                                    Share
+                                </button>
                             </div>
                         </div>
                         <div class="bg-black/20 rounded-2xl p-6 space-y-8">
@@ -1462,8 +1811,11 @@
                                     <p class="text-white/80 mt-1 text-xs">Lifetime XP</p>
                                 </div>
                                 <div class="bg-white/20 rounded-2xl p-4 text-center">
-                                    <p class="text-3xl font-black text-white">${state.user.streak}</p>
-                                    <p class="text-white/80 mt-1 text-xs">Current Streak</p>
+                                    <div class="flex items-center justify-center gap-1">
+                                        <p class="text-3xl font-black text-white ${state.user.consecutiveDays >= 3 ? 'streak-flame' : ''}">${state.user.consecutiveDays}</p>
+                                        ${state.user.consecutiveDays >= 3 ? `<span class="text-2xl">🔥</span>` : ''}
+                                    </div>
+                                    <p class="text-white/80 mt-1 text-xs">Day Streak</p>
                                 </div>
                             </div>
                             <div>
@@ -1487,6 +1839,28 @@
                                     </div>
                                 `}
                             </div>
+                            ${showJournal ? `
+                                <div>
+                                    <h3 class="text-lg font-black text-white mb-4">📖 My Journal</h3>
+                                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                        ${journalEntries.slice(-5).reverse().map(entry => {
+                                            const date = new Date(entry.date).toLocaleDateString();
+                                            return `
+                                                <div class="bg-white/10 rounded-xl p-4">
+                                                    <div class="flex justify-between items-start mb-2">
+                                                        <h4 class="text-white font-bold">${entry.skill}</h4>
+                                                        <span class="text-white/60 text-xs">${date}</span>
+                                                    </div>
+                                                    <p class="text-white/80 text-sm line-clamp-2">
+                                                        ${Object.values(entry.responses).slice(0, 1).join(' ').substring(0, 80)}...
+                                                    </p>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                    <p class="text-white/60 text-xs mt-2 text-center">${journalEntries.length} total reflections</p>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                     ${renderBottomNav()}
@@ -1504,6 +1878,8 @@
         }
 
         // Initialize
+        loadState();
+        updateDailyStreak();
         render();
     </script>
 </body>
