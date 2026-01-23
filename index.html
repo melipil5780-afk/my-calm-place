@@ -2,2411 +2,1460 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌊 The Emotional Anchor | Distress Tolerance Skills</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MindPath - Complete Mindfulness Training</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --ocean-gradient: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
-            --wave-gradient: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            --storm-gradient: linear-gradient(135deg, #4a6572 0%, #344955 100%);
-            --calm-gradient: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
-            --card-shadow: 0 10px 30px rgba(26, 41, 128, 0.1);
-            --border-radius: 20px;
-            --transition: all 0.3s ease;
-        }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+       
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+       
+        html {
+            overflow-x: hidden;
+        }
+       
         body {
-            background: var(--wave-gradient);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+       
+        /* Improved contrast for better readability */
+        .skill-card h4 {
+            color: #1f2937 !important;
         }
-        
-        /* HEADER & NAVIGATION */
-        .header {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: var(--card-shadow);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+       
+        .action-button {
+            color: white !important;
+            font-weight: 700 !important;
         }
-        
-        .header::before {
-            content: '';
+       
+        /* Enhanced input contrast */
+        textarea, input[type="text"], input[type="range"] {
+            background: white !important;
+            color: #1f2937 !important;
+            border: 2px solid #d1d5db !important;
+        }
+       
+        textarea:focus, input[type="text"]:focus, input[type="range"]:focus {
+            border-color: #7c3aed !important;
+            outline: none !important;
+        }
+       
+        .bottom-nav {
+            padding-bottom: env(safe-area-inset-bottom);
+            background: #ffffff;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            border-top: 1px solid #e5e7eb;
+        }
+       
+        .nav-badge {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--ocean-gradient);
-        }
-        
-        .title {
-            background: var(--ocean-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            font-weight: 800;
-        }
-        
-        .subtitle {
-            font-size: 1.3rem;
-            color: #4a6572;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-        
-        /* DECISION TREE */
-        .decision-tree {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 30px;
-            margin: 30px 0;
-            box-shadow: var(--card-shadow);
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            position: relative;
-        }
-        
-        .decision-tree::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: var(--ocean-gradient);
-            border-radius: calc(var(--border-radius) + 2px);
-            z-index: -1;
-            opacity: 0.1;
-        }
-        
-        .tree-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-        
-        .tree-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            transition: var(--transition);
-            border: 2px solid;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .tree-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-        
-        .tree-card.mild {
-            border-color: #4CAF50;
-            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
-        }
-        
-        .tree-card.moderate {
-            border-color: #FF9800;
-            background: linear-gradient(135deg, #fffde7 0%, #fff3e0 100%);
-        }
-        
-        .tree-card.high {
-            border-color: #F44336;
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-        }
-        
-        .tree-card.crisis {
-            border-color: #9C27B0;
-            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-        }
-        
-        .tree-emoji {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            display: block;
-        }
-        
-        /* SKILLS NAVIGATION */
-        .skills-nav {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .skill-tab {
-            background: white;
-            border: 2px solid #bbdefb;
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .skill-tab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--ocean-gradient);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        
-        .skill-tab:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .skill-tab:hover {
-            transform: translateY(-5px);
-            border-color: #26d0ce;
-            box-shadow: 0 10px 20px rgba(38, 208, 206, 0.15);
-        }
-        
-        .skill-tab.active {
-            background: var(--ocean-gradient);
+            top: 0px;
+            right: 12px;
+            background: #dc2626;
             color: white;
-            border-color: transparent;
-            box-shadow: 0 10px 25px rgba(26, 41, 128, 0.2);
-        }
-        
-        .skill-tab.active::before {
-            display: none;
-        }
-        
-        .skill-icon {
-            font-size: 2.2rem;
-            transition: var(--transition);
-        }
-        
-        .skill-tab:hover .skill-icon {
-            transform: scale(1.1);
-        }
-        
-        /* SECTIONS */
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* CARDS */
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 50px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--ocean-gradient);
-        }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .card-icon {
-            font-size: 3.2rem;
-            width: 90px;
-            height: 90px;
-            background: var(--ocean-gradient);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 8px 20px rgba(38, 208, 206, 0.3);
-        }
-        
-        /* WAVES DECORATION */
-        .wave-divider {
-            height: 20px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%231a2980' fill-opacity='0.1'%3E%3C/path%3E%3C/svg%3E");
-            background-size: cover;
-            margin: 40px 0;
-            border-radius: 10px;
-        }
-        
-        /* MEDICAL WARNING - Updated for General Safety */
-        .safety-warning {
-            background: linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%);
-            border: 2px solid #ff9800;
-            border-radius: var(--border-radius);
-            padding: 35px;
-            margin: 40px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .safety-warning::before {
-            content: '⚠️';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            font-size: 8rem;
-            opacity: 0.1;
-            transform: rotate(15deg);
-        }
-        
-        .warning-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            color: #e65100;
-        }
-        
-        .warning-icon {
-            font-size: 2.5rem;
-        }
-        
-        /* EXERCISE BOXES */
-        .exercise {
-            background: linear-gradient(135deg, #f8fdff 0%, #f0f7ff 100%);
-            border: 2px solid #e3f2fd;
-            border-radius: 20px;
-            padding: 35px;
-            margin: 35px 0;
-            position: relative;
-        }
-        
-        .exercise::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: var(--ocean-gradient);
-            border-radius: 22px;
-            z-index: -1;
-            opacity: 0.05;
-        }
-        
-        .exercise-title {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .exercise-badge {
-            background: var(--ocean-gradient);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
+            font-size: 11px;
             font-weight: bold;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(26, 41, 128, 0.2);
-        }
-        
-        /* STEPS */
-        .steps-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
-        
-        .step {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            border: 2px solid #e3f2fd;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .step:hover {
-            transform: translateY(-5px);
-            border-color: #26d0ce;
-            box-shadow: 0 10px 25px rgba(38, 208, 206, 0.15);
-        }
-        
-        .step::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--ocean-gradient);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .step:hover::before {
-            opacity: 1;
-        }
-        
-        .step-number {
-            background: var(--ocean-gradient);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 15px rgba(26, 41, 128, 0.2);
-        }
-        
-        /* PROS/CONS */
-        .pros-cons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        .pros-box, .cons-box {
-            padding: 30px;
-            border-radius: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .pros-box::before, .cons-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-        }
-        
-        .pros-box {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border: 2px solid #4CAF50;
-        }
-        
-        .pros-box::before {
-            background: #4CAF50;
-        }
-        
-        .cons-box {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-            border: 2px solid #F44336;
-        }
-        
-        .cons-box::before {
-            background: #F44336;
-        }
-        
-        /* ACTION COMMITMENT */
-        .action-commitment {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-            border: 2px solid #ffb300;
-            border-radius: var(--border-radius);
-            padding: 35px;
-            margin: 40px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .action-commitment::before {
-            content: '🎯';
-            position: absolute;
-            top: -30px;
-            right: -30px;
-            font-size: 10rem;
-            opacity: 0.1;
-            transform: rotate(20deg);
-        }
-        
-        .commitment-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 25px 0;
-        }
-        
-        .commitment-option {
-            background: white;
-            border: 2px solid #ffd54f;
-            border-radius: 15px;
-            padding: 25px;
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .commitment-option:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 183, 77, 0.2);
-            border-color: #ffb300;
-        }
-        
-        .commitment-option.selected {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
-            border-color: #ff8f00;
-            box-shadow: 0 10px 25px rgba(255, 143, 0, 0.2);
-        }
-        
-        /* REFLECTION AREAS */
-        .reflection-box {
-            background: linear-gradient(135deg, #f8fdff 0%, #e3f2fd 100%);
-            border: 2px solid #bbdefb;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 25px 0;
-            position: relative;
-        }
-        
-        .reflection-box::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: var(--ocean-gradient);
-            border-radius: 17px;
-            z-index: -1;
-            opacity: 0.05;
-        }
-        
-        textarea, input[type="text"] {
-            width: 100%;
-            min-height: 120px;
-            padding: 20px;
-            border: 2px solid #bbdefb;
+            padding: 3px 8px;
             border-radius: 12px;
-            font-size: 1.05rem;
-            resize: vertical;
-            transition: var(--transition);
-            font-family: inherit;
-            background: white;
-            line-height: 1.6;
+            min-width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 1;
+            border: 2px solid white;
         }
-        
-        input[type="text"] {
-            min-height: auto;
-            padding: 15px 20px;
+       
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        textarea:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: #26d0ce;
-            box-shadow: 0 0 0 4px rgba(38, 208, 206, 0.1);
+       
+        .glow {
+            box-shadow: 0 4px 25px rgba(139, 92, 246, 0.2);
         }
-        
-        /* BUTTONS */
-        .action-btn {
-            background: var(--ocean-gradient);
-            color: white;
-            border: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            margin: 15px 0;
-            box-shadow: 0 8px 20px rgba(26, 41, 128, 0.2);
+       
+        .glow:hover {
+            box-shadow: 0 8px 35px rgba(139, 92, 246, 0.3);
         }
-        
-        .action-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(26, 41, 128, 0.3);
+       
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
-        
-        .action-btn:active {
-            transform: translateY(-2px);
+       
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
         }
-        
-        /* TIP BOXES */
-        .tip-box {
-            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
-            border-left: 5px solid #ffd54f;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
+       
+        @keyframes coin-pop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+       
+        .animate-coin-pop {
+            animation: coin-pop 0.8s ease-out;
+        }
+       
+        /* Theme backgrounds - FIXED to not overlay content */
+        .theme-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+        }
+       
+        .theme-ocean {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 50%, #22d3ee 100%);
+        }
+       
+        .theme-sunset {
+            background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+        }
+       
+        .theme-forest {
+            background: linear-gradient(135deg, #065f46 0%, #10b981 50%, #34d399 100%);
+        }
+       
+        .theme-midnight {
+            background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #6366f1 100%);
+        }
+       
+        .theme-rose {
+            background: linear-gradient(135deg, #be185d 0%, #db2777 50%, #f472b6 100%);
+        }
+       
+        /* Glass effects */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+       
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+       
+        /* Mobile-friendly touch targets */
+        button, 
+        .clickable {
+            min-height: 44px;
+            min-width: 44px;
+        }
+       
+        /* Ensure content is above backgrounds */
+        .content-layer {
             position: relative;
-            overflow: hidden;
+            z-index: 10;
         }
-        
-        .tip-box::before {
-            content: '💡';
-            position: absolute;
-            top: -25px;
-            right: -25px;
-            font-size: 8rem;
-            opacity: 0.1;
-            transform: rotate(15deg);
+       
+        /* Remove the problematic absolute background div */
+        .theme-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
         }
-        
-        /* COPING CARDS */
-        .coping-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 25px 0;
+       
+        /* Better text contrast */
+        .text-contrast {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
-        
-        .coping-card {
-            background: white;
-            border: 2px solid #bbdefb;
-            border-radius: 10px;
-            padding: 15px 25px;
+       
+        /* Purchase confirmation animation */
+        @keyframes purchase-confirm {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+       
+        .purchase-confirm {
+            animation: purchase-confirm 0.5s ease-out;
+        }
+       
+        /* Improved slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 10px;
+            border-radius: 5px;
+            background: #e5e7eb;
+        }
+       
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #7c3aed;
             cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        
-        .coping-card:hover {
-            border-color: #26d0ce;
-            transform: translateY(-3px);
+       
+        /* Safe area for notches */
+        .safe-top {
+            padding-top: env(safe-area-inset-top);
         }
-        
-        .coping-card.selected {
-            background: var(--ocean-gradient);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 5px 15px rgba(26, 41, 128, 0.2);
+       
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        
-        /* STOP INDICATORS */
-        .stop-indicator {
-            padding: 10px 20px;
-            border-radius: 25px;
-            margin-top: 15px;
-            font-weight: bold;
-            animation: fadeInOut 2s ease;
+       
+        /* Prevent horizontal scroll */
+        .no-horizontal-scroll {
+            max-width: 100%;
+            overflow-x: hidden;
         }
-        
-        .stop-s { background: #e74c3c; color: white; }
-        .stop-t { background: #f39c12; color: white; }
-        .stop-o { background: #3498db; color: white; }
-        .stop-p { background: #2ecc71; color: white; }
-        
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.8); }
-            20% { opacity: 1; transform: scale(1); }
-            80% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.8); }
-        }
-        
-        /* ANCHOR ANIMATION */
-        @keyframes anchorFloat {
-            0%, 100% { transform: translateY(0) rotate(0); }
-            33% { transform: translateY(-10px) rotate(3deg); }
-            66% { transform: translateY(5px) rotate(-3deg); }
-        }
-        
-        .floating-anchor {
-            animation: anchorFloat 4s ease-in-out infinite;
-            font-size: 4rem;
-            margin-bottom: 25px;
-            display: inline-block;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        /* RESPONSIVE DESIGN - IMPROVED */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+       
+        /* Responsive text sizes */
+        @media (max-width: 380px) {
+            .text-responsive {
+                font-size: 0.9rem;
             }
-            
-            .card {
-                padding: 30px;
-            }
-            
-            .title {
-                font-size: 2.2rem;
-            }
-            
-            .tree-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .pros-cons {
-                grid-template-columns: 1fr;
-                display: block;
-            }
-            
-            .pros-box, .cons-box {
-                margin-bottom: 20px;
-            }
-            
-            .skills-nav {
-                grid-template-columns: 1fr;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-            
-            .card-icon {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .action-btn {
-                width: 100%;
-                justify-content: center;
-                padding: 20px;
-            }
-            
-            .steps-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .commitment-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .coping-cards {
-                justify-content: center;
-            }
-            
-            /* MOBILE FIXES FOR RADICAL ACCEPTANCE */
-            #radical .exercise > div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
-                display: block !important;
-            }
-            
-            #radical .reflection-box > div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
-                display: block !important;
-            }
-            
-            #radical .reflection-box > div > div {
-                margin-bottom: 20px;
-            }
-            
-            /* MOBILE FIX FOR TIPP BODY CHECK-IN */
-            #tipp .reflection-box {
-                display: block !important;
-            }
-            
-            #tipp .reflection-box > div {
-                margin-bottom: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .title {
-                font-size: 1.8rem;
-            }
-            
-            .subtitle {
+           
+            .text-responsive-lg {
                 font-size: 1.1rem;
             }
-            
-            .card {
-                padding: 25px 20px;
-            }
-            
-            .action-btn {
-                font-size: 1.1rem;
-                padding: 18px;
-            }
-            
-            textarea, input[type="text"] {
-                padding: 15px;
-                font-size: 1rem;
-            }
-            
-            /* Force single column on very small screens */
-            div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
-                display: block !important;
-            }
-            
-            div[style*="display: flex"] {
-                flex-direction: column !important;
-            }
-        }
-        
-        /* PRINT STYLES */
-        @media print {
-            .action-btn,
-            .floating-anchor,
-            .skills-nav,
-            .skill-tab:not(.active) {
-                display: none !important;
-            }
-            
-            .section {
-                display: block !important;
-                page-break-after: always;
-            }
-            
-            .card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-            
-            .card::before {
-                height: 3px;
-            }
-            
-            body {
-                background: white !important;
-                color: black !important;
+           
+            .text-responsive-xl {
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- HEADER -->
-        <header class="header">
-            <div class="floating-anchor">⚓</div>
-            <h1 class="title">The Emotional Anchor</h1>
-            <p class="subtitle">Distress Tolerance Skills for Navigating Intense Moments</p>
-            
-            <div class="wave-divider"></div>
-            
-            <div>
-                <h2>When Emotions Feel Overwhelming</h2>
-                <p>Everyone experiences moments when feelings become intense. These practical distress tolerance skills are your <strong>emotional anchor</strong>, helping you navigate difficult moments with more clarity and resilience.</p>
-                
-                <div class="reflection-box">
-                    <h3>💭 When These Skills Can Help:</h3>
-                    <ul style="padding-left: 25px; margin-top: 15px;">
-                        <li>When you need space before reacting</li>
-                        <li>When emotions feel too intense</li>
-                        <li>When you want to avoid impulsive decisions</li>
-                        <li>When you can't solve a problem immediately</li>
-                        <li>When you need to create calm in the moment</li>
-                    </ul>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>📘 How to Use This Guide:</h3>
-                    <p>These are <strong>distress tolerance skills</strong> for emotional wellness. Practice them when calm so they're familiar when needed. Be patient with yourself—like any skill, they get easier with practice.</p>
-                </div>
+<body class="bg-gray-50">
+    <div id="app" class="min-h-screen no-horizontal-scroll"></div>
+    
+    <!-- Purchase Notification Modal -->
+    <div id="purchaseModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="z-index: 9999;">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl purchase-confirm">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🎉</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3" id="purchaseTitle"></h3>
+                <p class="text-gray-600 mb-6 text-sm" id="purchaseMessage"></p>
+                <button onclick="closePurchaseModal()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-2xl font-bold text-lg shadow-lg">
+                    Awesome!
+                </button>
             </div>
-        </header>
-        
-        <!-- DECISION TREE -->
-        <div class="decision-tree">
-            <h2 style="text-align: center; margin-bottom: 25px; color: #1a2980;">
-                <i class="fas fa-compass"></i> Skill Selection Guide
-            </h2>
-            
-            <div class="tree-grid">
-                <div class="tree-card mild">
-                    <span class="tree-emoji">😌</span>
-                    <h3>Mild Intensity</h3>
-                    <p>For everyday stress and mild discomfort:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Mindfulness practice</li>
-                        <li>Gentle problem-solving</li>
-                        <li>Journaling reflections</li>
-                    </ul>
-                </div>
-                
-                <div class="tree-card moderate">
-                    <span class="tree-emoji">😟</span>
-                    <h3>Moderate Intensity</h3>
-                    <p>Stronger emotions needing attention:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><strong>Self-Soothe</strong> (comfort yourself)</li>
-                        <li><strong>IMPROVE</strong> the moment</li>
-                        <li><strong>Distraction</strong> techniques</li>
-                    </ul>
-                </div>
-                
-                <div class="tree-card high">
-                    <span class="tree-emoji">😰</span>
-                    <h3>High Intensity</h3>
-                    <p>Powerful emotions requiring skill:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li><strong>ACCEPTS</strong> Distraction</li>
-                        <li><strong>Pros & Cons</strong> analysis</li>
-                        <li><strong>Radical Acceptance</strong></li>
-                    </ul>
-                </div>
-                
-                <div class="tree-card crisis">
-                    <span class="tree-emoji">⚡</span>
-                    <h3>Peak Intensity</h3>
-                    <p>Overwhelming moments - use this sequence:</p>
-                    <ol style="margin-left: 20px; margin-top: 10px;">
-                        <li><strong>STOP</strong> skill first</li>
-                        <li>Then <strong>TIPP</strong> to reset</li>
-                        <li>Return to other skills</li>
-                    </ol>
-                </div>
-            </div>
-            
-            <p style="text-align: center; margin-top: 25px; font-style: italic; color: #666;">
-                <i class="fas fa-lightbulb"></i> Start with what feels most accessible. All skills are useful at different times.
-            </p>
         </div>
-        
-        <!-- SKILLS NAVIGATION -->
-        <nav class="skills-nav">
-            <div class="skill-tab active" onclick="showSection('intro')">
-                <span class="skill-icon">🌊</span>
-                <h3>Introduction</h3>
-                <p>Getting Started</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('distract')">
-                <span class="skill-icon">🌀</span>
-                <h3>Distraction</h3>
-                <p>Temporary Relief</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('self-soothe')">
-                <span class="skill-icon">🛁</span>
-                <h3>Self-Soothe</h3>
-                <p>Comfort Yourself</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('improve')">
-                <span class="skill-icon">🌅</span>
-                <h3>Improve</h3>
-                <p>Find Relief Now</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('proscons')">
-                <span class="skill-icon">⚖️</span>
-                <h3>Pros & Cons</h3>
-                <p>Weigh Options</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('radical')">
-                <span class="skill-icon">🌿</span>
-                <h3>Acceptance</h3>
-                <p>Release Resistance</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('tipp')">
-                <span class="skill-icon">🧊</span>
-                <h3>TIPP</h3>
-                <p>Body Reset</p>
-            </div>
-            
-            <div class="skill-tab" onclick="showSection('stop')">
-                <span class="skill-icon">⚠️</span>
-                <h3>STOP</h3>
-                <p>Mindful Pause</p>
-            </div>
-        </nav>
-        
-        <!-- INTRODUCTION SECTION -->
-        <section id="intro" class="section active">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">⚓</div>
-                    <div>
-                        <h2>Your Distress Tolerance Skills Toolkit</h2>
-                        <p>Building resilience for life's challenging moments</p>
+    </div>
+    
+    <script>
+        // State with enhanced store functionality
+        let state = {
+            coins: 250,
+            user: {
+                avatar: '😊',
+                theme: 'gradient',
+                level: 1,
+                xp: 0,
+                streak: 0,
+                totalPractices: 0,
+                name: 'Mindful Explorer'
+            },
+            activeSkill: null,
+            currentStep: 'intro',
+            worksheetData: {},
+            showCoinAnimation: false,
+            coinAmount: 0,
+            screen: 'home',
+            completedSkills: [],
+            inventory: {
+                themes: ['gradient'],
+                avatars: ['😊'],
+                badges: []
+            },
+            unreadShopItems: 3,
+            purchaseHistory: [],
+            lastPurchase: null
+        };
+
+        // FULL DETAILED SKILLS - kept all content exactly as provided
+        const skills = [
+            {
+                id: 'observe',
+                name: 'Observe',
+                icon: '👁️',
+                color: 'from-purple-600 to-pink-600',
+                tagline: 'Watch thoughts like clouds drifting by',
+                simpleExplain: 'Notice thoughts, feelings, and sensations without trying to change or fight them',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: '30 seconds of honest effort',
+                    instructions: [
+                        'Close your eyes gently',
+                        'Try as hard as you can to stop ALL thoughts',
+                        'Force your mind to stay completely blank',
+                        'Push away every single thought that appears',
+                        'Keep trying for 30 seconds...'
+                    ],
+                    prompt: 'What actually happened? Were you able to stop thinking completely?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'You just proved something profound: the harder you fight thoughts, the stronger they become.\n\nIt\'s like quicksand — struggling only pulls you deeper.\n\nThis isn\'t because your mind is broken. It happens to everyone. The brain is designed to think, just like the heart is designed to beat.\n\nThe skill isn\'t suppression — it\'s gentle observation.',
+                    analogy: {
+                        title: '🎬 Movie Theater Mind',
+                        text: 'Picture yourself in a cinema. Thoughts are scenes playing on the screen.\nYou don\'t jump up to wrestle the characters or rewrite the script.\nYou simply watch, curious and calm.\nThat\'s observing.'
+                    },
+                    skillExplained: 'Observe means becoming a neutral witness to your inner world — noticing thoughts, emotions, and body sensations as they arise and pass, without judgment or interference.'
+                },
+                modeA: {
+                    title: '❌ Fighter Mode',
+                    emoji: '🥊',
+                    steps: [
+                        'Spot a thought you don\'t like',
+                        'Immediately try to push it away',
+                        'Tell yourself "Stop thinking that!"',
+                        'Feel tension and frustration rise',
+                        'Thoughts multiply and intensify',
+                        'End up exhausted and overwhelmed'
+                    ],
+                    feeling: '😫 Draining, frustrating, endless battle'
+                },
+                modeB: {
+                    title: '✅ Observer Mode',
+                    emoji: '👁️',
+                    steps: [
+                        'Notice a thought arising',
+                        'Silently label it: "thinking" or "planning"',
+                        'Watch it like a cloud floating across the sky',
+                        'Let it drift and dissolve on its own',
+                        'Return gently to the present moment',
+                        'Feel spaciousness return'
+                    ],
+                    feeling: '😌 Light, peaceful, spacious'
+                },
+                worksheet: [
+                    { q: 'Describe what happened when you tried to force thoughts away', type: 'textarea' },
+                    { q: 'How stressful did Fighter Mode feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Now try Observer Mode for 1 minute — just watch thoughts pass. What was different?', type: 'textarea' },
+                    { q: 'How calm did Observer Mode feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'For the next few hours, every time you notice an emotion, silently say: "I\'m noticing [emotion]"',
+                    examples: [
+                        '😤 Irritated → "Noticing irritation"',
+                        '😟 Anxious → "Noticing anxiety"',
+                        '😊 Content → "Noticing contentment"'
+                    ],
+                    trackerHint: 'Notice 5+ times today to really feel the shift'
+                },
+                badge: { emoji: '👁️', name: 'Quiet Observer', color: 'purple' }
+            },
+            {
+                id: 'describe',
+                name: 'Describe',
+                icon: '📝',
+                color: 'from-blue-600 to-cyan-600',
+                tagline: 'Stick to facts — drop the drama',
+                simpleExplain: 'Report only what actually happened, without adding judgmental or exaggerated stories',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'Listen to your inner narrator',
+                    instructions: [
+                        'Recall a recent frustrating or upsetting situation',
+                        'Notice the exact words your mind uses to describe it',
+                        'Pay attention to dramatic labels like "disaster," "always," "ruined," "unbearable"',
+                        'Feel how your body responds to those words'
+                    ],
+                    prompt: 'How did your body feel when you added all that drama?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'Your words create extra suffering on top of the event itself.\n\nThe situation caused one layer of pain.\nThe dramatic story you tell about it adds a second, unnecessary layer.\n\nBy sticking to pure facts, you keep the pain manageable and your mind clear.',
+                    analogy: {
+                        title: '📰 News Reporter vs Soap Opera',
+                        text: 'A neutral reporter states only verifiable facts.\nA soap opera adds music, exaggeration, and endless drama.\nYour mind often defaults to soap-opera mode — but you can switch to reporter mode.'
+                    },
+                    skillExplained: 'Describe means narrating events like a calm, objective reporter — only observable facts, no opinions or emotional adjectives.'
+                },
+                modeA: {
+                    title: '❌ Drama Mode',
+                    emoji: '🎭',
+                    steps: [
+                        'Something happens',
+                        'Mind adds extreme labels: "catastrophe," "always," "never," "should"',
+                        'Story escalates: "This proves I\'m a failure"',
+                        'Body tenses, emotions intensify',
+                        'Situation feels heavier and more overwhelming'
+                    ],
+                    feeling: '😰 Heavy, spiraling, overwhelming'
+                },
+                modeB: {
+                    title: '✅ Reporter Mode',
+                    emoji: '📰',
+                    steps: [
+                        'Something happens',
+                        'State only what is observable: "This occurred"',
+                        'Remove opinions, judgments, absolutes',
+                        'Body stays calmer, mind stays clear',
+                        'Problem becomes solvable instead of endless'
+                    ],
+                    feeling: '😊 Clear, grounded, manageable'
+                },
+                worksheet: [
+                    { q: 'Write the full dramatic version of a recent upsetting event', type: 'textarea' },
+                    { q: 'How tense or heavy did that feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Now rewrite it using ONLY observable facts — no opinions or drama', type: 'textarea' },
+                    { q: 'How much lighter or clearer does this version feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'Catch yourself using "always," "never," "should," or catastrophic words. Pause and rephrase with pure facts.',
+                    examples: [
+                        '❌ "I always screw this up" → ✅ "I made a mistake this time"',
+                        '❌ "They never listen to me" → ✅ "They didn\'t respond to my last message"',
+                        '❌ "This is a disaster" → ✅ "This outcome was not what I wanted"'
+                    ],
+                    trackerHint: 'Rephrase at least 3 times today'
+                },
+                badge: { emoji: '📰', name: 'Clear Reporter', color: 'blue' }
+            },
+            {
+                id: 'participate',
+                name: 'Participate',
+                icon: '🌿',
+                color: 'from-green-600 to-emerald-600',
+                tagline: 'Be fully where your feet are',
+                simpleExplain: 'Bring your full attention to whatever you\'re doing right now',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'Ghost walk vs fully embodied walk',
+                    instructions: [
+                        'Stand up and slowly walk across the room',
+                        'Let your mind wander freely — think about plans, worries, memories',
+                        'Don\'t try to focus on the walking at all',
+                        'Continue for 30–60 seconds'
+                    ],
+                    prompt: 'Did you feel your feet touching the ground? The temperature of the air? Your breathing? How "real" did the experience feel?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'Your body was moving, but your mind was elsewhere — you were physically present but mentally absent.\n\nLife only happens in the present moment. When the mind wanders to past or future, you miss the richness of now.\n\nFull participation turns ordinary moments into vivid experiences.',
+                    analogy: {
+                        title: '🎮 Playing a Game While Scrolling Your Phone',
+                        text: 'You\'d miss the entire adventure, the excitement, the beauty.\nLife is the same — when you\'re mentally elsewhere, you\'re not truly living it.'
+                    },
+                    skillExplained: 'Participate means bringing your mind fully into the current activity — engaging all your senses in what\'s happening right here, right now.'
+                },
+                modeA: {
+                    title: '❌ Ghost Mode',
+                    emoji: '👻',
+                    steps: [
+                        'Body performs an action',
+                        'Mind drifts to past regrets or future plans',
+                        'Sensations go unnoticed',
+                        'Time passes in a blur',
+                        'Life feels flat and disconnected'
+                    ],
+                    feeling: '😶‍🌫️ Numb, distant, half-alive'
+                },
+                modeB: {
+                    title: '✅ Fully Present Mode',
+                    emoji: '🌿',
+                    steps: [
+                        'Body performs an action',
+                        'Mind notices sensations: touch, temperature, movement',
+                        'When mind wanders, gently return attention',
+                        'Engage all senses fully',
+                        'Experience becomes vivid and rich'
+                    ],
+                    feeling: '✨ Alive, connected, vibrant'
+                },
+                worksheet: [
+                    { q: 'What was your mind thinking about during the ghost walk?', type: 'textarea' },
+                    { q: 'How present or "real" did the walk feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Walk again, this time noticing every sensation in your feet, legs, breath. Describe the difference.', type: 'textarea' },
+                    { q: 'How alive and present did this feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'Choose one ordinary daily activity and do it with 100% focused attention — no multitasking.',
+                    examples: [
+                        '🍽️ Washing dishes — feel water temperature, soap texture, sounds',
+                        '🚶 Walking — notice each footfall, air on skin',
+                        '🍎 Eating — taste, smell, texture of every bite'
+                    ],
+                    trackerHint: 'Do this fully at least twice today'
+                },
+                badge: { emoji: '🌿', name: 'Fully Present', color: 'green' }
+            },
+            {
+                id: 'nonjudgment',
+                name: 'Nonjudgmentally',
+                icon: '⚖️',
+                color: 'from-orange-600 to-red-600',
+                tagline: 'Just notice — no "good" or "bad" needed',
+                simpleExplain: 'Observe experiences exactly as they are, without adding labels or self-criticism',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'Feel the weight of judgment',
+                    instructions: [
+                        'Recall a recent mistake, setback, or flaw',
+                        'Add harsh labels: "I\'m stupid," "I\'m a failure," "This is unacceptable"',
+                        'Really lean into how "bad" or "wrong" it was',
+                        'Keep judging for 30 seconds'
+                    ],
+                    prompt: 'Where did you feel the judgment in your body? How heavy did it make everything?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'The original event caused one pain.\nJudgment adds a second, ongoing pain — like getting hit by an arrow, then shooting yourself with another.\nDropping judgment doesn\'t mean approving everything. It means stopping the self-inflicted suffering so you can learn and move forward.',
+                    analogy: {
+                        title: '🔬 Scientist vs Harsh Critic',
+                        text: 'A scientist observes an experiment\'s results without personal attack.\nA critic shames themselves for "failing."\nNonjudgment lets you gather clear data and improve.'
+                    },
+                    skillExplained: 'Nonjudgmentally means seeing reality clearly — what happened, without layering on "good/bad," "should/shouldn\'t," or personal attacks.'
+                },
+                modeA: {
+                    title: '❌ Judging Mode',
+                    emoji: '⚖️',
+                    steps: [
+                        'Something happens that you don\'t like',
+                        'Mind adds labels: "bad," "wrong," "failure"',
+                        'Self-attack begins: "I\'m terrible"',
+                        'Shame and stuckness grow',
+                        'Learning and change become impossible'
+                    ],
+                    feeling: '😞 Heavy shame, stuck, hopeless'
+                },
+                modeB: {
+                    title: '✅ Scientist Mode',
+                    emoji: '🔬',
+                    steps: [
+                        'Something happens',
+                        'Observe facts only: "This occurred"',
+                        'Note contributing factors without blame',
+                        'Mind stays clear and curious',
+                        'Space opens for learning and growth'
+                    ],
+                    feeling: '🌟 Light, curious, forward-moving'
+                },
+                worksheet: [
+                    { q: 'Write the full judgmental version of a recent difficult event', type: 'textarea' },
+                    { q: 'How painful or heavy did the judgment make it feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Now write only the neutral facts — no labels or opinions', type: 'textarea' },
+                    { q: 'How much lighter or clearer does this feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'When judgment arises, silently note "Judging," then state one neutral fact.',
+                    examples: [
+                        '❌ "I\'m so lazy" → "Judging" → ✅ "I haven\'t started that task yet"',
+                        '❌ "This is awful" → "Judging" → ✅ "This situation is challenging"'
+                    ],
+                    trackerHint: 'Catch and reframe judgment 5+ times today'
+                },
+                badge: { emoji: '🔬', name: 'Nonjudging Mind', color: 'orange' }
+            },
+            {
+                id: 'onemindfully',
+                name: 'One-Mindfully',
+                icon: '🎯',
+                color: 'from-indigo-600 to-purple-600',
+                tagline: 'One thing, fully and completely',
+                simpleExplain: 'Give your full attention to one activity at a time',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'The myth of multitasking',
+                    instructions: [
+                        'Count backwards from 100 by 7s (100, 93, 86…)',
+                        'Simultaneously list 5 items currently in your fridge',
+                        'Also plan what you\'ll do this evening',
+                        'Keep all three tasks going actively for 30–60 seconds'
+                    ],
+                    prompt: 'How well did you perform any of the tasks? How did your brain feel?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'Your brain cannot truly multitask — it rapidly switches focus, losing time and accuracy with every switch.\nResearch shows task-switching can waste up to 40% of productive time.\nMasters in any field succeed through deep, single-pointed focus.',
+                    analogy: {
+                        title: '🍳 Master Chef vs Frenzied Cook',
+                        text: 'A master chef gives full attention to one dish at a time — perfection results.\nTrying five dishes at once burns everything.\nOne-mindfully creates excellence.'
+                    },
+                    skillExplained: 'One-mindfully means doing one thing at a time with complete, undistracted attention — closing tabs, silencing notifications, and being fully immersed.'
+                },
+                modeA: {
+                    title: '❌ Scattered Mode',
+                    emoji: '🌀',
+                    steps: [
+                        'Attempt multiple tasks simultaneously',
+                        'Brain ping-pongs rapidly between them',
+                        'Lose focus and energy with each switch',
+                        'Accomplish little while feeling busy',
+                        'End exhausted with mediocre results'
+                    ],
+                    feeling: '😵‍💫 Frazzled, tired, ineffective'
+                },
+                modeB: {
+                    title: '✅ Laser Mode',
+                    emoji: '🎯',
+                    steps: [
+                        'Choose one task',
+                        'Remove all distractions',
+                        'Give it 100% of your attention',
+                        'When mind wanders, gently return',
+                        'Complete with clarity and quality'
+                    ],
+                    feeling: '😌 Clear, accomplished, energized'
+                },
+                worksheet: [
+                    { q: 'Describe your experience trying to juggle the three tasks', type: 'textarea' },
+                    { q: 'How scattered or overwhelmed did you feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Now pick ONE simple task and do it for 2 minutes with full attention. Describe how it felt.', type: 'textarea' },
+                    { q: 'How focused and satisfying was that? (1–10)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'Eat one full meal today with ZERO distractions — no screens, no reading, no planning.',
+                    examples: [
+                        'Notice smell, flavor, texture of each bite',
+                        'Chew slowly and thoroughly',
+                        'Stay fully with the experience of eating'
+                    ],
+                    trackerHint: 'Do this mindfully at least once today'
+                },
+                badge: { emoji: '🎯', name: 'Laser Focus', color: 'indigo' }
+            },
+            {
+                id: 'effectively',
+                name: 'Effectively',
+                icon: '✅',
+                color: 'from-pink-600 to-rose-600',
+                tagline: 'Do what works — not what feels "right"',
+                simpleExplain: 'Choose actions that achieve your real goal, even if ego doesn\'t like it',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'Feel the pull of being right',
+                    instructions: [
+                        'Recall a recent disagreement or conflict',
+                        'Notice the strong urge to prove you were right',
+                        'Feel the tension of defending your position',
+                        'Imagine doubling down to win the argument'
+                    ],
+                    prompt: 'Did being "right" actually help achieve what you really wanted?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'Winning the battle of "who\'s right" often costs you the war — peace, connection, or real progress.\nEffectiveness asks: "What action will actually get me closer to my goal?"\nSometimes the most effective move is letting go of ego.',
+                    analogy: {
+                        title: '♟️ Strategic Chess Player',
+                        text: 'Arguing about the rules mid-game might make you "right," but you lose the match.\nA master player chooses moves that win the game, regardless of pride.'
+                    },
+                    skillExplained: 'Effectively means prioritizing real-world results over being right, looking good, or following rigid principles.'
+                },
+                modeA: {
+                    title: '❌ Ego Mode',
+                    emoji: '👑',
+                    steps: [
+                        'Goal becomes "be right" or "win"',
+                        'Defend position at all costs',
+                        'Escalate conflict to prove point',
+                        'Relationship or outcome suffers',
+                        'Feel temporarily victorious but ultimately empty'
+                    ],
+                    feeling: '😤 Tense, stuck, isolated'
+                },
+                modeB: {
+                    title: '✅ Strategy Mode',
+                    emoji: '♟️',
+                    steps: [
+                        'Clarify true goal (connection? solution? peace?)',
+                        'Ask "What action serves that goal best?"',
+                        'Choose effectiveness over ego',
+                        'Act accordingly, even if it means yielding',
+                        'Achieve meaningful outcome'
+                    ],
+                    feeling: '😊 Calm, connected, satisfied'
+                },
+                worksheet: [
+                    { q: 'Describe a recent conflict and your need to be right', type: 'textarea' },
+                    { q: 'How stressful or stuck did it feel? (1–10)', type: 'slider', min: 1, max: 10 },
+                    { q: 'What was your actual deeper goal in that situation?', type: 'text' },
+                    { q: 'What action would have been most effective for reaching that goal?', type: 'textarea' }
+                ],
+                realWorld: {
+                    mission: 'In your next disagreement or urge to defend, pause and ask: "What will actually work here?"',
+                    examples: [
+                        'Instead of proving you\'re right → Ask "What outcome do we both want?"',
+                        'Instead of winning the point → Seek understanding or compromise'
+                    ],
+                    trackerHint: 'Apply this at least once today'
+                },
+                badge: { emoji: '♟️', name: 'Wise Strategist', color: 'pink' }
+            },
+            {
+                id: 'checkin',
+                name: 'Check-In',
+                icon: '🧠',
+                color: 'from-teal-600 to-cyan-600',
+                tagline: 'Know your inner state before acting',
+                simpleExplain: 'Pause briefly to scan mood, body, and energy before responding',
+                experienceFirst: {
+                    title: '🧪 Try This Quick Experiment',
+                    subtitle: 'Automatic pilot response',
+                    instructions: [
+                        'Without any pause or checking, immediately answer out loud: "I\'m fine"',
+                        'Don\'t look inward at all',
+                        'Just give the default, habitual response'
+                    ],
+                    prompt: 'Was that actually accurate? Did you even know how you truly felt?'
+                },
+                revelation: {
+                    title: '💡 The Powerful Insight',
+                    insight: 'Most of us operate on autopilot, reacting before knowing our true inner state.\nThis leads to regrettable words and actions.\nA brief check-in restores choice and wisdom.',
+                    analogy: {
+                        title: '🚗 Driving Without Checking the Dashboard',
+                        text: 'You wouldn\'t know if fuel is low, engine overheating, or oil pressure dropping.\nCheck-In is glancing at your internal dashboard before deciding how to proceed.'
+                    },
+                    skillExplained: 'Check-In means taking 5–10 seconds to scan: mood, body tension, energy level, urges — then responding intentionally.'
+                },
+                modeA: {
+                    title: '❌ Autopilot Mode',
+                    emoji: '🤖',
+                    steps: [
+                        'Trigger appears',
+                        'React instantly from habit',
+                        'Miss internal warning signs',
+                        'Later regret words or actions',
+                        'Feel out of control'
+                    ],
+                    feeling: '😬 Reactive, regretful, powerless'
+                },
+                modeB: {
+                    title: '✅ Aware Mode',
+                    emoji: '🧭',
+                    steps: [
+                        'Trigger appears',
+                        'Pause for 10 seconds',
+                        'Scan body, mood, energy',
+                        'Choose response based on data',
+                        'Act intentionally'
+                    ],
+                    feeling: '🎯 Grounded, wise, in control'
+                },
+                worksheet: [
+                    { q: 'What automatic response did you give?', type: 'text' },
+                    { q: 'Now pause and check: What is your actual mood right now? (1–10 calm to intense)', type: 'slider', min: 1, max: 10 },
+                    { q: 'Where in your body do you feel any tension or sensation?', type: 'textarea' },
+                    { q: 'What is your energy level right now? (1–10 low to high)', type: 'slider', min: 1, max: 10 }
+                ],
+                realWorld: {
+                    mission: 'Do three quick check-ins today before responding to anything potentially emotional.',
+                    examples: [
+                        'Before replying to a message',
+                        'Before speaking in conversation',
+                        'Before making a decision when stressed'
+                    ],
+                    trackerHint: 'Complete 3+ check-ins today'
+                },
+                badge: { emoji: '🧭', name: 'Inner Compass', color: 'teal' }
+            }
+        ];
+
+        const shopItems = [
+            { id: 'theme_ocean', name: '🌊 Ocean Calm', cost: 150, type: 'theme', value: 'ocean' },
+            { id: 'theme_sunset', name: '🌅 Sunset Glow', cost: 150, type: 'theme', value: 'sunset' },
+            { id: 'theme_forest', name: '🌲 Forest Peace', cost: 150, type: 'theme', value: 'forest' },
+            { id: 'theme_midnight', name: '🌙 Midnight Depth', cost: 200, type: 'theme', value: 'midnight' },
+            { id: 'theme_rose', name: '🌹 Rose Warmth', cost: 200, type: 'theme', value: 'rose' },
+            { id: 'avatar_zen', name: '🧘 Zen Master', cost: 75, type: 'avatar', value: '🧘' },
+            { id: 'avatar_star', name: '⭐ Shining Star', cost: 75, type: 'avatar', value: '⭐' },
+            { id: 'avatar_fire', name: '🔥 Inner Fire', cost: 100, type: 'avatar', value: '🔥' },
+            { id: 'avatar_brain', name: '🧠 Wise Mind', cost: 100, type: 'avatar', value: '🧠' },
+            { id: 'avatar_heart', name: '💖 Open Heart', cost: 100, type: 'avatar', value: '💖' },
+            { id: 'avatar_lightning', name: '⚡ Clear Focus', cost: 125, type: 'avatar', value: '⚡' },
+            { id: 'avatar_crown', name: '👑 Mastery', cost: 150, type: 'avatar', value: '👑' }
+        ];
+
+        // Helper functions
+        function updateState(newState) {
+            state = { ...state, ...newState };
+            render();
+        }
+
+        function earnCoins(amount) {
+            updateState({
+                coinAmount: amount,
+                showCoinAnimation: true,
+                coins: state.coins + amount,
+                user: { ...state.user, xp: state.user.xp + amount * 2 }
+            });
+            setTimeout(() => updateState({ showCoinAnimation: false }), 1500);
+        }
+
+        function showPurchaseModal(title, message) {
+            document.getElementById('purchaseTitle').textContent = title;
+            document.getElementById('purchaseMessage').textContent = message;
+            document.getElementById('purchaseModal').classList.remove('hidden');
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').classList.add('hidden');
+        }
+
+        function buyItem(item) {
+            if (isOwned(item)) {
+                if (item.type === 'theme') {
+                    updateState({ user: { ...state.user, theme: item.value } });
+                    showPurchaseModal('Theme Equipped!', `You're now using the ${item.name} theme.`);
+                }
+                if (item.type === 'avatar') {
+                    updateState({ user: { ...state.user, avatar: item.value } });
+                    showPurchaseModal('Avatar Equipped!', `You're now using the ${item.name} avatar.`);
+                }
+                return true;
+            }
+
+            if (state.coins >= item.cost) {
+                updateState({ 
+                    coins: state.coins - item.cost,
+                    lastPurchase: item,
+                    purchaseHistory: [...state.purchaseHistory, {
+                        ...item,
+                        date: new Date().toISOString()
+                    }]
+                });
+                
+                if (item.type === 'theme') {
+                    updateState({
+                        inventory: { ...state.inventory, themes: [...state.inventory.themes, item.value] },
+                        user: { ...state.user, theme: item.value }
+                    });
+                } else if (item.type === 'avatar') {
+                    updateState({
+                        inventory: { ...state.inventory, avatars: [...state.inventory.avatars, item.value] },
+                        user: { ...state.user, avatar: item.value }
+                    });
+                }
+                
+                if (state.unreadShopItems > 0) {
+                    updateState({ unreadShopItems: state.unreadShopItems - 1 });
+                }
+                
+                showPurchaseModal('Purchase Successful!', `You bought ${item.name} for ${item.cost} coins. Enjoy your new item!`);
+                return true;
+            } else {
+                const needed = item.cost - state.coins;
+                showPurchaseModal('Not Enough Coins', `You need ${needed} more coins to purchase ${item.name}. Complete more mindfulness practices to earn coins!`);
+                return false;
+            }
+        }
+
+        function isOwned(item) {
+            return item.type === 'theme' ? state.inventory.themes.includes(item.value) : state.inventory.avatars.includes(item.value);
+        }
+
+        function startSkill(id) {
+            const skill = skills.find(s => s.id === id);
+            if (skill) {
+                updateState({
+                    activeSkill: skill,
+                    currentStep: 'intro',
+                    worksheetData: {},
+                    screen: 'skill'
+                });
+            }
+        }
+
+        function handleShopItem(id) {
+            const item = shopItems.find(i => i.id === id);
+            if (item) {
+                buyItem(item);
+            }
+        }
+
+        function completeStep() {
+            const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
+            const currentIndex = steps.indexOf(state.currentStep);
+
+            const rewards = { intro: 10, experience: 15, revelation: 20, modeA: 10, modeB: 25, worksheet: 40, mission: 100 };
+            if (rewards[state.currentStep]) earnCoins(rewards[state.currentStep]);
+
+            if (state.currentStep === 'mission' && state.activeSkill && !state.completedSkills.includes(state.activeSkill.id)) {
+                const badge = state.activeSkill.badge;
+                updateState({
+                    completedSkills: [...state.completedSkills, state.activeSkill.id],
+                    inventory: { ...state.inventory, badges: [...state.inventory.badges, badge] },
+                    user: { ...state.user, totalPractices: state.user.totalPractices + 1, level: Math.floor((state.user.totalPractices + 1) / 3) + 1 }
+                });
+            }
+
+            if (currentIndex < steps.length - 1) updateState({ currentStep: steps[currentIndex + 1] });
+        }
+
+        function updateWorksheetData(key, value) {
+            updateState({ worksheetData: { ...state.worksheetData, [key]: value } });
+        }
+
+        function navigateTo(screen) {
+            updateState({ screen });
+        }
+
+        function renderBottomNav() {
+            const isSkill = state.screen === 'skill';
+            return `
+                <div class="bottom-nav fixed bottom-0 left-0 right-0 z-40">
+                    <div class="max-w-md mx-auto flex items-center justify-around py-3">
+                        <button onclick="navigateTo('home')" class="flex flex-col items-center gap-1 px-6 py-2 transition-smooth">
+                            <div class="text-2xl">🏠</div>
+                            <span class="text-xs font-medium ${state.screen === 'home' ? 'text-purple-600 font-bold' : 'text-gray-600'}">Home</span>
+                        </button>
+                        <button onclick="navigateTo('home')" class="flex flex-col items-center gap-1 px-6 py-2 transition-smooth">
+                            <div class="text-2xl">${isSkill ? '🎯' : '🧠'}</div>
+                            <span class="text-xs font-bold text-purple-600">Skills</span>
+                        </button>
+                        <button onclick="navigateTo('shop')" class="flex flex-col items-center gap-1 px-6 py-2 relative transition-smooth">
+                            ${state.unreadShopItems > 0 ? `<span class="nav-badge">${state.unreadShopItems}</span>` : ''}
+                            <div class="text-2xl">🛍️</div>
+                            <span class="text-xs font-medium ${state.screen === 'shop' ? 'text-purple-600 font-bold' : 'text-gray-600'}">Shop</span>
+                        </button>
+                        <button onclick="navigateTo('profile')" class="flex flex-col items-center gap-1 px-6 py-2 relative transition-smooth">
+                            ${state.inventory.badges.length > 0 ? `<span class="nav-badge">${state.inventory.badges.length}</span>` : ''}
+                            <div class="text-2xl">👤</div>
+                            <span class="text-xs font-medium ${state.screen === 'profile' ? 'text-purple-600 font-bold' : 'text-gray-600'}">Profile</span>
+                        </button>
                     </div>
                 </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>What Are Distress Tolerance Skills?</h3>
-                <p>These skills help you navigate intense emotional moments with more awareness and choice. Think of them as tools for emotional resilience—practical ways to create space between feelings and actions.</p>
-                
-                <div class="steps-container">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h4>Create Space</h4>
-                        <p>They help create distance between intense feelings and impulsive reactions, allowing for more thoughtful responses.</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h4>Reduce Suffering</h4>
-                        <p>They help bear difficult moments without adding extra distress through resistance or self-judgment.</p>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h4>Build Resilience</h4>
-                        <p>Like any skill, regular practice builds emotional muscle memory for handling future challenges.</p>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>📝 Your Starting Point</h3>
-                    <p>Rate your typical emotional intensity in difficult moments:</p>
-                    
-                    <div style="text-align: center; margin: 25px 0;">
-                        <input type="range" id="distressLevel" min="1" max="10" value="5" style="width: 80%;">
-                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                            <span style="color: #4CAF50;">Calm</span>
-                            <span style="color: #FF9800;">Moderate</span>
-                            <span style="color: #F44336;">Intense</span>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 25px;">
-                        <p><strong>What situations typically bring up strong emotions for you?</strong></p>
-                        <textarea id="triggers" placeholder="Describe situations where emotions feel particularly strong..."></textarea>
-                    </div>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>💡 How to Practice Effectively:</h3>
-                    <p>1. <strong>Explore each skill</strong> when you're calm<br>
-                    2. <strong>Practice regularly</strong> to build familiarity<br>
-                    3. <strong>Start with what feels accessible</strong> in the moment<br>
-                    4. <strong>Be compassionate</strong> with yourself as you learn</p>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('intro')">
-                    <i class="fas fa-save"></i> Save Your Starting Point
-                </button>
-            </div>
-        </section>
-        
-        <!-- DISTRACTION SKILL -->
-        <section id="distract" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌀</div>
-                    <div>
-                        <h2>Skill 1: Temporary Distraction</h2>
-                        <p>Creating space from overwhelming feelings</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>When to Use Distraction</h3>
-                <p>Distraction is helpful when emotions feel too intense to face directly. It's about <strong>taking a constructive break</strong> so you can return with more emotional resources.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 1</span>
-                        <h3>The ACCEPTS Method</h3>
-                    </div>
-                    
-                    <p>A structured approach to healthy distraction:</p>
-                    
-                    <div class="steps-container">
-                        <div class="step">
-                            <div class="step-number">A</div>
-                            <h4>Activities</h4>
-                            <p>Do something engaging: organize, create, exercise, work on a project</p>
-                            <textarea id="activities" placeholder="What activities could you do?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">C</div>
-                            <h4>Contributing</h4>
-                            <p>Help someone else: do a favor, volunteer, send encouragement</p>
-                            <textarea id="contributing" placeholder="How could you contribute?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">C</div>
-                            <h4>Comparisons</h4>
-                            <p>Put things in perspective: remember past resilience or others' challenges</p>
-                            <textarea id="comparisons" placeholder="What puts this in perspective?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">E</div>
-                            <h4>Emotions</h4>
-                            <p>Create different emotions: watch comedy, listen to uplifting music</p>
-                            <textarea id="emotions" placeholder="What evokes different emotions?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">P</div>
-                            <h4>Pushing Away</h4>
-                            <p>Temporarily set aside thoughts: visualize a container, set a worry time</p>
-                            <textarea id="pushing" placeholder="How can you pause these thoughts?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">T</div>
-                            <h4>Thoughts</h4>
-                            <p>Engage your mind: puzzles, reading, word games, counting</p>
-                            <textarea id="thoughts" placeholder="What mental tasks engage you?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">S</div>
-                            <h4>Sensations</h4>
-                            <p>Create strong sensations: cool water, textured objects, movement</p>
-                            <textarea id="sensations" placeholder="What sensations are helpful for you?"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- DISTRACTION TIME LIMITS -->
-                <div class="tip-box">
-                    <h3>⏱️ Healthy Distraction Guidelines</h3>
-                    <p><strong>Distraction works best as a temporary strategy.</strong> Set reasonable time limits:</p>
-                    
-                    <div style="margin: 20px 0;">
-                        <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
-                            <h4>Short Break (5-15 minutes)</h4>
-                            <p>Enough to lower emotional intensity and create space</p>
-                        </div>
-                        
-                        <div style="background: #fff3e0; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
-                            <h4>Medium Break (30 min - 2 hours)</h4>
-                            <p>When you need more time to regain balance</p>
-                        </div>
-                        
-                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
-                            <h4>Extended Break (A few hours)</h4>
-                            <p>For overwhelming situations needing significant reset</p>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 20px;">
-                        <p><strong>After distracting, check in:</strong></p>
-                        <textarea id="distractionCheckin" placeholder="How do I feel now? Can I approach things differently?"></textarea>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>Your Distraction Plan</h3>
-                    <p><strong>Which ACCEPTS categories work best for you?</strong> Select 2-3 to focus on:</p>
-                    
-                    <div class="coping-cards" id="acceptsCards">
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="activities">Activities</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="contributing">Contributing</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="comparisons">Comparisons</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="emotions">Different Emotions</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="pushing">Pushing Away</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="thoughts">Thoughts</div>
-                        <div class="coping-card" onclick="toggleCard(this)" data-category="sensations">Sensations</div>
-                    </div>
-                    
-                    <div style="margin-top: 25px;">
-                        <p><strong>Create your go-to distraction plan:</strong></p>
-                        <textarea id="distractionPlan" placeholder="When emotions feel intense, I will: 1) ... 2) ... 3) ..." style="min-height: 120px;"></textarea>
-                    </div>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('distract')">
-                    <i class="fas fa-save"></i> Save My Distraction Plan
-                </button>
-            </div>
-        </section>
-        
-        <!-- SELF-SOOTHE SKILL -->
-        <section id="self-soothe" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🛁</div>
-                    <div>
-                        <h2>Skill 2: Self-Soothing</h2>
-                        <p>Comforting yourself through the five senses</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>The Healing Power of Your Senses</h3>
-                <p>Self-soothing uses your five senses to provide comfort and reduce emotional intensity. It's like giving yourself the gentle care you'd offer a loved one.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 2</span>
-                        <h3>Sensory Comfort Menu</h3>
-                    </div>
-                    
-                    <p>Create your personalized comfort menu for each sense:</p>
-                    
-                    <div class="steps-container">
-                        <div class="step">
-                            <div class="step-number">👁️</div>
-                            <h4>Vision</h4>
-                            <p>Beautiful, calming things to look at</p>
-                            <textarea id="vision" placeholder="Favorite views, art, colors, nature scenes..."></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">👂</div>
-                            <h4>Hearing</h4>
-                            <p>Soothing sounds and music</p>
-                            <textarea id="hearing" placeholder="Calming music, nature sounds, favorite songs..."></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">👃</div>
-                            <h4>Smell</h4>
-                            <p>Comforting aromas and scents</p>
-                            <textarea id="smell" placeholder="Favorite candles, essential oils, baked goods..."></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">👅</div>
-                            <h4>Taste</h4>
-                            <p>Comforting flavors and treats</p>
-                            <textarea id="taste" placeholder="Warm drinks, comforting foods, favorite treats..."></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">✋</div>
-                            <h4>Touch</h4>
-                            <p>Pleasant textures and physical comfort</p>
-                            <textarea id="touch" placeholder="Soft blankets, warm bath, massage, cozy clothes..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>Create Your Self-Soothing Kit</h3>
-                    <p><strong>What items could you gather for a self-soothing kit?</strong></p>
-                    
-                    <div style="margin: 25px 0;">
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-                            <h4><i class="fas fa-eye"></i> For Vision</h4>
-                            <textarea id="kitVision" placeholder="Items to include..." style="min-height: 80px;"></textarea>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-                            <h4><i class="fas fa-ear"></i> For Hearing</h4>
-                            <textarea id="kitHearing" placeholder="Items to include..." style="min-height: 80px;"></textarea>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-                            <h4><i class="fas fa-wind"></i> For Smell</h4>
-                            <textarea id="kitSmell" placeholder="Items to include..." style="min-height: 80px;"></textarea>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-                            <h4><i class="fas fa-cookie-bite"></i> For Taste</h4>
-                            <textarea id="kitTaste" placeholder="Items to include..." style="min-height: 80px;"></textarea>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 20px; border-radius: 12px;">
-                            <h4><i class="fas fa-hands"></i> For Touch</h4>
-                            <textarea id="kitTouch" placeholder="Items to include..." style="min-height: 80px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>💡 Self-Soothing Practice</h3>
-                    <p><strong>Try this 5-minute exercise:</strong><br>
-                    1. Choose one sense to focus on<br>
-                    2. Gather comforting items for that sense<br>
-                    3. Spend 5 minutes fully engaging with that sense<br>
-                    4. Notice any shifts in your emotional state</p>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('self-soothe')">
-                    <i class="fas fa-heart"></i> Save My Self-Soothing Menu
-                </button>
-            </div>
-        </section>
-        
-        <!-- IMPROVE THE MOMENT -->
-        <section id="improve" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌅</div>
-                    <div>
-                        <h2>Skill 3: Improve the Moment</h2>
-                        <p>Finding relief in difficult situations</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>Making the Present More Bearable</h3>
-                <p>This skill helps you find ways to make a difficult moment slightly better, even if you can't change the situation itself.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 3</span>
-                        <h3>The IMPROVE Method</h3>
-                    </div>
-                    
-                    <div class="steps-container">
-                        <div class="step">
-                            <div class="step-number">I</div>
-                            <h4>Imagery</h4>
-                            <p>Visualize a safe, peaceful place or a positive outcome</p>
-                            <textarea id="imagery" placeholder="What calming imagery helps you?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">M</div>
-                            <h4>Meaning</h4>
-                            <p>Find purpose or meaning in the difficulty</p>
-                            <textarea id="meaning" placeholder="What meaning could this have?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">P</div>
-                            <h4>Prayer/Connection</h4>
-                            <p>Connect with something greater, whatever that means to you</p>
-                            <textarea id="prayer" placeholder="What brings spiritual comfort?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">R</div>
-                            <h4>Relaxation</h4>
-                            <p>Practice relaxation techniques</p>
-                            <textarea id="relaxation" placeholder="How do you relax your body?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">O</div>
-                            <h4>One Thing</h4>
-                            <p>Focus on just one thing in the moment</p>
-                            <textarea id="oneThing" placeholder="What can you focus on right now?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">V</div>
-                            <h4>Vacation</h4>
-                            <p>Take a brief break from the situation</p>
-                            <textarea id="vacation" placeholder="What mini-vacation could you take?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">E</div>
-                            <h4>Encouragement</h4>
-                            <p>Give yourself pep talks and affirmations</p>
-                            <textarea id="encouragement" placeholder="What encouraging words help?"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>Current Challenge Application</h3>
-                    <p><strong>Think of a current difficulty. How could you apply IMPROVE?</strong></p>
-                    
-                    <div style="margin: 25px 0;">
-                        <p><strong>Current challenging situation:</strong></p>
-                        <textarea id="currentSituation" placeholder="Describe the situation..."></textarea>
-                    </div>
-                    
-                    <div style="margin: 25px 0;">
-                        <div style="margin-bottom: 20px;">
-                            <h4>Which IMPROVE skill fits this situation?</h4>
-                            <select id="improveSkill" style="width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb; margin-top: 10px; font-size: 1.05rem;">
-                                <option>Imagery</option>
-                                <option>Meaning</option>
-                                <option>Prayer/Connection</option>
-                                <option>Relaxation</option>
-                                <option>One Thing</option>
-                                <option>Vacation</option>
-                                <option>Encouragement</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <h4>How will you apply it?</h4>
-                            <textarea id="improveApplication" placeholder="Specific application..." style="min-height: 120px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>💡 Quick IMPROVE Practice</h3>
-                    <p><strong>Right now:</strong> Take one minute to practice "One Thing." Focus completely on your breathing or on an object in the room. Notice any shift in your awareness.</p>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('improve')">
-                    <i class="fas fa-sun"></i> Save My IMPROVE Practice
-                </button>
-            </div>
-        </section>
-        
-        <!-- PROS AND CONS -->
-        <section id="proscons" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">⚖️</div>
-                    <div>
-                        <h2>Skill 4: Pros and Cons</h2>
-                        <p>Thinking through difficult decisions</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>Weighing Your Options</h3>
-                <p>When emotions are high, it's hard to think clearly. Listing pros and cons helps you make decisions based on reason rather than impulse.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 4</span>
-                        <h3>Decision Balance Sheet</h3>
-                    </div>
-                    
-                    <div style="margin: 25px 0;">
-                        <p><strong>Current decision or impulse you're considering:</strong></p>
-                        <textarea id="decision" placeholder="Describe the action or decision..." style="min-height: 100px;"></textarea>
-                    </div>
-                    
-                    <div class="pros-cons">
-                        <div class="pros-box">
-                            <h3><i class="fas fa-check-circle"></i> Pros of Doing It</h3>
-                            <p>Short-term benefits (right now):</p>
-                            <textarea id="prosShort" placeholder="List immediate benefits..." style="min-height: 120px;"></textarea>
-                            
-                            <p style="margin-top: 20px;">Long-term benefits (future):</p>
-                            <textarea id="prosLong" placeholder="List future benefits..." style="min-height: 120px;"></textarea>
-                        </div>
-                        
-                        <div class="cons-box">
-                            <h3><i class="fas fa-times-circle"></i> Cons of Doing It</h3>
-                            <p>Short-term costs (right now):</p>
-                            <textarea id="consShort" placeholder="List immediate costs..." style="min-height: 120px;"></textarea>
-                            
-                            <p style="margin-top: 20px;">Long-term costs (future):</p>
-                            <textarea id="consLong" placeholder="List future costs..." style="min-height: 120px;"></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="pros-cons" style="margin-top: 40px;">
-                        <div class="pros-box" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-color: #2196F3;">
-                            <h3><i class="fas fa-check-circle"></i> Pros of NOT Doing It</h3>
-                            <p>Short-term benefits of resisting:</p>
-                            <textarea id="notProsShort" placeholder="Benefits of not acting..." style="min-height: 120px;"></textarea>
-                            
-                            <p style="margin-top: 20px;">Long-term benefits of resisting:</p>
-                            <textarea id="notProsLong" placeholder="Future benefits of not acting..." style="min-height: 120px;"></textarea>
-                        </div>
-                        
-                        <div class="cons-box" style="background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border-color: #FFC107;">
-                            <h3><i class="fas fa-times-circle"></i> Cons of NOT Doing It</h3>
-                            <p>Short-term costs of resisting:</p>
-                            <textarea id="notConsShort" placeholder="Costs of not acting..." style="min-height: 120px;"></textarea>
-                            
-                            <p style="margin-top: 20px;">Long-term costs of resisting:</p>
-                            <textarea id="notConsLong" placeholder="Future costs of not acting..." style="min-height: 120px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- ACTION COMMITMENT -->
-                <div class="action-commitment">
-                    <h3>🎯 Decision Checkpoint – Your Commitment</h3>
-                    <p><strong>Based on your analysis, what will you do?</strong></p>
-                    
-                    <div class="commitment-options">
-                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="wait">
-                            <h4><i class="fas fa-clock"></i> Wait</h4>
-                            <p>I will wait before acting (delay 10 min / 1 hour / 24 hours)</p>
-                            <input type="text" placeholder="How long will you wait?" style="margin-top: 10px; display: none;">
-                        </div>
-                        
-                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="act">
-                            <h4><i class="fas fa-play"></i> Act Skillfully</h4>
-                            <p>I will act, but skillfully using another skill</p>
-                            <select style="width: 100%; margin-top: 10px; display: none;">
-                                <option>STOP first</option>
-                                <option>Self-Soothe</option>
-                                <option>Distraction</option>
-                                <option>IMPROVE</option>
-                                <option>Acceptance</option>
-                            </select>
-                        </div>
-                        
-                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="resist">
-                            <h4><i class="fas fa-shield-alt"></i> Resist Completely</h4>
-                            <p>I will resist this urge completely using skills</p>
-                        </div>
-                        
-                        <div class="commitment-option" onclick="selectCommitment(this)" data-value="modify">
-                            <h4><i class="fas fa-adjust"></i> Modified Version</h4>
-                            <p>I will do a modified, healthier version of this action</p>
-                            <input type="text" placeholder="What's the modified version?" style="margin-top: 10px; display: none;">
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 30px;">
-                        <h4>📋 My Final Commitment:</h4>
-                        <textarea id="finalDecision" placeholder="Based on this analysis, I commit to..." style="min-height: 120px;"></textarea>
-                    </div>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('proscons')">
-                    <i class="fas fa-balance-scale"></i> Save This Analysis
-                </button>
-            </div>
-        </section>
-        
-        <!-- RADICAL ACCEPTANCE -->
-        <section id="radical" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🌿</div>
-                    <div>
-                        <h2>Skill 5: Radical Acceptance</h2>
-                        <p>Stop fighting reality to reduce suffering</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <!-- THE CORE IDEA -->
-                <div class="tip-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-left: 5px solid #4CAF50;">
-                    <h3>📌 The Core Idea</h3>
-                    <p style="font-size: 1.3rem; font-weight: bold; text-align: center; margin: 20px 0;">
-                        <em>Radical acceptance means acknowledging reality as it is right now, without fighting it, even though you don't like it.</em>
-                    </p>
-                </div>
-                
-                <h3>The Quicksand Metaphor</h3>
-                <div style="margin: 25px 0;">
-                    <div class="reflection-box" style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); margin-bottom: 20px;">
-                        <h4><i class="fas fa-times-circle"></i> Fighting Reality (Resistance)</h4>
-                        <p>Like struggling in quicksand—it makes you sink faster.</p>
-                        <ul style="margin-left: 25px; margin-top: 15px;">
-                            <li>"This shouldn't be happening!"</li>
-                            <li>"It's not fair!"</li>
-                            <li>"Why me?"</li>
-                            <li>Creates extra suffering</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="reflection-box" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);">
-                        <h4><i class="fas fa-check-circle"></i> Accepting Reality</h4>
-                        <p>Like stopping the struggle—you can think clearly about next steps.</p>
-                        <ul style="margin-left: 25px; margin-top: 15px;">
-                            <li>"This is happening, even though I hate it."</li>
-                            <li>"This is real."</li>
-                            <li>"Okay, this is where I am."</li>
-                            <li>Reduces suffering, frees energy for effective action</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- THE TWO PAINS -->
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 5</span>
-                        <h3>The Two Pains: Pain vs. Suffering</h3>
-                    </div>
-                    
-                    <div style="margin: 25px 0;">
-                        <div style="text-align: center; padding: 25px; border: 2px solid #bbdefb; border-radius: 15px; background: white; margin-bottom: 25px;">
-                            <div style="font-size: 3.5rem; margin-bottom: 15px;">💔</div>
-                            <h4>PAIN</h4>
-                            <p><strong>The hurt from what happened</strong></p>
-                            <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Natural, unavoidable, decreases over time</p>
-                            <div class="reflection-box" style="margin-top: 20px; background: #f8fdff;">
-                                <p><strong>Example:</strong> "I lost my job"</p>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; padding: 25px; border: 2px solid #ffcdd2; border-radius: 15px; background: white;">
-                            <div style="font-size: 3.5rem; margin-bottom: 15px;">🔥</div>
-                            <h4>SUFFERING</h4>
-                            <p><strong>The extra hurt from fighting reality</strong></p>
-                            <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Optional, avoidable, makes pain worse</p>
-                            <div class="reflection-box" style="margin-top: 20px; background: #ffebee;">
-                                <p><strong>Example:</strong> "This shouldn't have happened! It's not fair! My life is ruined!"</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="reflection-box" style="margin-top: 25px;">
-                        <h4>Your Turn: Separate Your Pain from Your Suffering</h4>
-                        <p><strong>Current difficult reality:</strong></p>
-                        <textarea id="currentReality" placeholder="What happened that's hard to accept?" style="min-height: 100px;"></textarea>
-                        
-                        <p style="margin-top: 20px;"><strong>The PAIN (just the facts):</strong></p>
-                        <textarea id="justThePain" placeholder="What's the unavoidable hurt?" style="min-height: 100px;"></textarea>
-                        
-                        <p style="margin-top: 20px;"><strong>The SUFFERING (the fight):</strong></p>
-                        <textarea id="theSuffering" placeholder="What extra hurt am I adding by fighting reality?" style="min-height: 100px;"></textarea>
-                    </div>
-                </div>
-                
-                <!-- ACCEPTANCE TEST -->
-                <h3>The Acceptance Test: Are You Arguing with Reality?</h3>
-                
-                <div class="steps-container">
-                    <div class="step">
-                        <div class="step-number" style="background: #F44336;">❌</div>
-                        <h4>Signs You're NOT Accepting</h4>
-                        <ul style="margin-left: 25px; margin-top: 15px;">
-                            <li>"This shouldn't be happening"</li>
-                            <li>"Why me? This isn't fair!"</li>
-                            <li>"I can't believe this is real"</li>
-                            <li>Replaying the past, wishing it were different</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number" style="background: #4CAF50;">✅</div>
-                        <h4>Signs You ARE Accepting</h4>
-                        <ul style="margin-left: 25px; margin-top: 15px;">
-                            <li>"I don't like this, but it's what's happening"</li>
-                            <li>"Okay, this is where I am. What now?"</li>
-                            <li>Feeling sad but not shocked/outraged</li>
-                            <li>Focusing on what you can control</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- SIMPLE LANGUAGE SCRIPTS -->
-                <div class="reflection-box">
-                    <h3>💬 Simple Language Scripts</h3>
-                    <p>Try these statements when reality feels unacceptable:</p>
-                    
-                    <div style="margin: 25px 0;">
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #bbdefb;">
-                            <h4>The Reality Check</h4>
-                            <p><em>"I don't have to like this. I don't have to want this. But fighting the fact that it happened only makes me hurt more. It happened. That's the reality."</em></p>
-                            <textarea placeholder="Rewrite this in your own words..." style="min-height: 80px; margin-top: 15px;"></textarea>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #bbdefb;">
-                            <h4>The Control Distinction</h4>
-                            <p><em>"I can't change that this happened. But I CAN change what I do next."</em></p>
-                            <div style="margin-top: 15px;">
-                                <div style="margin-bottom: 15px;">
-                                    <p><strong>What I CAN'T control:</strong></p>
-                                    <textarea placeholder="The past, others' actions, certain facts..." style="min-height: 100px;"></textarea>
+            `;
+        }
+
+        // Render screens
+        function renderHomeScreen() {
+            const themeClass = `theme-${state.user.theme}`;
+            const completed = state.completedSkills.length;
+            const progress = Math.round((completed / skills.length) * 100);
+
+            return `
+                <div class="min-h-screen ${themeClass} safe-top pb-20">
+                    <div class="max-w-md mx-auto p-5 content-layer">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-3xl animate-float">
+                                    ${state.user.avatar}
                                 </div>
                                 <div>
-                                    <p><strong>What I CAN control:</strong></p>
-                                    <textarea placeholder="My response, my attitude, my next action..." style="min-height: 100px;"></textarea>
+                                    <p class="text-white/90 text-sm">Welcome back,</p>
+                                    <h2 class="text-white font-bold text-lg">${state.user.name}</h2>
+                                    <p class="text-white/80 text-xs">Level ${state.user.level} • ${state.user.xp} XP</p>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); padding: 25px; border-radius: 15px; border: 2px solid #bbdefb;">
-                            <h4>The Both/And Statement</h4>
-                            <p><em>"This is terrible AND it's real. I hate this AND I can survive it. This isn't fair AND it's what I'm dealing with."</em></p>
-                            <textarea placeholder="Create your own Both/And statement..." style="min-height: 80px; margin-top: 15px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- THE PRACTICE STEPS -->
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Practice</span>
-                        <h3>The 6-Step Acceptance Practice</h3>
-                    </div>
-                    
-                    <div class="steps-container">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <h4>Notice Resistance</h4>
-                            <p>Check: "Am I arguing with reality?"</p>
-                            <textarea placeholder="What resistance thoughts are present?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <h4>Name the Facts</h4>
-                            <p>State reality without judgment</p>
-                            <textarea placeholder="The facts are..."></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <h4>Acknowledge the Pain</h4>
-                            <p>"This hurts. I don't like this."</p>
-                            <textarea placeholder="What hurts about this?"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <h4>Make Acceptance Statement</h4>
-                            <p>"AND... this is what's real."</p>
-                            <textarea placeholder="Complete: 'This is real because...'"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">5</div>
-                            <h4>Breathe Into It</h4>
-                            <p>Take a deep breath and "allow" reality to exist</p>
-                            <div style="text-align: center; margin-top: 15px;">
-                                <button onclick="startAcceptanceBreathing()" class="action-btn" style="padding: 12px 25px; font-size: 1rem;">
-                                    <i class="fas fa-wind"></i> Start Acceptance Breathing
-                                </button>
+                            <div class="bg-white/20 px-4 py-2 rounded-full flex items-center gap-2">
+                                <span class="text-xl">🪙</span>
+                                <span class="text-white font-bold text-lg">${state.coins}</span>
                             </div>
                         </div>
-                        
-                        <div class="step">
-                            <div class="step-number">6</div>
-                            <h4>Shift to Action</h4>
-                            <p>"What CAN I do now?"</p>
-                            <textarea placeholder="My next effective step is..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>🎯 The Practical View</h3>
-                    <p style="font-style: italic; font-size: 1.2rem; margin: 20px 0; text-align: center;">
-                        "Radical acceptance is choosing to stop fighting what you can't change. 
-                        The situation is still there. It still feels hard. But you stop exhausting 
-                        yourself by resisting it, and free up energy to focus on what you can actually influence."
-                    </p>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('radical')">
-                    <i class="fas fa-leaf"></i> Save My Acceptance Practice
-                </button>
-            </div>
-        </section>
-        
-        <!-- TIPP SKILL -->
-        <section id="tipp" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">🧊</div>
-                    <div>
-                        <h2>Skill 6: TIPP - The Body Reset</h2>
-                        <p>Changing your physiology to change your emotions</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <!-- SAFETY WARNING - Updated for general wellness -->
-                <div class="safety-warning">
-                    <div class="warning-header">
-                        <i class="fas fa-heartbeat warning-icon"></i>
-                        <h3>SAFETY CHECK – PLEASE READ</h3>
-                    </div>
-                    
-                    <p><strong>Consult with a healthcare provider before using TIPP if you have:</strong></p>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin: 25px 0;">
-                        <div>
-                            <ul style="margin-left: 25px; line-height: 1.8;">
-                                <li>Heart conditions or irregular heartbeat</li>
-                                <li>Recent heart surgery or heart attack</li>
-                                <li>High or low blood pressure</li>
-                                <li>Respiratory issues (asthma, COPD)</li>
-                                <li>Pregnancy (consult doctor first)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p style="margin-top: 25px; font-weight: bold; color: #e65100; text-align: center;">
-                        <i class="fas fa-exclamation-triangle"></i> When in doubt: Use gentler skills like STOP + Distraction instead.
-                    </p>
-                    
-                    <div style="background: #fff8e1; border: 2px dashed #ffa000; border-radius: 15px; padding: 25px; margin-top: 25px;">
-                        <h4><i class="fas fa-shield-alt"></i> Safer Alternatives:</h4>
-                        <ul style="margin-left: 25px; margin-top: 15px;">
-                            <li><strong>Instead of cold water:</strong> Cool (not cold) water splash</li>
-                            <li><strong>Instead of intense exercise:</strong> Gentle stretching or walking</li>
-                            <li><strong>Instead of breath-holding:</strong> Gentle 4-7-8 breathing</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <h3>For Moments of Peak Intensity</h3>
-                <p><strong>TIPP</strong> is designed for when emotions feel completely overwhelming. It works by rapidly changing your body's physical state, which can help shift intense emotional experiences.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 6</span>
-                        <h3>The TIPP Breakdown</h3>
-                    </div>
-                    
-                    <div class="steps-container">
-                        <!-- T - Temperature -->
-                        <div class="step">
-                            <div class="step-number">T</div>
-                            <h4>Temperature</h4>
-                            <p>Change your body temperature to activate calming responses.</p>
-                            <p><strong>Safe ideas:</strong> Splash cool water on your face, hold a cool cloth to your cheeks or wrists.</p>
-                            <div class="reflection-box" style="margin-top: 15px; padding: 20px;">
-                                <label><strong>Choose your intensity:</strong></label>
-                                <div style="display: flex; align-items: center; gap: 15px; margin-top: 12px;">
-                                    <span style="color: #4CAF50;">Gentle</span>
-                                    <input type="range" id="tempIntensity" min="1" max="3" value="2" style="flex-grow: 1;">
-                                    <span style="color: #F44336;">Strong</span>
-                                </div>
-                                <p style="margin-top: 15px; font-size: 0.95rem; color: #666;">
-                                    Selected: <span id="tempLabel">Moderate (Cool water splash)</span>
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- I - Intense Exercise -->
-                        <div class="step">
-                            <div class="step-number">I</div>
-                            <h4>Intense Exercise</h4>
-                            <p>Engage in short, vigorous activity to release tension and energy.</p>
-                            <p><strong>Safe ideas:</strong> Run in place for 2 minutes, do jumping jacks, vigorous dancing.</p>
-                            <textarea id="intenseExercisePlan" placeholder="My go-to 2-minute exercise is... (e.g., 30 jumping jacks, 20 high knees)" style="min-height: 100px;"></textarea>
-                        </div>
-                        
-                        <!-- P - Paced Breathing -->
-                        <div class="step">
-                            <div class="step-number">P</div>
-                            <h4>Paced Breathing</h4>
-                            <p>Slow, deliberate breathing to regulate your heart rate and calm your mind.</p>
-                            <p><strong>Try 4-7-8 breathing:</strong> Inhale for 4 counts, hold for 7, exhale slowly for 8.</p>
-                            <div class="breathing-guide" style="text-align: center; padding: 25px; background: linear-gradient(135deg, #f0f7ff 0%, #e3f2fd 100%); border-radius: 15px; margin-top: 15px;">
-                                <div class="breath-timer" id="breathTimer" style="font-size: 3.5rem; color: #1a2980; margin: 15px 0;">4</div>
-                                <button onclick="startBreathingGuide()" class="action-btn" style="padding: 15px 30px; font-size: 1.1rem;">
-                                    <i class="fas fa-play"></i> Start Breathing Guide
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- P - Paired Muscle Relaxation -->
-                        <div class="step">
-                            <div class="step-number">P</div>
-                            <h4>Paired Muscle Relaxation</h4>
-                            <p>Tense muscle groups tightly, then release, pairing the release with an exhale.</p>
-                            <p><strong>Sequence:</strong> Clench fists (hold 5 sec) → exhale and release. Tense shoulders (hold) → exhale and drop.</p>
-                            <textarea id="muscleRelaxNotes" placeholder="Note areas where you hold the most tension (e.g., jaw, shoulders)..." style="min-height: 100px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>🧠 Create Your TIPP Plan</h3>
-                    <p>When I'm at peak emotional intensity and need to reset fast, I will try these techniques in this order:</p>
-                    <div style="margin: 15px 0;">
-                        <input type="text" id="tippStep1" placeholder="First, I will..." style="width: 100%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;">
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <input type="text" id="tippStep2" placeholder="Then, I will..." style="width: 100%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;">
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <input type="text" id="tippStep3" placeholder="If needed, I will..." style="width: 100%; margin: 10px 0; padding: 15px; border-radius: 10px; border: 2px solid #bbdefb;">
-                    </div>
-                </div>
-                
-                <div style="margin: 30px 0;">
-                    <div class="reflection-box" style="margin-bottom: 20px;">
-                        <h4>Body Check-In: Before TIPP</h4>
-                        <p>Rate your physical sensations <strong>before</strong> practicing:</p>
-                        <p>Heart Racing: <input type="range" id="heartBefore" min="1" max="10" value="7"> <span id="heartBeforeVal">7</span>/10</p>
-                        <p>Muscle Tension: <input type="range" id="tensionBefore" min="1" max="10" value="6"> <span id="tensionBeforeVal">6</span>/10</p>
-                    </div>
-                    
-                    <div class="reflection-box">
-                        <h4>Body Check-In: After TIPP</h4>
-                        <p>Rate your physical sensations <strong>after</strong> practicing:</p>
-                        <p>Heart Racing: <input type="range" id="heartAfter" min="1" max="10" value="4"> <span id="heartAfterVal">4</span>/10</p>
-                        <p>Muscle Tension: <input type="range" id="tensionAfter" min="1" max="10" value="3"> <span id="tensionAfterVal">3</span>/10</p>
-                    </div>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('tipp')">
-                    <i class="fas fa-bolt"></i> Save My TIPP Plan
-                </button>
-            </div>
-        </section>
-        
-        <!-- STOP SKILL -->
-        <section id="stop" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon">⚠️</div>
-                    <div>
-                        <h2>Skill 7: STOP - The Mindful Pause</h2>
-                        <p>Creating space between trigger and reaction</p>
-                    </div>
-                </div>
-                
-                <div class="wave-divider"></div>
-                
-                <h3>Prevent Impulsive Reactions</h3>
-                <p>The <strong>STOP</strong> skill is your instant pause button. It creates vital seconds of space to choose a more thoughtful response instead of reacting impulsively.</p>
-                
-                <div class="exercise">
-                    <div class="exercise-title">
-                        <span class="exercise-badge">Worksheet 7</span>
-                        <h3>Practice the STOP Sequence</h3>
-                    </div>
-                    
-                    <!-- Interactive STOP Buttons -->
-                    <div class="steps-container">
-                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('S')">
-                            <div class="step-number" style="background: #e74c3c;">S</div>
-                            <h4>STOP!</h4>
-                            <p><strong>Freeze.</strong> Don't move a muscle. Don't say a word. Literally pause your body as if someone hit pause on a remote.</p>
-                            <div id="stopSIndicator" class="stop-indicator stop-s" style="display: none;">
-                                <i class="fas fa-check-circle"></i> Action Paused
-                            </div>
-                        </div>
-                        
-                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('T')">
-                            <div class="step-number" style="background: #f39c12;">T</div>
-                            <h4>Take a Step Back</h4>
-                            <p><strong>Physically & mentally step back.</strong> Take one literal step backwards. Take a deep breath. You are not your urge.</p>
-                            <div id="stopTIndicator" class="stop-indicator stop-t" style="display: none;">
-                                <i class="fas fa-footstep"></i> Stepped Back
-                            </div>
-                        </div>
-                        
-                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('O')">
-                            <div class="step-number" style="background: #3498db;">O</div>
-                            <h4>Observe</h4>
-                            <p><strong>Become a curious scientist.</strong> What's happening inside you? What's happening around you? Just notice without judgment.</p>
-                            <div id="stopOIndicator" class="stop-indicator stop-o" style="display: none;">
-                                <i class="fas fa-eye"></i> Observing
-                            </div>
-                        </div>
-                        
-                        <div class="step" style="text-align: center; cursor: pointer;" onclick="triggerStop('P')">
-                            <div class="step-number" style="background: #2ecc71;">P</div>
-                            <h4>Proceed Mindfully</h4>
-                            <p><strong>Act with awareness.</strong> Ask: "What is the most effective thing to do right now, considering my goals?" Then do that.</p>
-                            <div id="stopPIndicator" class="stop-indicator stop-p" style="display: none;">
-                                <i class="fas fa-forward"></i> Proceeding
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- WHAT COMES AFTER STOP -->
-                <div class="reflection-box">
-                    <h3>🔄 After STOP: Your Next Move</h3>
-                    <p>You've paused. You've observed. Now what? Choose your next skillful action:</p>
-                    
-                    <div class="steps-container">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <h4>Use Another Skill</h4>
-                            <p>Which skill fits this moment?</p>
-                            <select id="nextSkill" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #bbdefb; margin-top: 10px;">
-                                <option>TIPP (if still at peak intensity)</option>
-                                <option>Distract with ACCEPTS</option>
-                                <option>Self-Soothe</option>
-                                <option>IMPROVE the moment</option>
-                                <option>Pros & Cons</option>
-                                <option>Radical Acceptance</option>
-                            </select>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <h4>Problem-Solve</h4>
-                            <p>If intensity is lower and you CAN address the issue, what's one step?</p>
-                            <textarea placeholder="One concrete action..." style="min-height: 100px;"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <h4>Reach Out</h4>
-                            <p>Who could you contact for support?</p>
-                            <textarea placeholder="Person to connect with..." style="min-height: 100px;"></textarea>
-                        </div>
-                        
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <h4>Opposite Action</h4>
-                            <p>What would the OPPOSITE of your urge be?</p>
-                            <textarea placeholder="Opposite action..." style="min-height: 100px;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>⏱️ Practice Delaying the Urge</h3>
-                    <p>When you feel a strong impulse, practice delaying it. Start small and build your tolerance.</p>
-                    <div style="text-align: center; margin: 25px 0;">
-                        <div class="delay-timer" id="delayTimerDisplay" style="font-size: 3rem;">01:00</div>
-                        <div>
-                            <button onclick="startDelayTimer(60)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-start"></i> Delay 1 min</button>
-                            <button onclick="startDelayTimer(300)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-half"></i> Delay 5 min</button>
-                            <button onclick="startDelayTimer(600)" class="action-btn" style="margin: 8px;"><i class="fas fa-hourglass-end"></i> Delay 10 min</button>
-                        </div>
-                        <p id="timerMessage" style="margin-top: 15px; font-style: italic; color: #666;">Timer not started.</p>
-                    </div>
-                    <textarea id="urgeNotes" placeholder="What was the urge? What did you notice during the delay? Did the intensity change?" style="min-height: 120px;"></textarea>
-                </div>
-                
-                <div class="reflection-box">
-                    <h3>🔍 Mindful Observation Checklist</h3>
-                    <p>During the <strong>O</strong> step, use this checklist to gather data:</p>
-                    <div style="margin-top: 20px;">
-                        <div><input type="checkbox" id="observeThoughts"> <label for="observeThoughts"><i class="fas fa-brain"></i> My thoughts are...</label></div>
-                        <div><input type="checkbox" id="observeBody"> <label for="observeBody"><i class="fas fa-heartbeat"></i> Bodily sensations are...</label></div>
-                        <div><input type="checkbox" id="observeEmotions"> <label for="observeEmotions"><i class="fas fa-smile"></i> Primary emotion is...</label></div>
-                        <div><input type="checkbox" id="observeOthers"> <label for="observeOthers"><i class="fas fa-users"></i> Others around me are...</label></div>
-                        <div><input type="checkbox" id="observeImpulse"> <label for="observeImpulse"><i class="fas fa-running"></i> The urge wants me to...</label></div>
-                    </div>
-                    <textarea id="observationSummary" placeholder="Summary of what I observed..." style="margin-top: 20px; min-height: 120px;"></textarea>
-                </div>
-                
-                <div class="tip-box">
-                    <h3>💡 STOP in Action</h3>
-                    <p><strong>Example:</strong> You receive a critical text and feel heat rush to your face with the urge to reply angrily.<br>
-                    • <strong>S</strong>: Put the phone down. Don't move.<br>
-                    • <strong>T</strong>: Walk to another room. Breathe.<br>
-                    • <strong>O</strong>: "I feel hot. My heart is pounding. I'm thinking 'how dare they.' The urge is to attack back."<br>
-                    • <strong>P</strong>: My goal is to resolve this, not win a fight. I will wait 20 minutes, then reply calmly asking for clarification.
-                    </p>
-                </div>
-                
-                <button class="action-btn" onclick="saveSection('stop')">
-                    <i class="fas fa-shield-alt"></i> Save My STOP Practice
-                </button>
-            </div>
-        </section>
-        
-        <!-- FOOTER -->
-        <footer style="text-align: center; padding: 40px; color: #4a6572;">
-            <div class="wave-divider"></div>
-            <p style="margin-top: 25px; font-size: 1.1rem;"><strong>Remember:</strong> These distress tolerance skills are like muscles—they get stronger with practice. Be patient with yourself as you learn.</p>
-            <p style="font-size: 0.95rem; margin-top: 15px;">Practice when calm so the skills are available when you need them most.</p>
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e3f2fd;">
-                <p style="font-size: 0.9rem; color: #888;">The Emotional Anchor | Distress tolerance skills for emotional wellness</p>
-            </div>
-        </footer>
-    </div>
 
-    <script>
-        // ========== CORE FUNCTIONS ==========
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            const tabs = document.querySelectorAll('.skill-tab');
-            for (let tab of tabs) {
-                if (tab.getAttribute('onclick') === `showSection('${sectionId}')`) {
-                    tab.classList.add('active');
-                    break;
-                }
-            }
-            localStorage.setItem('lastActiveDistressTab', sectionId);
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                <p class="text-3xl font-bold text-white">${completed}/${skills.length}</p>
+                                <p class="text-white/80 text-xs mt-1">Skills Mastered</p>
+                            </div>
+                            <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                <p class="text-3xl font-bold text-white">${state.user.streak}</p>
+                                <p class="text-white/80 text-xs mt-1">Day Streak</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/20 rounded-2xl p-5 mb-6">
+                            <div class="flex justify-between text-white mb-2">
+                                <p class="font-bold text-sm">Journey Progress</p>
+                                <p class="font-bold text-sm">${progress}%</p>
+                            </div>
+                            <div class="h-3 bg-white/30 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-1000" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-white font-bold text-xl mb-4">7 Core Mindfulness Skills</h3>
+                        <div class="space-y-3">
+                            ${skills.map(skill => {
+                                const done = state.completedSkills.includes(skill.id);
+                                return `
+                                    <button onclick="startSkill('${skill.id}')" class="w-full bg-white rounded-2xl p-4 text-left hover:shadow-lg transition-smooth ${done ? 'border-2 border-green-400' : ''}">
+                                        <div class="flex gap-3">
+                                            <div class="w-14 h-14 bg-gradient-to-br ${skill.color} rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+                                                ${skill.icon}
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <h4 class="text-base font-bold text-gray-800">${skill.name}</h4>
+                                                    ${done ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold">✓</span>' : ''}
+                                                </div>
+                                                <p class="text-gray-700 text-sm font-medium mb-1">${skill.tagline}</p>
+                                                <p class="text-gray-600 text-xs">${skill.simpleExplain}</p>
+                                            </div>
+                                            <div class="self-center text-xl text-gray-400">${done ? '🎉' : '▶️'}</div>
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                    ${renderBottomNav()}
+                </div>
+            `;
         }
-        
-        function toggleCard(card) {
-            card.classList.toggle('selected');
-            localStorage.setItem(`card_${card.dataset.category}`, card.classList.contains('selected'));
-        }
-        
-        function saveSection(section) {
-            const btn = event.target;
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully!';
-            btn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
-            btn.disabled = true;
-            
-            const sectionEl = document.getElementById(section);
-            const inputs = sectionEl.querySelectorAll('textarea, input[type="text"], input[type="range"], select, input[type="checkbox"]');
-            
-            inputs.forEach(el => {
-                const val = el.type === 'checkbox' ? el.checked : el.value;
-                localStorage.setItem(`dt_${section}_${el.id}`, val);
-                
-                // Update slider displays
-                if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.tagName === 'SPAN') {
-                    el.nextElementSibling.textContent = val;
-                }
-            });
-            
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.style.background = '';
-                btn.disabled = false;
-            }, 2000);
-        }
-        
-        // ========== COMMITMENT SELECTION ==========
-        function selectCommitment(element) {
-            document.querySelectorAll('.commitment-option').forEach(opt => {
-                opt.classList.remove('selected');
-                const extraInput = opt.querySelector('input, select');
-                if (extraInput) extraInput.style.display = 'none';
-            });
-            
-            element.classList.add('selected');
-            const extraInput = element.querySelector('input, select');
-            if (extraInput) {
-                extraInput.style.display = 'block';
-                extraInput.style.marginTop = '15px';
-            }
-            
-            localStorage.setItem('selected_commitment', element.dataset.value);
-        }
-        
-        // ========== TIPP FUNCTIONS ==========
-        // Temperature Slider
-        const tempSlider = document.getElementById('tempIntensity');
-        const tempLabel = document.getElementById('tempLabel');
-        const tempOptions = {
-            '1': 'Gentle (Cool cloth on neck)',
-            '2': 'Moderate (Cool water splash)',
-            '3': 'Strong (Cold water face splash)'
-        };
-        
-        if (tempSlider && tempLabel) {
-            tempSlider.addEventListener('input', function() {
-                tempLabel.textContent = tempOptions[this.value];
-                tempLabel.style.color = this.value == '3' ? '#F44336' : (this.value == '2' ? '#FF9800' : '#4CAF50');
-            });
-            
-            // Load saved value
-            const savedTemp = localStorage.getItem('dt_tipp_tempIntensity');
-            if (savedTemp) {
-                tempSlider.value = savedTemp;
-                tempLabel.textContent = tempOptions[savedTemp];
-                tempLabel.style.color = savedTemp == '3' ? '#F44336' : (savedTemp == '2' ? '#FF9800' : '#4CAF50');
-            }
-            
-            // Save on change
-            tempSlider.addEventListener('change', function() {
-                localStorage.setItem('dt_tipp_tempIntensity', this.value);
-            });
-        }
-        
-        // Body check-in sliders
-        function setupSlider(sliderId, valueSpanId) {
-            const slider = document.getElementById(sliderId);
-            const span = document.getElementById(valueSpanId);
-            
-            if (slider && span) {
-                slider.addEventListener('input', function() {
-                    span.textContent = this.value;
-                    span.style.color = this.value >= 7 ? '#F44336' : (this.value >= 4 ? '#FF9800' : '#4CAF50');
-                });
-                
-                // Load saved value
-                const saved = localStorage.getItem(`dt_tipp_${sliderId}`);
-                if (saved) {
-                    slider.value = saved;
-                    span.textContent = saved;
-                    span.style.color = saved >= 7 ? '#F44336' : (saved >= 4 ? '#FF9800' : '#4CAF50');
-                }
-                
-                // Save on change
-                slider.addEventListener('change', function() {
-                    localStorage.setItem(`dt_tipp_${sliderId}`, this.value);
-                });
-            }
-        }
-        
-        ['heartBefore', 'tensionBefore', 'heartAfter', 'tensionAfter'].forEach(id => {
-            setupSlider(id, id + 'Val');
-        });
-        
-        // Breathing Guide
-        function startBreathingGuide() {
-            let count = 4;
-            let phase = 'Inhale';
-            const timerEl = document.getElementById('breathTimer');
-            const btn = event.target.closest('button');
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guided Breathing...';
-            btn.disabled = true;
-            
-            const cycle = [
-                {phase: 'Inhale', duration: 4, color: '#4CAF50'},
-                {phase: 'Hold', duration: 7, color: '#FF9800'},
-                {phase: 'Exhale', duration: 8, color: '#2196F3'}
-            ];
-            let cycleIndex = 0;
-            
-            const interval = setInterval(() => {
-                if (count > 0) {
-                    timerEl.textContent = count;
-                    timerEl.style.color = cycle[cycleIndex].color;
-                    count--;
-                } else {
-                    cycleIndex = (cycleIndex + 1) % 3;
-                    count = cycle[cycleIndex].duration;
-                    timerEl.textContent = cycle[cycleIndex].phase;
-                    timerEl.style.color = cycle[cycleIndex].color;
-                }
-            }, 1000);
-            
-            // Stop after 1 minute (2 full breathing cycles)
-            setTimeout(() => {
-                clearInterval(interval);
-                timerEl.textContent = '4';
-                timerEl.style.color = '#1a2980';
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                alert('Breathing practice complete! Notice how your body feels.');
-            }, 60000);
-        }
-        
-        // ========== STOP FUNCTIONS ==========
-        function triggerStop(step) {
-            const indicators = {
-                'S': 'stopSIndicator',
-                'T': 'stopTIndicator',
-                'O': 'stopOIndicator',
-                'P': 'stopPIndicator'
-            };
-            
-            const indicator = document.getElementById(indicators[step]);
-            if (indicator) {
-                indicator.style.display = 'block';
-                setTimeout(() => {
-                    indicator.style.display = 'none';
-                }, 2000);
-            }
-            
-            localStorage.setItem('dt_stop_lastStep', step);
-        }
-        
-        // Urge Delay Timer
-        let delayTimer;
-        function startDelayTimer(seconds) {
-            clearInterval(delayTimer);
-            
-            let timeLeft = seconds;
-            const display = document.getElementById('delayTimerDisplay');
-            const message = document.getElementById('timerMessage');
-            
-            display.textContent = formatTime(timeLeft);
-            display.style.color = '#1a2980';
-            message.textContent = "Urge delay in progress. Observe without acting.";
-            message.style.color = '#4CAF50';
-            
-            delayTimer = setInterval(() => {
-                timeLeft--;
-                display.textContent = formatTime(timeLeft);
-                
-                // Change color as time decreases
-                if (timeLeft <= 10) {
-                    display.style.color = timeLeft <= 5 ? '#F44336' : '#FF9800';
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(delayTimer);
-                    message.textContent = "Time's up! Well done. Check in with your urge now.";
-                    message.style.color = '#4CAF50';
-                    localStorage.setItem('dt_stop_lastDelay', seconds);
-                }
-            }, 1000);
-            
-            localStorage.setItem('dt_stop_timerRunning', 'true');
-        }
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        // ========== RADICAL ACCEPTANCE BREATHING ==========
-        function startAcceptanceBreathing() {
-            const phases = [
-                {text: "Notice Resistance", duration: 4},
-                {text: "Name Facts", duration: 4},
-                {text: "Acknowledge Pain", duration: 4},
-                {text: "Accept Reality", duration: 6},
-                {text: "Find Next Step", duration: 4}
-            ];
-            
-            let phaseIndex = 0;
-            let timeLeft = phases[0].duration;
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            
-            // Create or update breathing display
-            let display = document.getElementById('acceptanceBreathingDisplay');
-            if (!display) {
-                display = document.createElement('div');
-                display.id = 'acceptanceBreathingDisplay';
-                display.style.cssText = 'text-align: center; padding: 30px; background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border-radius: 15px; margin: 20px 0;';
-                btn.parentElement.parentElement.appendChild(display);
-            }
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Practicing Acceptance...';
-            btn.disabled = true;
-            
-            const updateDisplay = () => {
-                display.innerHTML = `
-                    <h3 style="color: #1a2980;">${phases[phaseIndex].text}</h3>
-                    <div style="font-size: 3.5rem; margin: 15px 0; color: #4CAF50; font-weight: bold;">${timeLeft > 0 ? timeLeft : phases[phaseIndex].text}</div>
-                    <p style="color: #666;">Breathe in... and out...</p>
-                    <div style="margin-top: 15px; font-size: 0.9rem; color: #888;">
-                        <i class="fas fa-heart"></i> Allow reality to exist exactly as it is
+
+        function renderSkillScreen() {
+            if (!state.activeSkill) return renderHomeScreen();
+            const skill = state.activeSkill;
+            const themeClass = `theme-${state.user.theme}`;
+            const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
+            const idx = steps.indexOf(state.currentStep);
+
+            let content = '';
+
+            if (state.currentStep === 'intro') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white text-center">
+                            <div class="text-5xl mb-4">${skill.icon}</div>
+                            <h2 class="text-2xl font-black mb-2">${skill.name}</h2>
+                            <p class="text-lg opacity-90 mb-4">${skill.tagline}</p>
+                            <div class="bg-white/20 rounded-xl p-4">
+                                <p class="text-base leading-relaxed">${skill.simpleExplain}</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6">
+                            <div class="flex items-start gap-4">
+                                <div class="text-3xl">💡</div>
+                                <div>
+                                    <h3 class="font-bold text-lg mb-2">How This Training Works</h3>
+                                    <p class="text-gray-700 leading-relaxed">You'll first <strong>experience</strong> the old habitual way vs the new skillful way. Then we'll reveal the insight and science behind it. Deep reflection and real-world practice lock it in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            Begin Experience → Earn 10 Coins
+                        </button>
                     </div>
                 `;
-            };
-            
-            updateDisplay();
-            
-            const interval = setInterval(() => {
-                timeLeft--;
-                
-                if (timeLeft <= 0) {
-                    phaseIndex++;
-                    if (phaseIndex >= phases.length) {
-                        clearInterval(interval);
-                        display.innerHTML = '<h3>Practice Complete</h3><p>Well done. Notice any shift in your relationship to reality.</p>';
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                        return;
-                    }
-                    timeLeft = phases[phaseIndex].duration;
-                }
-                
-                updateDisplay();
-            }, 1000);
+            } else if (state.currentStep === 'experience') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">🧪</div>
+                            <h2 class="text-xl font-bold mb-2">${skill.experienceFirst.title}</h2>
+                            <p class="opacity-90">${skill.experienceFirst.subtitle}</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            ${skill.experienceFirst.instructions.map((inst, i) => `
+                                <div class="flex gap-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                                        ${i + 1}
+                                    </div>
+                                    <p class="text-gray-700 pt-2 leading-relaxed">${inst}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-white rounded-2xl p-6">
+                            <p class="text-lg font-bold text-gray-800 mb-4">${skill.experienceFirst.prompt}</p>
+                            <textarea class="w-full p-4 rounded-xl border-2 border-amber-300 focus:border-amber-500" rows="4" placeholder="Be completely honest — what did you notice?" oninput="updateWorksheetData('exp', this.value)">${state.worksheetData.exp || ''}</textarea>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            Continue → Earn 15 Coins
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'revelation') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">💡</div>
+                            <h2 class="text-xl font-bold">${skill.revelation.title}</h2>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6">
+                            <p class="text-gray-700 whitespace-pre-line leading-relaxed">${skill.revelation.insight}</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border-2 border-blue-200">
+                            <h3 class="text-lg font-bold text-blue-900 mb-2">${skill.revelation.analogy.title}</h3>
+                            <p class="text-blue-800 whitespace-pre-line leading-relaxed">${skill.revelation.analogy.text}</p>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            I Get It → Earn 20 Coins
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'modeA') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-red-500 to-orange-600 rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">${skill.modeA.emoji}</div>
+                            <h2 class="text-xl font-bold">${skill.modeA.title}</h2>
+                            <p class="opacity-90 text-sm">The old, painful habit most of us default to</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            ${skill.modeA.steps.map((step, i) => `
+                                <div class="flex gap-4 p-3 bg-red-50 rounded-xl">
+                                    <div class="w-8 h-8 bg-red-200 rounded-full flex items-center justify-center text-red-700 font-bold">
+                                        ${i + 1}
+                                    </div>
+                                    <p class="text-gray-800 leading-relaxed">${step}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-red-50 rounded-2xl p-4 border-2 border-red-300">
+                            <p class="font-bold text-red-900 mb-1">Feels like:</p>
+                            <p class="text-red-800">${skill.modeA.feeling}</p>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            Show Me the Better Way → Earn 10 Coins
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'modeB') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">${skill.modeB.emoji}</div>
+                            <h2 class="text-xl font-bold">${skill.modeB.title}</h2>
+                            <p class="opacity-90 text-sm">The skillful, freeing approach</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            ${skill.modeB.steps.map((step, i) => `
+                                <div class="flex gap-4 p-3 bg-green-50 rounded-xl">
+                                    <div class="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center text-green-700 font-bold">
+                                        ${i + 1}
+                                    </div>
+                                    <p class="text-gray-800 leading-relaxed">${step}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-green-50 rounded-2xl p-4 border-2 border-green-300">
+                            <p class="font-bold text-green-900 mb-1">Feels like:</p>
+                            <p class="text-green-800">${skill.modeB.feeling}</p>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            Try This Way Now → Earn 25 Coins
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'worksheet') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">📝</div>
+                            <h2 class="text-xl font-bold">Deep Reflection Time</h2>
+                            <p class="opacity-90 text-sm">This is where the learning becomes permanent</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-6">
+                            ${skill.worksheet.map((q, i) => {
+                                const key = `q${i}`;
+                                const val = state.worksheetData[key] || '';
+                                return `
+                                    <div>
+                                        <p class="font-bold text-gray-800 mb-3">${q.q}</p>
+                                        ${q.type === 'textarea' ? `
+                                            <textarea class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" rows="3" placeholder="Write freely..." oninput="updateWorksheetData('${key}', this.value)">${val}</textarea>
+                                        ` : q.type === 'text' ? `
+                                            <input type="text" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" value="${val}" oninput="updateWorksheetData('${key}', this.value)" />
+                                        ` : `
+                                            <div>
+                                                <input type="range" min="${q.min}" max="${q.max}" class="w-full h-3 rounded-lg" value="${val || 5}" oninput="updateWorksheetData('${key}', this.value)" />
+                                                <div class="flex justify-between mt-2">
+                                                    <span class="text-gray-600">${q.min}</span>
+                                                    <span class="font-black text-purple-600 text-xl">${val || 5}</span>
+                                                    <span class="text-gray-600">${q.max}</span>
+                                                </div>
+                                            </div>
+                                        `}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
+                            Submit Reflection → Earn 40 Coins
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'mission') {
+                content = `
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">🌍</div>
+                            <h2 class="text-xl font-bold">Your Real-World Mission</h2>
+                            <p class="opacity-90 text-sm">Take this skill into your day and feel the difference</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-6">
+                            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-300">
+                                <p class="font-bold text-gray-800">${skill.realWorld.mission}</p>
+                            </div>
+                            <div class="space-y-3">
+                                <p class="font-bold text-gray-700">Helpful examples:</p>
+                                ${skill.realWorld.examples.map(ex => `
+                                    <div class="p-4 bg-gray-50 rounded-xl">
+                                        ${ex}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="text-center">
+                                <p class="text-gray-600 italic mb-4 text-sm">${skill.realWorld.trackerHint || 'Practice multiple times to build the habit'}</p>
+                                <div class="grid grid-cols-6 gap-2 max-w-xs mx-auto">
+                                    ${Array(12).fill().map(() => `
+                                        <div class="aspect-square bg-gray-200 rounded-lg border-2 border-dashed border-gray-400"></div>
+                                    `).join('')}
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Tap to mark each practice</p>
+                            </div>
+                        </div>
+                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth flex items-center justify-center gap-3">
+                            <span class="text-2xl">🏆</span>
+                            Master This Skill → Earn 100 Coins + Badge
+                        </button>
+                    </div>
+                `;
+            } else if (state.currentStep === 'complete') {
+                content = `
+                    <div class="space-y-6 text-center">
+                        <div class="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 rounded-2xl p-8 text-white">
+                            <div class="text-6xl mb-4">🏆</div>
+                            <h2 class="text-2xl font-black mb-4">Skill Mastered!</h2>
+                            <p class="mb-6">You earned coins throughout + a permanent badge</p>
+                            <div class="inline-block bg-white/30 px-6 py-3 rounded-2xl">
+                                <span class="text-4xl mr-3">${skill.badge.emoji}</span>
+                                <span class="text-xl font-black">${skill.badge.name}</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            <h3 class="text-lg font-bold text-gray-800">What You've Gained</h3>
+                            <div class="space-y-3 text-left text-gray-700">
+                                <p>✓ Directly experienced the painful habit vs the freeing skill</p>
+                                <p>✓ Understood the deep insight and science behind it</p>
+                                <p>✓ Reflected deeply to make it stick</p>
+                                <p>✓ Received a real-world mission to integrate it</p>
+                                <p>✓ Earned the ${skill.badge.emoji} <strong>${skill.badge.name}</strong> badge forever</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="navigateTo('home')" class="py-4 rounded-2xl border-2 border-purple-600 text-purple-600 font-bold text-lg hover:bg-purple-50 transition-smooth">
+                                ← Home
+                            </button>
+                            <button onclick="navigateTo('shop')" class="py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-lg transition-smooth">
+                                Spend Coins →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="min-h-screen ${themeClass} pb-32 safe-top">
+                    <div class="max-w-md mx-auto p-4">
+                        <div class="bg-white/90 rounded-2xl p-4 sticky top-0 z-10 mb-3">
+                            <div class="flex items-center justify-between mb-4">
+                                <button onclick="navigateTo('home')" class="text-2xl">←</button>
+                                <h1 class="text-lg font-bold text-gray-800">${skill.name}</h1>
+                                <div class="bg-white/20 px-3 py-2 rounded-full flex items-center gap-2">
+                                    <span class="text-xl">🪙</span>
+                                    <span class="text-gray-800 font-bold">${state.coins}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1 mb-2">
+                                ${steps.map((_, i) => `
+                                    <div class="flex-1 h-2 rounded-full ${i <= idx ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'}"></div>
+                                `).join('')}
+                            </div>
+                            <p class="text-gray-600 text-xs text-center">Step ${idx + 1} of ${steps.length}</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6">
+                            ${content}
+                        </div>
+                    </div>
+                    ${state.showCoinAnimation ? `
+                        <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
+                            <div class="animate-coin-pop text-center">
+                                <div class="text-7xl mb-3">🪙</div>
+                                <div class="text-4xl font-black text-yellow-400">+${state.coinAmount}</div>
+                                <p class="text-xl text-white mt-3 font-bold">Coins Earned!</p>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${renderBottomNav()}
+                </div>
+            `;
         }
-        
-        // ========== PAGE LOAD ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            // Restore last active tab
-            const lastTab = localStorage.getItem('lastActiveDistressTab') || 'intro';
-            showSection(lastTab);
+
+        function renderShopScreen() {
+            const themeClass = `theme-${state.user.theme}`;
+            const ownedThemes = state.inventory.themes.length;
+            const ownedAvatars = state.inventory.avatars.length;
             
-            // Restore all saved data
-            document.querySelectorAll('textarea, input[type="text"], input[type="range"], select, input[type="checkbox"]').forEach(el => {
-                const saved = localStorage.getItem(`dt_${el.closest('.section').id}_${el.id}`);
-                if (saved !== null) {
-                    if (el.type === 'checkbox') {
-                        el.checked = saved === 'true';
-                    } else {
-                        el.value = saved;
+            return `
+                <div class="min-h-screen ${themeClass} pb-20 safe-top">
+                    <div class="max-w-md mx-auto p-4">
+                        <div class="bg-black/20 rounded-2xl p-6 mb-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <button onclick="navigateTo('home')" class="text-2xl text-white">←</button>
+                                <div>
+                                    <h1 class="text-xl font-black text-white">Reward Shop</h1>
+                                    <p class="text-white/80 text-xs mt-1">${ownedThemes} themes • ${ownedAvatars} avatars owned</p>
+                                </div>
+                                <div class="bg-white/20 px-3 py-2 rounded-full flex items-center gap-2">
+                                    <span class="text-xl">🪙</span>
+                                    <span class="text-white font-bold">${state.coins}</span>
+                                </div>
+                            </div>
+                        </div>
                         
-                        // Update slider value displays
-                        if (el.type === 'range' && el.nextElementSibling && el.nextElementSibling.tagName === 'SPAN') {
-                            el.nextElementSibling.textContent = saved;
+                        <div class="bg-black/20 rounded-2xl p-6 space-y-8">
+                            <div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-lg font-black text-white">🎨 Themes</h2>
+                                    <span class="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-bold">${ownedThemes}/5</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    ${shopItems.filter(i => i.type === 'theme').map(item => {
+                                        const owned = isOwned(item);
+                                        const active = state.user.theme === item.value;
+                                        return `
+                                            <button onclick="handleShopItem('${item.id}')" class="rounded-2xl overflow-hidden border-2 transition-all ${active ? 'border-yellow-400 shadow-lg' : owned ? 'border-green-400' : 'border-white/30'}">
+                                                <div class="h-32 theme-${item.value} relative">
+                                                    ${active ? `<div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-full text-xs font-bold">ACTIVE</div>` : ''}
+                                                    ${owned && !active ? `<div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">OWNED</div>` : ''}
+                                                </div>
+                                                <div class="p-3 bg-black/40">
+                                                    <p class="text-white font-bold text-center text-sm mb-1">${item.name}</p>
+                                                    ${owned ? 
+                                                        `<p class="text-green-300 text-center text-xs font-bold">✓ Equippable</p>` : 
+                                                        `<div class="text-center">
+                                                            <p class="text-yellow-300 font-bold text-sm mb-1">${item.cost} 🪙</p>
+                                                            ${state.coins >= item.cost ? 
+                                                                `<p class="text-green-300 text-xs font-bold">Can afford</p>` : 
+                                                                `<p class="text-red-300 text-xs font-bold">Need ${item.cost - state.coins} more</p>`
+                                                            }
+                                                        </div>`
+                                                    }
+                                                </div>
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
                             
-                            // Set color based on value for heart/tension sliders
-                            if (el.id.includes('heart') || el.id.includes('tension')) {
-                                el.nextElementSibling.style.color = 
-                                    saved >= 7 ? '#F44336' : 
-                                    saved >= 4 ? '#FF9800' : '#4CAF50';
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Restore selected cards
-            document.querySelectorAll('.coping-card').forEach(card => {
-                const saved = localStorage.getItem(`card_${card.dataset.category}`);
-                if (saved === 'true') {
-                    card.classList.add('selected');
-                }
-            });
-            
-            // Restore selected commitment
-            const savedCommitment = localStorage.getItem('selected_commitment');
-            if (savedCommitment) {
-                const commitmentOpt = document.querySelector(`.commitment-option[data-value="${savedCommitment}"]`);
-                if (commitmentOpt) {
-                    commitmentOpt.classList.add('selected');
-                    const extraInput = commitmentOpt.querySelector('input, select');
-                    if (extraInput) extraInput.style.display = 'block';
-                }
-            }
-            
-            // Set up the distress meter in intro section
-            const distressSlider = document.getElementById('distressLevel');
-            if (distressSlider) {
-                const savedDistress = localStorage.getItem('dt_intro_distressLevel');
-                if (savedDistress) {
-                    distressSlider.value = savedDistress;
-                }
-                
-                distressSlider.addEventListener('change', function() {
-                    localStorage.setItem('dt_intro_distressLevel', this.value);
-                });
-            }
-            
-            // Set up temperature slider labels
-            if (tempSlider && tempLabel) {
-                const savedTemp = localStorage.getItem('dt_tipp_tempIntensity') || '2';
-                tempSlider.value = savedTemp;
-                tempLabel.textContent = tempOptions[savedTemp];
-                tempLabel.style.color = savedTemp == '3' ? '#F44336' : (savedTemp == '2' ? '#FF9800' : '#4CAF50');
-            }
-            
-            // Fix mobile layouts on load
-            fixMobileLayouts();
-        });
-        
-        // ========== MOBILE LAYOUT FIXES ==========
-        function fixMobileLayouts() {
-            if (window.innerWidth <= 768) {
-                // Force single column for specific problematic sections
-                const problematicSections = [
-                    '#radical .exercise > div',
-                    '#radical .reflection-box > div',
-                    '#tipp .reflection-box'
-                ];
-                
-                problematicSections.forEach(selector => {
-                    document.querySelectorAll(selector).forEach(el => {
-                        if (el.style.display === 'grid' || el.style.display === 'flex') {
-                            el.style.display = 'block';
-                        }
-                        // Stack children
-                        Array.from(el.children).forEach((child, index) => {
-                            if (index > 0) {
-                                child.style.marginTop = '20px';
-                            }
-                        });
-                    });
-                });
-            }
+                            <div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-lg font-black text-white">👤 Avatars</h2>
+                                    <span class="bg-white/20 px-3 py-1 rounded-full text-white text-xs font-bold">${ownedAvatars}/7</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4">
+                                    ${shopItems.filter(i => i.type === 'avatar').map(item => {
+                                        const owned = isOwned(item);
+                                        const active = state.user.avatar === item.value;
+                                        return `
+                                            <button onclick="handleShopItem('${item.id}')" class="p-4 rounded-2xl bg-black/40 border-2 transition-all text-center ${active ? 'border-yellow-400 shadow-lg' : owned ? 'border-green-400' : 'border-white/30'}">
+                                                <div class="text-4xl mb-2">${item.value}</div>
+                                                <p class="text-white font-bold text-xs mb-1">${item.name}</p>
+                                                ${owned ? 
+                                                    `<p class="text-green-300 text-xs font-bold">✓</p>` : 
+                                                    `<div>
+                                                        <p class="text-yellow-300 font-bold text-sm mb-1">${item.cost} 🪙</p>
+                                                        ${state.coins >= item.cost ? 
+                                                            `<p class="text-green-300 text-xs font-bold">✓</p>` : 
+                                                            `<p class="text-red-300 text-xs font-bold">✗</p>`
+                                                        }
+                                                    </div>`
+                                                }
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                            
+                            <div class="text-center pt-4 border-t border-white/20">
+                                <p class="text-white/70 mb-3 text-sm">Want more coins?</p>
+                                <button onclick="navigateTo('home')" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl text-sm">
+                                    Practice Mindfulness Skills →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    ${renderBottomNav()}
+                </div>
+            `;
         }
-        
-        // Re-fix on resize
-        window.addEventListener('resize', fixMobileLayouts);
+
+        function renderProfileScreen() {
+            const themeClass = `theme-${state.user.theme}`;
+            const completed = state.completedSkills.length;
+            return `
+                <div class="min-h-screen ${themeClass} pb-20 safe-top">
+                    <div class="max-w-md mx-auto p-4">
+                        <div class="bg-black/20 rounded-2xl p-6 mb-4">
+                            <div class="flex items-center justify-between">
+                                <button onclick="navigateTo('home')" class="text-2xl text-white">←</button>
+                                <h1 class="text-xl font-black text-white">Your Profile</h1>
+                                <div></div>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 rounded-2xl p-6 space-y-8">
+                            <div class="text-center">
+                                <div class="w-32 h-32 rounded-full bg-white/20 mx-auto mb-4 flex items-center justify-center text-6xl animate-float">
+                                    ${state.user.avatar}
+                                </div>
+                                <h2 class="text-2xl font-black text-white mb-2">${state.user.name}</h2>
+                                <div class="bg-white/20 px-4 py-2 rounded-full inline-flex items-center gap-2">
+                                    <span class="text-xl text-yellow-400">★</span>
+                                    <span class="text-white font-bold">Level ${state.user.level}</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                    <p class="text-3xl font-black text-white">${completed}/7</p>
+                                    <p class="text-white/80 mt-1 text-xs">Skills Mastered</p>
+                                </div>
+                                <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                    <p class="text-3xl font-black text-white">${state.coins}</p>
+                                    <p class="text-white/80 mt-1 text-xs">Total Coins</p>
+                                </div>
+                                <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                    <p class="text-3xl font-black text-white">${state.user.xp}</p>
+                                    <p class="text-white/80 mt-1 text-xs">Lifetime XP</p>
+                                </div>
+                                <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                    <p class="text-3xl font-black text-white">${state.user.streak}</p>
+                                    <p class="text-white/80 mt-1 text-xs">Current Streak</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-white mb-4">🏆 Your Badge Collection</h3>
+                                ${state.inventory.badges.length > 0 ? `
+                                    <div class="grid grid-cols-3 gap-3">
+                                        ${state.inventory.badges.map(b => `
+                                            <div class="bg-white/20 rounded-2xl p-4 text-center">
+                                                <div class="text-4xl mb-2">${b.emoji}</div>
+                                                <p class="text-white font-bold text-xs">${b.name}</p>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : `
+                                    <div class="text-center py-8">
+                                        <div class="text-6xl mb-4 opacity-50">🏆</div>
+                                        <p class="text-white/80 mb-4">Complete skills to earn your first badge!</p>
+                                        <button onclick="navigateTo('home')" class="px-6 py-3 bg-white/20 rounded-2xl text-white font-bold text-sm">
+                                            Start Training
+                                        </button>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                    ${renderBottomNav()}
+                </div>
+            `;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            if (!app) return;
+            if (state.screen === 'skill') app.innerHTML = renderSkillScreen();
+            else if (state.screen === 'shop') app.innerHTML = renderShopScreen();
+            else if (state.screen === 'profile') app.innerHTML = renderProfileScreen();
+            else app.innerHTML = renderHomeScreen();
+        }
+
+        // Initialize
+        render();
     </script>
 </body>
 </html>
