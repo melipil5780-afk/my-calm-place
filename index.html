@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MindPath - Complete Mindfulness Training</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -13,16 +13,12 @@
             -webkit-tap-highlight-color: transparent;
         }
        
-        html {
-            overflow-x: hidden;
-        }
-       
         body {
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
         }
        
-        /* Improved contrast for better readability */
+        /* Improved contrast */
         .skill-card h4 {
             color: #1f2937 !important;
         }
@@ -32,14 +28,30 @@
             font-weight: 700 !important;
         }
        
-        /* Enhanced input contrast */
-        textarea, input[type="text"], input[type="range"] {
+        /* ANTI-FREEZE FIX: Textarea optimization */
+        textarea.no-freeze {
+            will-change: contents;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            font-size: 16px !important;
             background: white !important;
             color: #1f2937 !important;
             border: 2px solid #d1d5db !important;
         }
        
-        textarea:focus, input[type="text"]:focus, input[type="range"]:focus {
+        textarea.no-freeze:focus {
+            border-color: #7c3aed !important;
+            outline: none !important;
+        }
+        
+        input[type="text"], input[type="range"] {
+            background: white !important;
+            color: #1f2937 !important;
+            border: 2px solid #d1d5db !important;
+            font-size: 16px !important;
+        }
+       
+        input[type="text"]:focus, input[type="range"]:focus {
             border-color: #7c3aed !important;
             outline: none !important;
         }
@@ -99,7 +111,7 @@
             animation: coin-pop 0.8s ease-out;
         }
        
-        /* Theme backgrounds - FIXED to not overlay content */
+        /* Theme backgrounds */
         .theme-gradient {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
         }
@@ -138,26 +150,9 @@
         }
        
         /* Mobile-friendly touch targets */
-        button, 
-        .clickable {
+        button, .clickable {
             min-height: 44px;
             min-width: 44px;
-        }
-       
-        /* Ensure content is above backgrounds */
-        .content-layer {
-            position: relative;
-            z-index: 10;
-        }
-       
-        /* Remove the problematic absolute background div */
-        .theme-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
         }
        
         /* Better text contrast */
@@ -244,6 +239,11 @@
     </div>
     
     <script>
+        // ====== ANTI-FREEZE SOLUTION ======
+        // Cache textarea values to prevent re-renders on every keystroke
+        let textareaCache = {};
+        let renderTimeout = null;
+        
         // State with enhanced store functionality
         let state = {
             coins: 250,
@@ -768,10 +768,32 @@
             { id: 'avatar_crown', name: '👑 Mastery', cost: 150, type: 'avatar', value: '👑' }
         ];
 
-        // Helper functions
+        // ====== OPTIMIZED FUNCTIONS ======
         function updateState(newState) {
             state = { ...state, ...newState };
-            render();
+            
+            if (renderTimeout) clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(render, 16);
+        }
+
+        // OPTIMIZED: Local cache only - NO RE-RENDER on typing
+        function updateWorksheetData(key, value) {
+            // ONLY update cache - NO STATE UPDATE = NO RE-RENDER
+            textareaCache[key] = value;
+        }
+
+        // NEW: Sync cached data to state (call when leaving field or step)
+        function syncWorksheetData() {
+            if (Object.keys(textareaCache).length > 0) {
+                updateState({ 
+                    worksheetData: { ...state.worksheetData, ...textareaCache } 
+                });
+            }
+        }
+
+        // NEW: Get current value (checks cache first, then state)
+        function getWorksheetValue(key) {
+            return textareaCache[key] || state.worksheetData[key] || '';
         }
 
         function earnCoins(amount) {
@@ -849,6 +871,9 @@
         function startSkill(id) {
             const skill = skills.find(s => s.id === id);
             if (skill) {
+                // Clear cache when starting new skill
+                textareaCache = {};
+                
                 updateState({
                     activeSkill: skill,
                     currentStep: 'intro',
@@ -869,6 +894,9 @@
             const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
             const currentIndex = steps.indexOf(state.currentStep);
 
+            // Sync any unsaved worksheet data before moving steps
+            syncWorksheetData();
+
             const rewards = { intro: 10, experience: 15, revelation: 20, modeA: 10, modeB: 25, worksheet: 40, mission: 100 };
             if (rewards[state.currentStep]) earnCoins(rewards[state.currentStep]);
 
@@ -882,10 +910,6 @@
             }
 
             if (currentIndex < steps.length - 1) updateState({ currentStep: steps[currentIndex + 1] });
-        }
-
-        function updateWorksheetData(key, value) {
-            updateState({ worksheetData: { ...state.worksheetData, [key]: value } });
         }
 
         function navigateTo(screen) {
@@ -928,7 +952,7 @@
 
             return `
                 <div class="min-h-screen ${themeClass} safe-top pb-20">
-                    <div class="max-w-md mx-auto p-5 content-layer">
+                    <div class="max-w-md mx-auto p-5">
                         <div class="flex justify-between items-center mb-6">
                             <div class="flex items-center gap-4">
                                 <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-3xl animate-float">
@@ -1051,7 +1075,13 @@
                         </div>
                         <div class="bg-white rounded-2xl p-6">
                             <p class="text-lg font-bold text-gray-800 mb-4">${skill.experienceFirst.prompt}</p>
-                            <textarea class="w-full p-4 rounded-xl border-2 border-amber-300 focus:border-amber-500" rows="4" placeholder="Be completely honest — what did you notice?" oninput="updateWorksheetData('exp', this.value)">${state.worksheetData.exp || ''}</textarea>
+                            <textarea 
+                                class="w-full p-4 rounded-xl border-2 border-amber-300 focus:border-amber-500 no-freeze" 
+                                rows="4" 
+                                placeholder="Be completely honest — what did you notice?"
+                                oninput="updateWorksheetData('exp', this.value)"
+                                onblur="syncWorksheetData()"
+                            >${getWorksheetValue('exp')}</textarea>
                         </div>
                         <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
                             Continue → Earn 15 Coins
@@ -1142,17 +1172,36 @@
                         <div class="bg-white rounded-2xl p-6 space-y-6">
                             ${skill.worksheet.map((q, i) => {
                                 const key = `q${i}`;
-                                const val = state.worksheetData[key] || '';
+                                const val = getWorksheetValue(key);
                                 return `
                                     <div>
                                         <p class="font-bold text-gray-800 mb-3">${q.q}</p>
                                         ${q.type === 'textarea' ? `
-                                            <textarea class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" rows="3" placeholder="Write freely..." oninput="updateWorksheetData('${key}', this.value)">${val}</textarea>
+                                            <textarea 
+                                                class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500 no-freeze" 
+                                                rows="3" 
+                                                placeholder="Write freely..."
+                                                oninput="updateWorksheetData('${key}', this.value)"
+                                                onblur="syncWorksheetData()"
+                                            >${val}</textarea>
                                         ` : q.type === 'text' ? `
-                                            <input type="text" class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" value="${val}" oninput="updateWorksheetData('${key}', this.value)" />
+                                            <input 
+                                                type="text" 
+                                                class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" 
+                                                value="${val}" 
+                                                oninput="updateWorksheetData('${key}', this.value)"
+                                                onblur="syncWorksheetData()" 
+                                            />
                                         ` : `
                                             <div>
-                                                <input type="range" min="${q.min}" max="${q.max}" class="w-full h-3 rounded-lg" value="${val || 5}" oninput="updateWorksheetData('${key}', this.value)" />
+                                                <input 
+                                                    type="range" 
+                                                    min="${q.min}" 
+                                                    max="${q.max}" 
+                                                    class="w-full h-3 rounded-lg" 
+                                                    value="${val || 5}" 
+                                                    oninput="updateWorksheetData('${key}', this.value); syncWorksheetData()" 
+                                                />
                                                 <div class="flex justify-between mt-2">
                                                     <span class="text-gray-600">${q.min}</span>
                                                     <span class="font-black text-purple-600 text-xl">${val || 5}</span>
