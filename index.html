@@ -1067,7 +1067,11 @@
             return item.type === 'theme' ? state.inventory.themes.includes(item.value) : state.inventory.avatars.includes(item.value);
         }
 
+        // ====== FIXED: Scroll before state update ======
         function startSkill(id) {
+            // FIX: Scroll to top immediately BEFORE state update
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
             const skill = skills.find(s => s.id === id);
             if (skill) {
                 // Check if skill is locked
