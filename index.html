@@ -236,40 +236,34 @@
             border: 2px solid #10b981;
         }
        
-        /* NEW: Locked skill styling */
-        .skill-locked {
-            opacity: 0.6;
-            filter: grayscale(30%);
-            position: relative;
-        }
-       
-        .skill-locked::after {
-            content: '🔒';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-        }
-
-        /* NEW: Streak animation */
-        .streak-flame {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
+        /* NEW: Timer animation */
+        @keyframes pulse-timer {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.9; }
         }
-
-        /* NEW: Achievement glow */
-        .achievement-glow {
-            animation: glow 2s infinite;
+        
+        .timer-pulse {
+            animation: pulse-timer 2s infinite;
         }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        
+        /* NEW: Fade transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* NEW: Special skill colors */
+        .skill-observe { background: linear-gradient(135deg, #8b5cf6, #db2777); }
+        .skill-describe { background: linear-gradient(135deg, #2563eb, #06b6d4); }
+        .skill-participate { background: linear-gradient(135deg, #059669, #10b981); }
+        .skill-nonjudgment { background: linear-gradient(135deg, #ea580c, #dc2626); }
+        .skill-onemindfully { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+        .skill-effectively { background: linear-gradient(135deg, #db2777, #f472b6); }
+        .skill-checkin { background: linear-gradient(135deg, #0d9488, #22d3ee); }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -291,6 +285,8 @@
     </div>
     
     <script>
+        // ====== PHASE 4: COMPLETE MIGRATION - ALL 7 SKILLS ======
+        
         // ====== ANTI-FREEZE SOLUTION ======
         let textareaCache = {};
         let renderTimeout = null;
@@ -313,9 +309,8 @@
             
             if (savedState) {
                 const parsed = JSON.parse(savedState);
-                // Merge with defaults to ensure new properties exist
                 state = { ...state, ...parsed };
-                updateDailyStreak(); // Check streak when loading
+                updateDailyStreak();
             }
             
             if (savedJournal) journalEntries = JSON.parse(savedJournal);
@@ -326,7 +321,7 @@
 
         // ====== ENHANCED STATE ======
         let state = {
-            coins: 250,
+            coins: 1000, // Increased for testing
             user: {
                 avatar: '😊',
                 theme: 'gradient',
@@ -370,6 +365,11 @@
             masterCombo: false
         };
 
+        // ====== TIMER VARIABLES ======
+        let timerInterval = null;
+        let practiceTimerInterval = null;
+        let practicePromptIndex = 0;
+
         // ====== ANIMATION FUNCTIONS ======
         function triggerConfetti() {
             confetti({
@@ -387,26 +387,37 @@
             });
         }
 
+        // ====== COIN ANIMATION RENDER ======
+        function renderCoinAnimation() {
+            return `
+                <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
+                    <div class="animate-coin-pop text-center">
+                        <div class="text-7xl mb-3">🪙</div>
+                        <div class="text-4xl font-black text-yellow-400">+${state.coinAmount}</div>
+                        <p class="text-xl text-white mt-3 font-bold">Coins Earned!</p>
+                    </div>
+                </div>
+            `;
+        }
+
         // ====== DAILY STREAK SYSTEM ======
         function updateDailyStreak() {
             const today = new Date().toDateString();
             const lastDate = state.user.lastPracticeDate ? new Date(state.user.lastPracticeDate).toDateString() : null;
             
-            if (lastDate === today) return; // Already checked today
+            if (lastDate === today) return;
             
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             const yesterdayStr = yesterday.toDateString();
             
             if (lastDate === yesterdayStr) {
-                // Consecutive day
                 state.user.consecutiveDays++;
                 if (state.user.consecutiveDays % 3 === 0) {
                     state.user.comboMultiplier = Math.min(3, Math.floor(state.user.consecutiveDays / 3));
                     showAchievement(`🔥 ${state.user.consecutiveDays}-Day Combo! ${state.user.comboMultiplier}x Coins!`);
                 }
             } else if (lastDate && lastDate !== today) {
-                // Broken streak
                 state.user.consecutiveDays = 1;
                 state.user.comboMultiplier = 1;
             }
@@ -418,7 +429,6 @@
         function checkDailyCheckin() {
             const today = new Date().toDateString();
             if (dailyCheckin.lastCheckin !== today) {
-                // Award bonus for daily checkin
                 earnCoins(50 * state.user.comboMultiplier);
                 dailyCheckin.streak++;
                 dailyCheckin.lastCheckin = today;
@@ -433,20 +443,17 @@
         function checkAchievements() {
             const completedCount = state.completedSkills.length;
             
-            // First badge achievement
             if (completedCount >= 1 && !achievements.firstBadge) {
                 achievements.firstBadge = true;
                 showAchievement('🏆 First Badge Unlocked!');
             }
             
-            // Five skills achievement
             if (completedCount >= 5 && !achievements.fiveSkills) {
                 achievements.fiveSkills = true;
                 earnCoins(500);
                 showAchievement('🌟 5 Skills Mastered! +500 coins!');
             }
             
-            // Ten days streak
             if (dailyCheckin.streak >= 10 && !achievements.tenDays) {
                 achievements.tenDays = true;
                 earnCoins(1000);
@@ -463,493 +470,1055 @@
             }, 500);
         }
 
-        // ====== FULL DETAILED SKILLS (with prerequisites) ======
-        const skills = [
-            {
-                id: 'observe',
-                name: 'Observe',
-                icon: '👁️',
-                color: 'from-purple-600 to-pink-600',
-                tagline: 'Watch thoughts like clouds drifting by',
-                simpleExplain: 'Notice thoughts, feelings, and sensations without trying to change or fight them',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: '30 seconds of honest effort',
-                    instructions: [
-                        'Close your eyes gently',
-                        'Try as hard as you can to stop ALL thoughts',
-                        'Force your mind to stay completely blank',
-                        'Push away every single thought that appears',
-                        'Keep trying for 30 seconds...'
-                    ],
-                    prompt: 'What actually happened? Were you able to stop thinking completely?'
+        // ====== TEMPLATE FUNCTION ======
+        function createNewSkill(spec) {
+            return {
+                id: spec.id,
+                name: spec.name,
+                icon: spec.icon,
+                color: spec.color,
+                tagline: spec.tagline,
+                simpleExplain: spec.simpleExplain,
+                prerequisite: spec.prerequisite || null,
+                
+                // NEW: Hook→Experience→Insight→Practice→Integration flow
+                newSteps: ['hook', 'experience', 'reveal', 'contrast', 'practice', 'integration', 'victory'],
+                
+                // Step 1: HOOK (30 seconds)
+                hook: {
+                    title: spec.hook.title,
+                    visual: spec.hook.visual || getDefaultVisual(spec.id),
+                    copy: spec.hook.copy,
+                    cta: spec.hook.cta || 'Try This Challenge →'
                 },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'You just proved something profound: the harder you fight thoughts, the stronger they become.\n\nIt\'s like quicksand — struggling only pulls you deeper.\n\nThis isn\'t because your mind is broken. It happens to everyone. The brain is designed to think, just like the heart is designed to beat.\n\nThe skill isn\'t suppression — it\'s gentle observation.',
-                    analogy: {
-                        title: '🎬 Movie Theater Mind',
-                        text: 'Picture yourself in a cinema. Thoughts are scenes playing on the screen.\nYou don\'t jump up to wrestle the characters or rewrite the script.\nYou simply watch, curious and calm.\nThat\'s observing.'
+                
+                // Step 2: EXPERIENCE (90 seconds)
+                experience: {
+                    title: spec.experience.title,
+                    instructions: spec.experience.instructions,
+                    timer: spec.experience.timer || getDefaultTimer(spec.id),
+                    checkboxes: spec.experience.checkboxes || [],
+                    reflectionPrompt: spec.experience.reflectionPrompt,
+                    requiresButton: spec.id === 'checkin'
+                },
+                
+                // Step 3: THE REVEAL (90 seconds)
+                reveal: {
+                    title: spec.reveal.title,
+                    visual: spec.reveal.visual || getRevealVisual(spec.id),
+                    copy: spec.reveal.copy
+                },
+                
+                // Step 4: THE CONTRAST (2 minutes)
+                contrast: {
+                    title: spec.contrast.title,
+                    modeA: {
+                        title: spec.contrast.modeA.title,
+                        steps: spec.contrast.modeA.steps,
+                        feeling: spec.contrast.modeA.feeling
                     },
-                    skillExplained: 'Observe means becoming a neutral witness to your inner world — noticing thoughts, emotions, and body sensations as they arise and pass, without judgment or interference.'
+                    modeB: {
+                        title: spec.contrast.modeB.title,
+                        steps: spec.contrast.modeB.steps,
+                        feeling: spec.contrast.modeB.feeling
+                    }
                 },
+                
+                // Step 5: PRACTICE NOW (2 minutes)
+                practice: {
+                    title: spec.practice.title,
+                    instructions: spec.practice.instructions,
+                    timer: spec.practice.timer || 60,
+                    prompts: spec.practice.prompts || [],
+                    ratingPrompt: spec.practice.ratingPrompt,
+                    wordPrompt: spec.practice.wordPrompt,
+                    requiresGoalSelection: spec.id === 'effectively'
+                },
+                
+                // Step 6: INTEGRATION (90 seconds)
+                integration: {
+                    title: spec.integration.title,
+                    mission: spec.integration.mission,
+                    examples: spec.integration.examples,
+                    explanation: spec.integration.explanation,
+                    trackerGoal: spec.integration.trackerGoal || 5,
+                    trackerBonus: spec.integration.trackerBonus || 5
+                },
+                
+                // Step 7: VICTORY
+                victory: {
+                    title: `Skill Unlocked! ${spec.victory.badge.emoji}`,
+                    badge: spec.victory.badge,
+                    learnings: spec.victory.learnings,
+                    quote: spec.victory.quote
+                }
+            };
+        }
+
+        // Helper functions for visuals and timers
+        function getDefaultVisual(skillId) {
+            const visuals = {
+                'observe': '🌀',
+                'describe': '🎭',
+                'participate': '👻',
+                'nonjudgment': '⚖️',
+                'onemindfully': '🌀',
+                'effectively': '👑',
+                'checkin': '🤖'
+            };
+            return visuals[skillId] || '🌀';
+        }
+
+        function getRevealVisual(skillId) {
+            const visuals = {
+                'observe': '🧠',
+                'describe': '📰',
+                'participate': '🎮',
+                'nonjudgment': '🔬',
+                'onemindfully': '🍳',
+                'effectively': '♟️',
+                'checkin': '🚗'
+            };
+            return visuals[skillId] || '💡';
+        }
+
+        function getDefaultTimer(skillId) {
+            const timers = {
+                'observe': 30,
+                'describe': 0,
+                'participate': 60,
+                'nonjudgment': 0,
+                'onemindfully': 60,
+                'effectively': 0,
+                'checkin': 0
+            };
+            return timers[skillId] || 30;
+        }
+
+        // ====== SKILL SPECIFICATIONS ======
+        
+        // SKILL 1: OBSERVE
+        const observeSpec = {
+            id: 'observe',
+            name: 'OBSERVE',
+            icon: '👁️',
+            color: 'from-purple-600 to-pink-600',
+            tagline: 'Watch thoughts like clouds drifting by',
+            simpleExplain: 'Notice thoughts, feelings, and sensations without trying to change or fight them',
+            prerequisite: null,
+            
+            hook: {
+                title: 'The Thought Trap Experiment',
+                copy: `Right now, you're thinking. But can you stop thinking? Not "think less" or "think calmer" — completely STOP. Let's test it.`,
+                cta: 'Try the 30-Second Challenge →'
+            },
+            
+            experience: {
+                title: 'The Impossible Challenge',
+                instructions: [
+                    'Close your eyes',
+                    'For 30 seconds, force your mind to go completely blank',
+                    'Fight every thought that appears',
+                    'Push them away with mental effort',
+                    'Ready? Timer starts now...'
+                ],
+                checkboxes: [
+                    'Thoughts multiplied',
+                    'Got frustrated',
+                    'Thoughts got louder',
+                    'Felt like failing'
+                ],
+                reflectionPrompt: 'In one sentence: What did fighting your thoughts feel like?'
+            },
+            
+            reveal: {
+                title: "The Brain's Secret",
+                copy: `You didn't fail. The challenge was impossible.
+Your brain produces 6,000 thoughts per day — automatically.
+Trying to stop thoughts is like trying to stop your heart from beating.
+The harder you fight → The stronger thoughts become
+This is called the "White Bear Effect" — try NOT to think of a white bear right now. See?
+The Analogy:
+🎬 Your Mind = A Movie Theater
+Bad strategy: Jump on screen and wrestle the characters
+Smart strategy: Sit back and watch the show
+Thoughts aren't the enemy. Fighting them is.`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Handle Thoughts',
                 modeA: {
-                    title: '❌ Fighter Mode',
-                    emoji: '🥊',
+                    title: '❌ FIGHTER MODE',
                     steps: [
-                        'Spot a thought you don\'t like',
-                        'Immediately try to push it away',
-                        'Tell yourself "Stop thinking that!"',
-                        'Feel tension and frustration rise',
-                        'Thoughts multiply and intensify',
-                        'End up exhausted and overwhelmed'
+                        'Anxious thought appears',
+                        '"Stop thinking that!"',
+                        'Try to suppress it',
+                        'Thought gets stronger',
+                        'Fight harder',
+                        'Exhaustion + overwhelm'
                     ],
-                    feeling: '😫 Draining, frustrating, endless battle'
+                    feeling: '😫 Drowning in quicksand'
                 },
                 modeB: {
-                    title: '✅ Observer Mode',
+                    title: '✅ OBSERVER MODE',
+                    steps: [
+                        'Anxious thought appears',
+                        '"Hmm, there\'s anxiety"',
+                        'Watch it like a cloud',
+                        'It drifts and fades',
+                        'Return to now',
+                        'Calm + spacious'
+                    ],
+                    feeling: '😌 Floating on water'
+                }
+            },
+            
+            practice: {
+                title: 'Your Turn: 60-Second Observer',
+                instructions: `This time, don't fight anything. Just notice thoughts like:
+• "Planning thought"
+• "Worry thought"
+• "Memory thought"
+Label and let drift.`,
+                prompts: [
+                    'Notice what\'s here...',
+                    'Just watching, not fixing...',
+                    'Thoughts come and go...',
+                    'You\'re the sky, not the clouds...'
+                ],
+                ratingPrompt: 'Rate how this felt:',
+                wordPrompt: 'One word to describe it:'
+            },
+            
+            integration: {
+                title: 'Use It Today',
+                mission: '📋 Every time you notice an emotion today, whisper: "Noticing [emotion]"',
+                examples: [
+                    'Feel irritated → "Noticing irritation"',
+                    'Feel anxious → "Noticing anxiety"',
+                    'Feel happy → "Noticing joy"'
+                ],
+                explanation: `The word "noticing" creates instant distance.
+You shift from inside the emotion to observing it.
+It's like pressing pause.`,
+                trackerGoal: 5,
+                trackerBonus: 5
+            },
+            
+            victory: {
+                badge: {
                     emoji: '👁️',
-                    steps: [
-                        'Notice a thought arising',
-                        'Silently label it: "thinking" or "planning"',
-                        'Watch it like a cloud floating across the sky',
-                        'Let it drift and dissolve on its own',
-                        'Return gently to the present moment',
-                        'Feel spaciousness return'
-                    ],
-                    feeling: '😌 Light, peaceful, spacious'
+                    name: 'Observer Badge',
+                    color: 'purple'
                 },
-                worksheet: [
-                    { q: 'Describe what happened when you tried to force thoughts away', type: 'textarea' },
-                    { q: 'How stressful did Fighter Mode feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Now try Observer Mode for 1 minute — just watch thoughts pass. What was different?', type: 'textarea' },
-                    { q: 'How calm did Observer Mode feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                learnings: [
+                    '✓ Fighting thoughts makes them stronger',
+                    '✓ Observing creates space and calm',
+                    '✓ You are the sky, not the clouds',
+                    '✓ "Noticing" is your new superpower'
                 ],
-                realWorld: {
-                    mission: 'For the next few hours, every time you notice an emotion, silently say: "I\'m noticing [emotion]"',
-                    examples: [
-                        '😤 Irritated → "Noticing irritation"',
-                        '😟 Anxious → "Noticing anxiety"',
-                        '😊 Content → "Noticing contentment"'
-                    ],
-                    trackerHint: 'Notice 5+ times today to really feel the shift'
-                },
-                badge: { emoji: '👁️', name: 'Quiet Observer', color: 'purple' },
-                prerequisite: null // First skill, no prerequisite
+                quote: '"I don\'t need to control my thoughts. I just need to watch them pass."'
+            }
+        };
+
+        // SKILL 2: DESCRIBE
+        const describeSpec = {
+            id: 'describe',
+            name: 'DESCRIBE',
+            icon: '📝',
+            color: 'from-blue-600 to-cyan-600',
+            tagline: 'Stick to facts — drop the drama',
+            simpleExplain: 'Report only what actually happened, without adding judgmental or exaggerated stories',
+            prerequisite: 'observe',
+            
+            hook: {
+                title: 'The Drama Multiplier',
+                copy: `A friend doesn't text back. Your brain doesn't say: "No response yet." It says: "They hate me. I'm always ignored. This is unbearable." Notice the drama? Let's see how much your brain adds...`,
+                cta: 'See Your Drama Level →'
             },
-            {
-                id: 'describe',
-                name: 'Describe',
-                icon: '📝',
-                color: 'from-blue-600 to-cyan-600',
-                tagline: 'Stick to facts — drop the drama',
-                simpleExplain: 'Report only what actually happened, without adding judgmental or exaggerated stories',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'Listen to your inner narrator',
-                    instructions: [
-                        'Recall a recent frustrating or upsetting situation',
-                        'Notice the exact words your mind uses to describe it',
-                        'Pay attention to dramatic labels like "disaster," "always," "ruined," "unbearable"',
-                        'Feel how your body responds to those words'
-                    ],
-                    prompt: 'How did your body feel when you added all that drama?'
-                },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'Your words create extra suffering on top of the event itself.\n\nThe situation caused one layer of pain.\nThe dramatic story you tell about it adds a second, unnecessary layer.\n\nBy sticking to pure facts, you keep the pain manageable and your mind clear.',
-                    analogy: {
-                        title: '📰 News Reporter vs Soap Opera',
-                        text: 'A neutral reporter states only verifiable facts.\nA soap opera adds music, exaggeration, and endless drama.\nYour mind often defaults to soap-opera mode — but you can switch to reporter mode.'
-                    },
-                    skillExplained: 'Describe means narrating events like a calm, objective reporter — only observable facts, no opinions or emotional adjectives.'
-                },
+            
+            experience: {
+                title: 'Catch Your Brain Exaggerating',
+                instructions: [
+                    'Think of something mildly annoying that happened recently',
+                    'Now let your brain go full drama mode',
+                    'Use dramatic words like "always," "never," "catastrophe"',
+                    'Really lean into how awful it was'
+                ],
+                checkboxes: [
+                    'Always / Never',
+                    'Catastrophe / Disaster',
+                    'Totally / Completely',
+                    'Should have / Ruined',
+                    'Impossible / Unbearable'
+                ],
+                reflectionPrompt: 'Write the full dramatic version (go wild):'
+            },
+            
+            reveal: {
+                title: 'Your Brain Adds Suffering',
+                copy: `Event: What actually happened
+Story: What your brain added
+
+The event caused pain.
+The story multiplied it by 10.
+
+The Science:
+Your brain evolved to spot threats.
+It labels everything as "good/bad," "fair/unfair."
+These labels aren't facts — they're opinions.
+And opinions create suffering.
+
+The Analogy:
+📰 News Reporter vs. Soap Opera
+Reporter: "It rained today."
+Soap opera: "The SKY OPENED and DESTROYED everything!"
+
+Same event. Different suffering.`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Describe',
                 modeA: {
-                    title: '❌ Drama Mode',
-                    emoji: '🎭',
+                    title: '❌ DRAMA MODE',
                     steps: [
-                        'Something happens',
-                        'Mind adds extreme labels: "catastrophe," "always," "never," "should"',
-                        'Story escalates: "This proves I\'m a failure"',
-                        'Body tenses, emotions intensify',
-                        'Situation feels heavier and more overwhelming'
+                        'Friend doesn\'t reply',
+                        '"They HATE me"',
+                        '"I\'m ALWAYS ignored"',
+                        '"This is UNBEARABLE"',
+                        'Spiral into despair'
                     ],
-                    feeling: '😰 Heavy, spiraling, overwhelming'
+                    feeling: '😰 Crushing weight'
                 },
                 modeB: {
-                    title: '✅ Reporter Mode',
+                    title: '✅ REPORTER MODE',
+                    steps: [
+                        'Friend doesn\'t reply',
+                        '"No response yet"',
+                        '"They might be busy"',
+                        '[Just the facts]',
+                        'Stay grounded'
+                    ],
+                    feeling: '😌 Manageable calm'
+                }
+            },
+            
+            practice: {
+                title: 'Strip Away the Drama',
+                instructions: `Take that same situation. Rewrite it using ONLY observable facts:
+• No "always/never"
+• No "should/shouldn't"
+• No judgments
+• No mind-reading
+
+Just the facts.`,
+                ratingPrompt: 'How much lighter does the facts version feel?',
+                wordPrompt: 'One word for the difference:'
+            },
+            
+            integration: {
+                title: 'Your Drama Detector',
+                mission: '🎯 Catch yourself using drama words, then replace with neutral facts.',
+                examples: [
+                    '❌ "I always mess up" → ✅ "I made a mistake this time"',
+                    '❌ "This meeting is unbearable" → ✅ "This meeting is lasting 45 minutes"',
+                    '❌ "They should text back" → ✅ "They haven\'t texted yet"'
+                ],
+                explanation: `Drama words multiply suffering. Neutral facts keep you grounded. Catch the drama, state the facts, feel the relief.`,
+                trackerGoal: 3,
+                trackerBonus: 10
+            },
+            
+            victory: {
+                badge: {
                     emoji: '📰',
-                    steps: [
-                        'Something happens',
-                        'State only what is observable: "This occurred"',
-                        'Remove opinions, judgments, absolutes',
-                        'Body stays calmer, mind stays clear',
-                        'Problem becomes solvable instead of endless'
-                    ],
-                    feeling: '😊 Clear, grounded, manageable'
+                    name: 'Clear Reporter',
+                    color: 'blue'
                 },
-                worksheet: [
-                    { q: 'Write the full dramatic version of a recent upsetting event', type: 'textarea' },
-                    { q: 'How tense or heavy did that feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Now rewrite it using ONLY observable facts — no opinions or drama', type: 'textarea' },
-                    { q: 'How much lighter or clearer does this version feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                learnings: [
+                    '✓ Your brain adds dramatic stories',
+                    '✓ Stories multiply suffering',
+                    '✓ Facts keep you grounded',
+                    '✓ "Just the facts" is your new filter'
                 ],
-                realWorld: {
-                    mission: 'Catch yourself using "always," "never," "should," or catastrophic words. Pause and rephrase with pure facts.',
-                    examples: [
-                        '❌ "I always screw this up" → ✅ "I made a mistake this time"',
-                        '❌ "They never listen to me" → ✅ "They didn\'t respond to my last message"',
-                        '❌ "This is a disaster" → ✅ "This outcome was not what I wanted"'
-                    ],
-                    trackerHint: 'Rephrase at least 3 times today'
-                },
-                badge: { emoji: '📰', name: 'Clear Reporter', color: 'blue' },
-                prerequisite: 'observe'
+                quote: '"Facts are friendly. Drama is optional."'
+            }
+        };
+
+        // SKILL 3: PARTICIPATE
+        const participateSpec = {
+            id: 'participate',
+            name: 'PARTICIPATE',
+            icon: '🌿',
+            color: 'from-green-600 to-emerald-600',
+            tagline: 'Be fully where your feet are',
+            simpleExplain: 'Bring your full attention to whatever you\'re doing right now',
+            prerequisite: 'observe',
+            
+            hook: {
+                title: 'The Ghost Life Test',
+                copy: `Right now, are you actually here? Or is your mind replaying yesterday… planning tomorrow… worrying about later? Most people are physically present but mentally absent 90% of the time. Let's test how present you really are.`,
+                cta: 'Test Your Presence →'
             },
-            {
-                id: 'participate',
-                name: 'Participate',
-                icon: '🌿',
-                color: 'from-green-600 to-emerald-600',
-                tagline: 'Be fully where your feet are',
-                simpleExplain: 'Bring your full attention to whatever you\'re doing right now',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'Ghost walk vs fully embodied walk',
-                    instructions: [
-                        'Stand up and slowly walk across the room',
-                        'Let your mind wander freely — think about plans, worries, memories',
-                        'Don\'t try to focus on the walking at all',
-                        'Continue for 30–60 seconds'
-                    ],
-                    prompt: 'Did you feel your feet touching the ground? The temperature of the air? Your breathing? How "real" did the experience feel?'
-                },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'Your body was moving, but your mind was elsewhere — you were physically present but mentally absent.\n\nLife only happens in the present moment. When the mind wanders to past or future, you miss the richness of now.\n\nFull participation turns ordinary moments into vivid experiences.',
-                    analogy: {
-                        title: '🎮 Playing a Game While Scrolling Your Phone',
-                        text: 'You\'d miss the entire adventure, the excitement, the beauty.\nLife is the same — when you\'re mentally elsewhere, you\'re not truly living it.'
-                    },
-                    skillExplained: 'Participate means bringing your mind fully into the current activity — engaging all your senses in what\'s happening right here, right now.'
-                },
+            
+            experience: {
+                title: 'The Invisible Walk',
+                instructions: [
+                    'Stand up (really, do it)',
+                    'Walk slowly across the room',
+                    'Let your mind wander completely',
+                    'Think about your to-do list, worries, plans',
+                    'Don\'t try to feel your feet at all',
+                    'Walk for 60 seconds...'
+                ],
+                checkboxes: [
+                    'Temperature of the air',
+                    'Pressure in your feet',
+                    'Your breathing',
+                    'Sounds around you',
+                    'The feeling of movement'
+                ],
+                reflectionPrompt: 'How many sensations did you miss?'
+            },
+            
+            reveal: {
+                title: 'You Were a Ghost',
+                copy: `Your body was moving. Your mind was elsewhere.
+You were physically here but experientially gone.
+This is how most people live — on autopilot.
+
+The Cost:
+Life becomes a blur.
+Memories are vague.
+Joy feels muted.
+Time vanishes.
+
+You're alive, but not truly LIVING.
+
+The Analogy:
+🎮 Playing a Game While Scrolling Your Phone
+The game's beautiful graphics? Missed.
+The epic moments? Missed.
+The entire experience? Missed.
+
+That's what happens when your mind isn't present.`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Experience',
                 modeA: {
-                    title: '❌ Ghost Mode',
-                    emoji: '👻',
+                    title: '❌ GHOST MODE',
                     steps: [
-                        'Body performs an action',
-                        'Mind drifts to past regrets or future plans',
-                        'Sensations go unnoticed',
-                        'Time passes in a blur',
-                        'Life feels flat and disconnected'
+                        'Eating lunch',
+                        'Mind on work stress',
+                        'Don\'t taste food',
+                        'Meal ends (when??)',
+                        'Feel unsatisfied'
                     ],
-                    feeling: '😶‍🌫️ Numb, distant, half-alive'
+                    feeling: '😶‍🌫️ Numb blur'
                 },
                 modeB: {
-                    title: '✅ Fully Present Mode',
+                    title: '✅ FULLY ALIVE MODE',
+                    steps: [
+                        'Eating lunch',
+                        'Notice smell, texture, flavor',
+                        'Chew slowly',
+                        'Experience each bite',
+                        'Feel nourished + satisfied'
+                    ],
+                    feeling: '✨ Vivid + rich'
+                }
+            },
+            
+            practice: {
+                title: 'The Present Walk',
+                instructions: `Walk again. Same path. This time, notice everything:
+• Feel your feet touching the ground
+• Notice the temperature on your skin
+• Hear the sounds around you
+• Feel your breath moving`,
+                ratingPrompt: 'How alive and vivid did this walk feel?',
+                wordPrompt: 'One word for the difference:'
+            },
+            
+            integration: {
+                title: 'One Meal, Fully Present',
+                mission: '🍽️ Eat ONE meal today with ZERO distractions',
+                examples: [
+                    'No phone, no TV, no reading',
+                    'Just: smell, taste, texture, chew',
+                    'Notice when mind wanders, gently return'
+                ],
+                explanation: `Presence turns ordinary moments into extraordinary experiences. One fully present meal teaches more than hours of distracted living.`,
+                trackerGoal: 1,
+                trackerBonus: 20
+            },
+            
+            victory: {
+                badge: {
                     emoji: '🌿',
-                    steps: [
-                        'Body performs an action',
-                        'Mind notices sensations: touch, temperature, movement',
-                        'When mind wanders, gently return attention',
-                        'Engage all senses fully',
-                        'Experience becomes vivid and rich'
-                    ],
-                    feeling: '✨ Alive, connected, vibrant'
+                    name: 'Fully Present',
+                    color: 'green'
                 },
-                worksheet: [
-                    { q: 'What was your mind thinking about during the ghost walk?', type: 'textarea' },
-                    { q: 'How present or "real" did the walk feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Walk again, this time noticing every sensation in your feet, legs, breath. Describe the difference.', type: 'textarea' },
-                    { q: 'How alive and present did this feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                learnings: [
+                    '✓ Most of life is lived on autopilot',
+                    '✓ Presence makes everything vivid',
+                    '✓ Your senses are a doorway to NOW',
+                    '✓ One fully present moment > hours of distraction'
                 ],
-                realWorld: {
-                    mission: 'Choose one ordinary daily activity and do it with 100% focused attention — no multitasking.',
-                    examples: [
-                        '🍽️ Washing dishes — feel water temperature, soap texture, sounds',
-                        '🚶 Walking — notice each footfall, air on skin',
-                        '🍎 Eating — taste, smell, texture of every bite'
-                    ],
-                    trackerHint: 'Do this fully at least twice today'
-                },
-                badge: { emoji: '🌿', name: 'Fully Present', color: 'green' },
-                prerequisite: 'observe'
+                quote: '"Wherever you are, be all there."'
+            }
+        };
+
+        // SKILL 4: NONJUDGMENTALLY
+        const nonjudgmentSpec = {
+            id: 'nonjudgment',
+            name: 'NONJUDGMENTALLY',
+            icon: '⚖️',
+            color: 'from-orange-600 to-red-600',
+            tagline: 'Just notice — no "good" or "bad" needed',
+            simpleExplain: 'Observe experiences exactly as they are, without adding labels or self-criticism',
+            prerequisite: 'describe',
+            
+            hook: {
+                title: 'The Second Arrow',
+                copy: `You make a mistake. That's Arrow #1 (the event). Then your brain shoots Arrow #2: "I'm so stupid. I always fail. I'm worthless." Arrow #1 hurts. Arrow #2 is self-inflicted torture. Let's see how many arrows you shoot at yourself...`,
+                cta: 'Count Your Arrows →'
             },
-            {
-                id: 'nonjudgment',
-                name: 'Nonjudgmentally',
-                icon: '⚖️',
-                color: 'from-orange-600 to-red-600',
-                tagline: 'Just notice — no "good" or "bad" needed',
-                simpleExplain: 'Observe experiences exactly as they are, without adding labels or self-criticism',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'Feel the weight of judgment',
-                    instructions: [
-                        'Recall a recent mistake, setback, or flaw',
-                        'Add harsh labels: "I\'m stupid," "I\'m a failure," "This is unacceptable"',
-                        'Really lean into how "bad" or "wrong" it was',
-                        'Keep judging for 30 seconds'
-                    ],
-                    prompt: 'Where did you feel the judgment in your body? How heavy did it make everything?'
-                },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'The original event caused one pain.\nJudgment adds a second, ongoing pain — like getting hit by an arrow, then shooting yourself with another.\nDropping judgment doesn\'t mean approving everything. It means stopping the self-inflicted suffering so you can learn and move forward.',
-                    analogy: {
-                        title: '🔬 Scientist vs Harsh Critic',
-                        text: 'A scientist observes an experiment\'s results without personal attack.\nA critic shames themselves for "failing."\nNonjudgment lets you gather clear data and improve.'
-                    },
-                    skillExplained: 'Nonjudgmentally means seeing reality clearly — what happened, without layering on "good/bad," "should/shouldn\'t," or personal attacks.'
-                },
+            
+            experience: {
+                title: 'Aim All Arrows at Yourself',
+                instructions: [
+                    'Think of a recent mistake or flaw',
+                    'Now be as harsh as possible',
+                    'Use the cruelest words you can',
+                    'Really attack yourself for 30 seconds'
+                ],
+                checkboxes: [
+                    'Stupid / Failure',
+                    'Pathetic / Worthless',
+                    'Loser / Broken',
+                    'Unlovable / Disaster',
+                    'Should be better'
+                ],
+                reflectionPrompt: 'Write the full self-attack:'
+            },
+            
+            reveal: {
+                title: 'You\'re Shooting Yourself',
+                copy: `The mistake = Arrow #1 (you couldn't control)
+The judgment = Arrow #2 (you chose to shoot)
+
+Arrow #2 doesn't fix Arrow #1.
+It just adds more pain.
+
+The Science:
+Self-judgment activates the same brain regions as physical pain.
+It triggers:
+• Stress hormones
+• Inflammation
+• Shutdown mode
+
+You can't learn when you're in pain.
+
+The Analogy:
+🔬 Scientist vs. Cruel Judge
+Scientist: "Experiment failed. Interesting. What went wrong?"
+Judge: "YOU failed. You're a failure. Give up."
+
+Which one makes progress?`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Respond',
                 modeA: {
-                    title: '❌ Judging Mode',
-                    emoji: '⚖️',
+                    title: '❌ JUDGE MODE',
                     steps: [
-                        'Something happens that you don\'t like',
-                        'Mind adds labels: "bad," "wrong," "failure"',
-                        'Self-attack begins: "I\'m terrible"',
-                        'Shame and stuckness grow',
-                        'Learning and change become impossible'
+                        'Make mistake',
+                        '"I\'m so stupid!"',
+                        'Shame spiral begins',
+                        'Feel worthless',
+                        'Can\'t think clearly',
+                        'Stuck + hopeless'
                     ],
-                    feeling: '😞 Heavy shame, stuck, hopeless'
+                    feeling: '😞 Crushed by shame'
                 },
                 modeB: {
-                    title: '✅ Scientist Mode',
+                    title: '✅ SCIENTIST MODE',
+                    steps: [
+                        'Make mistake',
+                        '"This didn\'t work"',
+                        '"What can I learn?"',
+                        'Stay curious',
+                        'Mind stays clear',
+                        'Growth possible'
+                    ],
+                    feeling: '🌟 Open + curious'
+                }
+            },
+            
+            practice: {
+                title: 'Remove the Arrows',
+                instructions: `Same situation. No judgment this time.
+Rewrite using ONLY:
+• Neutral observations
+• What happened (facts)
+• What you could learn`,
+                ratingPrompt: 'How much lighter does the scientist version feel?',
+                wordPrompt: 'How does dropping judgment feel?'
+            },
+            
+            integration: {
+                title: 'Catch the Judge',
+                mission: '🎯 Every time you catch self-judgment: 1. Say "Judging" 2. State ONE neutral fact 3. Move on',
+                examples: [
+                    '❌ "I\'m so lazy" → "Judging" → ✅ "I haven\'t started that task yet"',
+                    '❌ "This is terrible" → "Judging" → ✅ "This is challenging"',
+                    '❌ "I\'m a bad person" → "Judging" → ✅ "I made a choice I regret"'
+                ],
+                explanation: `Judgment = self-inflicted pain. Facts create space to learn. Catch the judge, state facts, stay curious.`,
+                trackerGoal: 5,
+                trackerBonus: 5
+            },
+            
+            victory: {
+                badge: {
                     emoji: '🔬',
-                    steps: [
-                        'Something happens',
-                        'Observe facts only: "This occurred"',
-                        'Note contributing factors without blame',
-                        'Mind stays clear and curious',
-                        'Space opens for learning and growth'
-                    ],
-                    feeling: '🌟 Light, curious, forward-moving'
+                    name: 'Nonjudging Mind',
+                    color: 'orange'
                 },
-                worksheet: [
-                    { q: 'Write the full judgmental version of a recent difficult event', type: 'textarea' },
-                    { q: 'How painful or heavy did the judgment make it feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Now write only the neutral facts — no labels or opinions', type: 'textarea' },
-                    { q: 'How much lighter or clearer does this feel? (1–10)', type: 'slider', min: 1, max: 10 }
+                learnings: [
+                    '✓ Judgment = self-inflicted pain',
+                    '✓ Facts create space to learn',
+                    '✓ Curiosity > Criticism',
+                    '✓ You can observe without attacking'
                 ],
-                realWorld: {
-                    mission: 'When judgment arises, silently note "Judging," then state one neutral fact.',
-                    examples: [
-                        '❌ "I\'m so lazy" → "Judging" → ✅ "I haven\'t started that task yet"',
-                        '❌ "This is awful" → "Judging" → ✅ "This situation is challenging"'
-                    ],
-                    trackerHint: 'Catch and reframe judgment 5+ times today'
-                },
-                badge: { emoji: '🔬', name: 'Nonjudging Mind', color: 'orange' },
-                prerequisite: 'describe'
+                quote: '"The curious mind grows. The judging mind suffers."'
+            }
+        };
+
+        // SKILL 5: ONE-MINDFULLY
+        const oneMindfullySpec = {
+            id: 'onemindfully',
+            name: 'ONE-MINDFULLY',
+            icon: '🎯',
+            color: 'from-indigo-600 to-purple-600',
+            tagline: 'One thing, fully and completely',
+            simpleExplain: 'Give your full attention to one activity at a time',
+            prerequisite: 'participate',
+            
+            hook: {
+                title: 'The Multitasking Myth',
+                copy: `Your brain tells you: "I can do 5 things at once!" Science says: You can't. Every time you "multitask," your brain is actually rapidly switching — and losing time with each switch. Up to 40% of your focus evaporates. Let's prove it.`,
+                cta: 'Test Your Focus →'
             },
-            {
-                id: 'onemindfully',
-                name: 'One-Mindfully',
-                icon: '🎯',
-                color: 'from-indigo-600 to-purple-600',
-                tagline: 'One thing, fully and completely',
-                simpleExplain: 'Give your full attention to one activity at a time',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'The myth of multitasking',
-                    instructions: [
-                        'Count backwards from 100 by 7s (100, 93, 86…)',
-                        'Simultaneously list 5 items currently in your fridge',
-                        'Also plan what you\'ll do this evening',
-                        'Keep all three tasks going actively for 30–60 seconds'
-                    ],
-                    prompt: 'How well did you perform any of the tasks? How did your brain feel?'
-                },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'Your brain cannot truly multitask — it rapidly switches focus, losing time and accuracy with every switch.\nResearch shows task-switching can waste up to 40% of productive time.\nMasters in any field succeed through deep, single-pointed focus.',
-                    analogy: {
-                        title: '🍳 Master Chef vs Frenzied Cook',
-                        text: 'A master chef gives full attention to one dish at a time — perfection results.\nTrying five dishes at once burns everything.\nOne-mindfully creates excellence.'
-                    },
-                    skillExplained: 'One-mindfully means doing one thing at a time with complete, undistracted attention — closing tabs, silencing notifications, and being fully immersed.'
-                },
+            
+            experience: {
+                title: 'The Impossible Juggle',
+                instructions: [
+                    'Do all three tasks at the same time:',
+                    'Task 1: Count backwards from 100 by 7s',
+                    'Task 2: Name 5 items in your fridge',
+                    'Task 3: Plan tonight\'s dinner',
+                    'Keep all three tasks going for 60 seconds!'
+                ],
+                timer: 60,
+                checkboxes: [
+                    'Frazzled / Exhausted',
+                    'Overwhelmed / Scattered',
+                    'Frustrated / Ineffective',
+                    'Made many errors',
+                    'Lost track completely'
+                ],
+                reflectionPrompt: 'How well did you perform any of the tasks?'
+            },
+            
+            reveal: {
+                title: 'Your Brain Can\'t Multitask',
+                copy: `What you just felt = your brain context-switching.
+Each switch costs:
+• Time (up to 40% lost)
+• Energy (mental fatigue)
+• Quality (more errors)
+• Memory (poor retention)
+
+The Science:
+Brain imaging shows multitasking shrinks your prefrontal cortex over time.
+Masters in any field (athletes, artists, surgeons) all do the same thing:
+One thing, fully.
+
+The Analogy:
+🍳 Master Chef vs. Frantic Cook
+Master: Focuses on one perfect dish
+Frantic: Burns everything while juggling five pans
+Excellence requires singular focus.`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Work',
                 modeA: {
-                    title: '❌ Scattered Mode',
-                    emoji: '🌀',
+                    title: '❌ SCATTERED MODE',
                     steps: [
-                        'Attempt multiple tasks simultaneously',
-                        'Brain ping-pongs rapidly between them',
-                        'Lose focus and energy with each switch',
-                        'Accomplish little while feeling busy',
-                        'End exhausted with mediocre results'
+                        'Working on report',
+                        'Check phone',
+                        'Think about email',
+                        'Start different task',
+                        'Brain ping-pongs',
+                        'Exhausted, nothing done'
                     ],
-                    feeling: '😵‍💫 Frazzled, tired, ineffective'
+                    feeling: '😵‍💫 Chaos'
                 },
                 modeB: {
-                    title: '✅ Laser Mode',
+                    title: '✅ LASER MODE',
+                    steps: [
+                        'Working on report',
+                        'Close all distractions',
+                        'Full attention here',
+                        'Work with flow',
+                        'Brain calm + clear',
+                        'Task completed well'
+                    ],
+                    feeling: '🎯 Flow state'
+                }
+            },
+            
+            practice: {
+                title: 'One Task, Full Focus',
+                instructions: `Pick ONE simple task:
+• Write 3 sentences
+• Organize one drawer
+• Reply to one message
+
+Do ONLY this for 2 minutes.
+No phone. No other tabs. No planning.`,
+                prompts: [
+                    'Stay with this one thing...',
+                    'When mind wanders, gently return...',
+                    'Just this, nothing else...'
+                ],
+                ratingPrompt: 'How satisfying was completion?',
+                wordPrompt: 'One word for this focused state:'
+            },
+            
+            integration: {
+                title: 'One Meal, Zero Screens',
+                mission: '🍽️ Eat ONE full meal with ZERO distractions',
+                examples: [
+                    'Remove: Phone, TV/laptop, Books/reading',
+                    'Just: Food, Your senses, This moment',
+                    'Notice: Taste, texture, smell, chewing'
+                ],
+                explanation: `Multitasking steals 40% of focus. One-mindfully returns it. One fully focused meal teaches your brain what single-tasking feels like.`,
+                trackerGoal: 1,
+                trackerBonus: 25
+            },
+            
+            victory: {
+                badge: {
                     emoji: '🎯',
-                    steps: [
-                        'Choose one task',
-                        'Remove all distractions',
-                        'Give it 100% of your attention',
-                        'When mind wanders, gently return',
-                        'Complete with clarity and quality'
-                    ],
-                    feeling: '😌 Clear, accomplished, energized'
+                    name: 'Laser Focus',
+                    color: 'indigo'
                 },
-                worksheet: [
-                    { q: 'Describe your experience trying to juggle the three tasks', type: 'textarea' },
-                    { q: 'How scattered or overwhelmed did you feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Now pick ONE simple task and do it for 2 minutes with full attention. Describe how it felt.', type: 'textarea' },
-                    { q: 'How focused and satisfying was that? (1–10)', type: 'slider', min: 1, max: 10 }
+                learnings: [
+                    '✓ Multitasking is a myth',
+                    '✓ Context-switching steals 40% of focus',
+                    '✓ One thing fully > many things poorly',
+                    '✓ Masters do one thing at a time'
                 ],
-                realWorld: {
-                    mission: 'Eat one full meal today with ZERO distractions — no screens, no reading, no planning.',
-                    examples: [
-                        'Notice smell, flavor, texture of each bite',
-                        'Chew slowly and thoroughly',
-                        'Stay fully with the experience of eating'
-                    ],
-                    trackerHint: 'Do this mindfully at least once today'
-                },
-                badge: { emoji: '🎯', name: 'Laser Focus', color: 'indigo' },
-                prerequisite: 'participate'
+                quote: '"The person who chases two rabbits catches neither."'
+            }
+        };
+
+        // SKILL 6: EFFECTIVELY
+        const effectivelySpec = {
+            id: 'effectively',
+            name: 'EFFECTIVELY',
+            icon: '✅',
+            color: 'from-pink-600 to-rose-600',
+            tagline: 'Do what works — not what feels "right"',
+            simpleExplain: 'Choose actions that achieve your real goal, even if ego doesn\'t like it',
+            prerequisite: 'nonjudgment',
+            
+            hook: {
+                title: 'The Ego Trap',
+                copy: `You're in an argument. You can either: A) Win the argument, damage the relationship B) Let it go, keep the peace. Your ego screams: "WIN! BE RIGHT!" But does "being right" actually get you what you want? Let's find out.`,
+                cta: 'Discover What Works →'
             },
-            {
-                id: 'effectively',
-                name: 'Effectively',
-                icon: '✅',
-                color: 'from-pink-600 to-rose-600',
-                tagline: 'Do what works — not what feels "right"',
-                simpleExplain: 'Choose actions that achieve your real goal, even if ego doesn\'t like it',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'Feel the pull of being right',
-                    instructions: [
-                        'Recall a recent disagreement or conflict',
-                        'Notice the strong urge to prove you were right',
-                        'Feel the tension of defending your position',
-                        'Imagine doubling down to win the argument'
-                    ],
-                    prompt: 'Did being "right" actually help achieve what you really wanted?'
-                },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'Winning the battle of "who\'s right" often costs you the war — peace, connection, or real progress.\nEffectiveness asks: "What action will actually get me closer to my goal?"\nSometimes the most effective move is letting go of ego.',
-                    analogy: {
-                        title: '♟️ Strategic Chess Player',
-                        text: 'Arguing about the rules mid-game might make you "right," but you lose the match.\nA master player chooses moves that win the game, regardless of pride.'
-                    },
-                    skillExplained: 'Effectively means prioritizing real-world results over being right, looking good, or following rigid principles.'
-                },
+            
+            experience: {
+                title: 'Feel the Need to Win',
+                instructions: [
+                    'Think of a recent disagreement',
+                    'Feel the pull to prove you were right',
+                    'Notice the urge to defend, prove, win',
+                    'Lean into that ego-driven desire'
+                ],
+                checkboxes: [
+                    'Defend your position',
+                    'Prove they were wrong',
+                    'Make them admit it',
+                    'Win the argument',
+                    'Show you\'re smarter',
+                    'Get the last word',
+                    'Make them see your side'
+                ],
+                reflectionPrompt: 'Did "being right" actually help?'
+            },
+            
+            reveal: {
+                title: 'Winning vs. Working',
+                copy: `Your ego wants: To be right, to win, to look good
+Your actual goal: Connection, solution, peace
+
+These are often opposites.
+"Being right" feels good for 5 seconds.
+Effectiveness feels good for a lifetime.
+
+The Principle:
+Do what WORKS, not what your ego demands.
+
+The Analogy:
+♟️ Chess Master
+Amateur: Argues about the rules mid-game (and loses)
+Master: Plays the best move to WIN THE GAME
+
+The goal isn't being right.
+The goal is the goal.`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Respond',
                 modeA: {
-                    title: '❌ Ego Mode',
-                    emoji: '👑',
+                    title: '❌ EGO MODE',
                     steps: [
-                        'Goal becomes "be right" or "win"',
-                        'Defend position at all costs',
-                        'Escalate conflict to prove point',
-                        'Relationship or outcome suffers',
-                        'Feel temporarily victorious but ultimately empty'
+                        'Disagreement happens',
+                        'MUST prove I\'m right',
+                        'Escalate to win',
+                        'Other person hurt/angry',
+                        '"Won" but relationship damaged',
+                        'Feel empty'
                     ],
-                    feeling: '😤 Tense, stuck, isolated'
+                    feeling: '😤 Hollow victory'
                 },
                 modeB: {
-                    title: '✅ Strategy Mode',
-                    emoji: '♟️',
+                    title: '✅ STRATEGY MODE',
                     steps: [
-                        'Clarify true goal (connection? solution? peace?)',
-                        'Ask "What action serves that goal best?"',
-                        'Choose effectiveness over ego',
-                        'Act accordingly, even if it means yielding',
-                        'Achieve meaningful outcome'
+                        'Disagreement happens',
+                        'Ask: "What\'s my real goal here?"',
+                        'Choose effectiveness',
+                        'Let ego go',
+                        'Achieve actual goal',
+                        'Feel genuinely satisfied'
                     ],
-                    feeling: '😊 Calm, connected, satisfied'
-                },
-                worksheet: [
-                    { q: 'Describe a recent conflict and your need to be right', type: 'textarea' },
-                    { q: 'How stressful or stuck did it feel? (1–10)', type: 'slider', min: 1, max: 10 },
-                    { q: 'What was your actual deeper goal in that situation?', type: 'text' },
-                    { q: 'What action would have been most effective for reaching that goal?', type: 'textarea' }
-                ],
-                realWorld: {
-                    mission: 'In your next disagreement or urge to defend, pause and ask: "What will actually work here?"',
-                    examples: [
-                        'Instead of proving you\'re right → Ask "What outcome do we both want?"',
-                        'Instead of winning the point → Seek understanding or compromise'
-                    ],
-                    trackerHint: 'Apply this at least once today'
-                },
-                badge: { emoji: '♟️', name: 'Wise Strategist', color: 'pink' },
-                prerequisite: 'nonjudgment'
+                    feeling: '😊 True success'
+                }
             },
-            {
-                id: 'checkin',
-                name: 'Check-In',
-                icon: '🧠',
-                color: 'from-teal-600 to-cyan-600',
-                tagline: 'Know your inner state before acting',
-                simpleExplain: 'Pause briefly to scan mood, body, and energy before responding',
-                experienceFirst: {
-                    title: '🧪 Try This Quick Experiment',
-                    subtitle: 'Automatic pilot response',
-                    instructions: [
-                        'Without any pause or checking, immediately answer out loud: "I\'m fine"',
-                        'Don\'t look inward at all',
-                        'Just give the default, habitual response'
-                    ],
-                    prompt: 'Was that actually accurate? Did you even know how you truly felt?'
+            
+            practice: {
+                title: 'Name Your Real Goal',
+                instructions: `Same disagreement. Forget "being right."
+What did you ACTUALLY want?
+
+Common real goals:
+• To feel heard
+• To stay connected
+• To solve the problem
+• To preserve peace
+• To be understood
+• To move forward together`,
+                ratingPrompt: 'Which serves your actual goal better?',
+                wordPrompt: 'My real goal was:'
+            },
+            
+            integration: {
+                title: 'Ask Before Reacting',
+                mission: '🎯 Next time you feel defensive/reactive: Pause and ask: "What do I actually want here?" Then choose the action that gets you THERE.',
+                examples: [
+                    'Ego says: "Prove I\'m right!" → Real goal: Stay connected → Effective action: Listen first',
+                    'Ego says: "Win this argument!" → Real goal: Solve the problem → Effective action: Find compromise',
+                    'Ego says: "Defend myself!" → Real goal: Peace → Effective action: Let it go'
+                ],
+                explanation: `Ego ≠ Effectiveness. "Being right" often costs you what you want. Effectiveness gets you what matters. Pause, ask, choose wisely.`,
+                trackerGoal: 2,
+                trackerBonus: 15
+            },
+            
+            victory: {
+                badge: {
+                    emoji: '♟️',
+                    name: 'Wise Strategist',
+                    color: 'pink'
                 },
-                revelation: {
-                    title: '💡 The Powerful Insight',
-                    insight: 'Most of us operate on autopilot, reacting before knowing our true inner state.\nThis leads to regrettable words and actions.\nA brief check-in restores choice and wisdom.',
-                    analogy: {
-                        title: '🚗 Driving Without Checking the Dashboard',
-                        text: 'You wouldn\'t know if fuel is low, engine overheating, or oil pressure dropping.\nCheck-In is glancing at your internal dashboard before deciding how to proceed.'
-                    },
-                    skillExplained: 'Check-In means taking 5–10 seconds to scan: mood, body tension, energy level, urges — then responding intentionally.'
-                },
+                learnings: [
+                    '✓ Ego ≠ Effectiveness',
+                    '✓ "Being right" often costs you what you want',
+                    '✓ Real goals > feeling superior',
+                    '✓ Masters ask: "What will actually work?"'
+                ],
+                quote: '"Would you rather be right, or would you rather be happy?"'
+            }
+        };
+
+        // SKILL 7: CHECK THE FACTS
+        const checkFactsSpec = {
+            id: 'checkin',
+            name: 'CHECK-IN',
+            icon: '🧠',
+            color: 'from-teal-600 to-cyan-600',
+            tagline: 'Know your inner state before acting',
+            simpleExplain: 'Pause briefly to scan mood, body, and energy before responding',
+            prerequisite: 'onemindfully',
+            
+            hook: {
+                title: 'Autopilot Reactions',
+                copy: `Someone asks: "How are you?" You instantly say: "I'm fine." But are you actually fine? Or did you just… autopilot? Most people react to life without checking what's TRUE inside. Let's test your autopilot.`,
+                cta: 'Test Your Awareness →'
+            },
+            
+            experience: {
+                title: 'The Auto-Response',
+                instructions: [
+                    'Don\'t think. Just REACT.',
+                    'How are you right now?',
+                    'Click the button without checking',
+                    'Give your automatic answer'
+                ],
+                checkboxes: [
+                    'Yes, I checked',
+                    'No, I just auto-answered',
+                    'Honestly not sure',
+                    'Said what I always say',
+                    'Didn\'t actually know'
+                ],
+                reflectionPrompt: 'Was that actually accurate?'
+            },
+            
+            reveal: {
+                title: 'You\'re on Autopilot',
+                copy: `Your brain runs on autopilot 95% of the time.
+It reacts based on:
+• Old patterns
+• Assumptions
+• Habitual responses
+Not based on current reality.
+
+This causes you to:
+• Miss warning signs
+• React inappropriately
+• Make choices you regret
+• Feel out of control
+
+The Fix:
+Check the Facts = Glance at your internal dashboard
+
+Before reacting, take 10 seconds to scan:
+• Mood
+• Body
+• Energy
+• Urges
+
+The Analogy:
+🚗 Driving Without Looking at Dashboard
+You wouldn't know:
+• If fuel is low
+• If engine is overheating
+• If tire pressure is critical
+
+Check-the-Facts = looking at your internal gauges`
+            },
+            
+            contrast: {
+                title: 'Two Ways to Respond',
                 modeA: {
-                    title: '❌ Autopilot Mode',
-                    emoji: '🤖',
+                    title: '❌ AUTOPILOT MODE',
                     steps: [
-                        'Trigger appears',
+                        'Trigger happens',
                         'React instantly from habit',
                         'Miss internal warning signs',
-                        'Later regret words or actions',
+                        'Words/actions you regret',
                         'Feel out of control'
                     ],
-                    feeling: '😬 Reactive, regretful, powerless'
+                    feeling: '🤖 Reactive robot'
                 },
                 modeB: {
-                    title: '✅ Aware Mode',
-                    emoji: '🧭',
+                    title: '✅ CHECK-IN MODE',
                     steps: [
-                        'Trigger appears',
-                        'Pause for 10 seconds',
-                        'Scan body, mood, energy',
-                        'Choose response based on data',
-                        'Act intentionally'
+                        'Trigger happens',
+                        'Pause 10 seconds',
+                        'Scan: mood, body, energy',
+                        'Respond intentionally',
+                        'Feel in control'
                     ],
-                    feeling: '🎯 Grounded, wise, in control'
-                },
-                worksheet: [
-                    { q: 'What automatic response did you give?', type: 'text' },
-                    { q: 'Now pause and check: What is your actual mood right now? (1–10 calm to intense)', type: 'slider', min: 1, max: 10 },
-                    { q: 'Where in your body do you feel any tension or sensation?', type: 'textarea' },
-                    { q: 'What is your energy level right now? (1–10 low to high)', type: 'slider', min: 1, max: 10 }
+                    feeling: '🧭 Wise navigator'
+                }
+            },
+            
+            practice: {
+                title: '10-Second Check-In',
+                instructions: `Right now, actually CHECK:
+
+MOOD: How do you feel emotionally?
+BODY: Where do you feel tension?
+ENERGY: High or low?
+URGES: What do you feel pulled to do?
+
+Take 10 seconds. Really check.`,
+                ratingPrompt: 'How intense is your mood right now?',
+                wordPrompt: 'One-word mood label:'
+            },
+            
+            integration: {
+                title: '3 Check-Ins Today',
+                mission: '🧭 Before responding to anything emotional: 10-second scan: 1. Mood (name it) 2. Body (where\'s tension?) 3. Energy (high or low?) Then choose your response.',
+                examples: [
+                    'Before replying to a text',
+                    'Before speaking when upset',
+                    'Before making a decision',
+                    'When someone asks how you are',
+                    'When feeling triggered'
                 ],
-                realWorld: {
-                    mission: 'Do three quick check-ins today before responding to anything potentially emotional.',
-                    examples: [
-                        'Before replying to a message',
-                        'Before speaking in conversation',
-                        'Before making a decision when stressed'
-                    ],
-                    trackerHint: 'Complete 3+ check-ins today'
+                explanation: `Most reactions are autopilot. 10-second check-in restores control. Checking facts ≠ checking assumptions. Awareness creates choice.`,
+                trackerGoal: 3,
+                trackerBonus: 10
+            },
+            
+            victory: {
+                badge: {
+                    emoji: '🧭',
+                    name: 'Inner Compass',
+                    color: 'teal'
                 },
-                badge: { emoji: '🧭', name: 'Inner Compass', color: 'teal' },
-                prerequisite: 'onemindfully'
+                learnings: [
+                    '✓ Most reactions are autopilot',
+                    '✓ 10-second check-in restores control',
+                    '✓ Checking facts ≠ checking assumptions',
+                    '✓ Awareness creates choice'
+                ],
+                quote: '"Between stimulus and response there is a space. In that space is our power to choose."'
             }
+        };
+
+        // ====== CREATE ALL SKILLS USING TEMPLATE ======
+        const newObserveSkill = createNewSkill(observeSpec);
+        const newDescribeSkill = createNewSkill(describeSpec);
+        const newParticipateSkill = createNewSkill(participateSpec);
+        const newNonjudgmentSkill = createNewSkill(nonjudgmentSpec);
+        const newOneMindfullySkill = createNewSkill(oneMindfullySpec);
+        const newEffectivelySkill = createNewSkill(effectivelySpec);
+        const newCheckFactsSkill = createNewSkill(checkFactsSpec);
+
+        // ====== SKILLS ARRAY WITH ALL 7 SKILLS ======
+        const skills = [
+            newObserveSkill,
+            newDescribeSkill,
+            newParticipateSkill,
+            newNonjudgmentSkill,
+            newOneMindfullySkill,
+            newEffectivelySkill,
+            newCheckFactsSkill
         ];
 
+        // ====== SHOP ITEMS ======
         const shopItems = [
             { id: 'theme_ocean', name: '🌊 Ocean Calm', cost: 150, type: 'theme', value: 'ocean' },
             { id: 'theme_sunset', name: '🌅 Sunset Glow', cost: 150, type: 'theme', value: 'sunset' },
@@ -965,6 +1534,197 @@
             { id: 'avatar_crown', name: '👑 Mastery', cost: 150, type: 'avatar', value: '👑' }
         ];
 
+        // ====== TIMER FUNCTIONS ======
+        function startTimer(seconds) {
+            clearInterval(timerInterval);
+            let timeLeft = seconds;
+            const display = document.getElementById('timerDisplay');
+            const button = document.querySelector('#timerSection button');
+            
+            if (display && button) {
+                button.disabled = true;
+                button.textContent = 'Focus...';
+                button.classList.remove('from-blue-600', 'to-cyan-600');
+                button.classList.add('from-gray-400', 'to-gray-500');
+                display.classList.add('timer-pulse');
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    display.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        display.classList.remove('timer-pulse');
+                        document.getElementById('postTimerSection').classList.remove('hidden');
+                        document.getElementById('timerSection').classList.add('hidden');
+                        document.getElementById('postTimerSection').classList.add('fade-in');
+                    }
+                }, 1000);
+            }
+        }
+
+        function startPracticeTimer(seconds) {
+            clearInterval(practiceTimerInterval);
+            practicePromptIndex = 0;
+            let timeLeft = seconds;
+            const display = document.getElementById('practiceTimerDisplay');
+            const promptsDiv = document.getElementById('practicePrompts');
+            const button = document.querySelector('#practiceTimerSection button');
+            const prompts = state.activeSkill.practice.prompts || [];
+            
+            if (display && button && promptsDiv) {
+                button.disabled = true;
+                button.textContent = 'Focusing...';
+                button.classList.remove('from-indigo-600', 'to-purple-600');
+                button.classList.add('from-gray-400', 'to-gray-500');
+                display.classList.add('timer-pulse');
+                
+                // Start with first prompt
+                if (prompts.length > 0) {
+                    promptsDiv.innerHTML = `<p class="text-purple-600 font-medium">${prompts[0]}</p>`;
+                }
+                
+                practiceTimerInterval = setInterval(() => {
+                    timeLeft--;
+                    display.textContent = timeLeft;
+                    
+                    // Update prompt every 15 seconds
+                    if (prompts.length > 0 && timeLeft % 15 === 0 && timeLeft < seconds - 1 && practicePromptIndex < prompts.length - 1) {
+                        practicePromptIndex++;
+                        promptsDiv.innerHTML = `<p class="text-purple-600 font-medium">${prompts[practicePromptIndex]}</p>`;
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(practiceTimerInterval);
+                        display.classList.remove('timer-pulse');
+                        document.getElementById('postPracticeSection').classList.remove('hidden');
+                        document.getElementById('practiceTimerSection').classList.add('hidden');
+                        document.getElementById('postPracticeSection').classList.add('fade-in');
+                        
+                        // Restore button
+                        button.disabled = false;
+                        button.textContent = 'Start Practice';
+                        button.classList.remove('from-gray-400', 'to-gray-500');
+                        button.classList.add('from-indigo-600', 'to-purple-600');
+                    }
+                }, 1000);
+            }
+        }
+
+        // ====== STEP COMPLETION FUNCTIONS ======
+        function completeExperienceStep() {
+            const skill = state.activeSkill;
+            
+            // Save checkbox data
+            const checkboxes = skill.id === 'checkin' 
+                ? document.querySelectorAll('#autoResponse input[type="checkbox"]')
+                : document.querySelectorAll('#postTimerSection input[type="checkbox"]');
+            
+            const reflection = skill.id === 'checkin'
+                ? document.getElementById('experienceReflection')
+                : document.getElementById('experienceReflection');
+            
+            if (checkboxes.length > 0 && reflection) {
+                const checkboxData = Array.from(checkboxes).map(cb => ({
+                    label: cb.nextElementSibling?.textContent || '',
+                    checked: cb.checked
+                }));
+                updateWorksheetData('exp_checkboxes', checkboxData);
+                updateWorksheetData('exp_reflection', reflection.value);
+            }
+            
+            completeNewStep();
+        }
+
+        function completePracticeStep() {
+            const skill = state.activeSkill;
+            
+            if (skill.id === 'effectively') {
+                // Save goal selection data
+                const selectedGoal = document.querySelector('input[name="realGoal"]:checked');
+                const effectiveAction = document.getElementById('effectiveAction');
+                const realGoalInput = document.getElementById('realGoalInput');
+                
+                if (selectedGoal) updateWorksheetData('selected_goal', selectedGoal.value);
+                if (effectiveAction) updateWorksheetData('effective_action', effectiveAction.value);
+                if (realGoalInput) updateWorksheetData('real_goal', realGoalInput.value);
+            } else {
+                // Standard practice step handling
+                const rating = document.getElementById('practiceRating');
+                const word = document.getElementById('practiceWord');
+                if (rating && word) {
+                    updateWorksheetData('practice_rating', rating.value);
+                    updateWorksheetData('practice_word', word.value);
+                }
+            }
+            
+            completeNewStep();
+        }
+
+        function completeNewStep() {
+            const skill = state.activeSkill;
+            if (!skill || !skill.newSteps) return;
+            
+            const steps = skill.newSteps;
+            const currentIndex = steps.indexOf(state.currentStep);
+            
+            // Sync any unsaved data
+            syncWorksheetData();
+            
+            // Award coins based on step
+            const stepRewards = {
+                hook: 10,
+                experience: 15,
+                reveal: 20,
+                contrast: 25,
+                practice: 40,
+                integration: 100
+            };
+            
+            if (stepRewards[state.currentStep]) {
+                const reward = stepRewards[state.currentStep] * state.user.comboMultiplier;
+                earnCoins(reward);
+            }
+            
+            // Handle skill completion
+            if (state.currentStep === 'integration' && !state.completedSkills.includes(skill.id)) {
+                // Award badge and mark as completed
+                updateState({
+                    completedSkills: [...state.completedSkills, skill.id],
+                    inventory: {
+                        ...state.inventory,
+                        badges: [...state.inventory.badges, skill.victory.badge]
+                    },
+                    user: {
+                        ...state.user,
+                        totalPractices: state.user.totalPractices + 1,
+                        level: Math.floor((state.user.totalPractices + 1) / 3) + 1
+                    }
+                });
+                
+                // Save journal entry
+                journalEntries.push({
+                    skill: skill.name,
+                    date: new Date().toISOString(),
+                    responses: state.worksheetData
+                });
+                
+                triggerConfetti();
+                checkAchievements();
+            }
+            
+            // Move to next step
+            if (currentIndex < steps.length - 1) {
+                updateState({ currentStep: steps[currentIndex + 1] });
+                // Clear timers
+                clearInterval(timerInterval);
+                clearInterval(practiceTimerInterval);
+                
+                // Scroll to top
+                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+            }
+        }
+
         // ====== OPTIMIZED FUNCTIONS ======
         function updateState(newState) {
             state = { ...state, ...newState };
@@ -975,21 +1735,19 @@
             }, 16);
         }
 
-        // OPTIMIZED: Local cache only - NO RE-RENDER on typing
         function updateWorksheetData(key, value) {
             textareaCache[key] = value;
         }
 
-        // NEW: Sync cached data to state
         function syncWorksheetData() {
             if (Object.keys(textareaCache).length > 0) {
                 updateState({ 
                     worksheetData: { ...state.worksheetData, ...textareaCache } 
                 });
+                textareaCache = {};
             }
         }
 
-        // NEW: Get current value
         function getWorksheetValue(key) {
             return textareaCache[key] || state.worksheetData[key] || '';
         }
@@ -1016,18 +1774,6 @@
         }
 
         function buyItem(item) {
-            if (isOwned(item)) {
-                if (item.type === 'theme') {
-                    updateState({ user: { ...state.user, theme: item.value } });
-                    showPurchaseModal('Theme Equipped!', `You're now using the ${item.name} theme.`);
-                }
-                if (item.type === 'avatar') {
-                    updateState({ user: { ...state.user, avatar: item.value } });
-                    showPurchaseModal('Avatar Equipped!', `You're now using the ${item.name} avatar.`);
-                }
-                return true;
-            }
-
             if (state.coins >= item.cost) {
                 updateState({ 
                     coins: state.coins - item.cost,
@@ -1067,9 +1813,8 @@
             return item.type === 'theme' ? state.inventory.themes.includes(item.value) : state.inventory.avatars.includes(item.value);
         }
 
-        // ====== FIXED: Scroll before state update ======
+        // ====== UPDATED START SKILL FUNCTION ======
         function startSkill(id) {
-            // FIX: Scroll to top immediately BEFORE state update
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
             const skill = skills.find(s => s.id === id);
@@ -1080,12 +1825,13 @@
                     return;
                 }
                 
-                // Clear cache when starting new skill
+                // Clear cache
                 textareaCache = {};
                 
+                // Use new design for all skills
                 updateState({
                     activeSkill: skill,
-                    currentStep: 'intro',
+                    currentStep: 'hook', // Start with new step system
                     worksheetData: {},
                     screen: 'skill'
                 });
@@ -1099,53 +1845,12 @@
             }
         }
 
-        // ====== FIXED: Scroll to top on step change ======
         function completeStep() {
-            const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
-            const currentIndex = steps.indexOf(state.currentStep);
-
-            // Sync any unsaved worksheet data before moving steps
-            syncWorksheetData();
-
-            const rewards = { intro: 10, experience: 15, revelation: 20, modeA: 10, modeB: 25, worksheet: 40, mission: 100 };
-            if (rewards[state.currentStep]) {
-                const baseReward = rewards[state.currentStep];
-                const comboReward = baseReward * state.user.comboMultiplier;
-                earnCoins(comboReward);
-            }
-
-            if (state.currentStep === 'mission' && state.activeSkill && !state.completedSkills.includes(state.activeSkill.id)) {
-                const badge = state.activeSkill.badge;
-                updateState({
-                    completedSkills: [...state.completedSkills, state.activeSkill.id],
-                    inventory: { ...state.inventory, badges: [...state.inventory.badges, badge] },
-                    user: { ...state.user, totalPractices: state.user.totalPractices + 1, level: Math.floor((state.user.totalPractices + 1) / 3) + 1 }
-                });
-                
-                // Save journal entry
-                journalEntries.push({
-                    skill: state.activeSkill.name,
-                    date: new Date().toISOString(),
-                    responses: state.worksheetData
-                });
-                
-                // Trigger celebration
-                triggerConfetti();
-                
-                // Check achievements
-                checkAchievements();
-            }
-
-            if (currentIndex < steps.length - 1) {
-                updateState({ currentStep: steps[currentIndex + 1] });
-                // FIX: Scroll to top when changing steps
-                setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }, 50);
-            }
+            // This is for old skill system - not used anymore
+            completeNewStep();
         }
 
-        // ====== NEW: Practice tracker functions ======
+        // ====== PRACTICE TRACKER FUNCTIONS ======
         function togglePracticeCheck(skillId, index) {
             if (!practiceTracker[skillId]) practiceTracker[skillId] = [];
             if (practiceTracker[skillId][index]) {
@@ -1163,14 +1868,12 @@
             return practiceTracker[skillId] || Array(12).fill(false);
         }
 
-        // ====== NEW: Quick practice mode ======
         function getRandomPractice() {
             if (state.completedSkills.length === 0) return null;
             const randomSkillId = state.completedSkills[Math.floor(Math.random() * state.completedSkills.length)];
             return skills.find(s => s.id === randomSkillId);
         }
 
-        // ====== NEW: Share progress ======
         function shareProgress() {
             const progress = {
                 skills: state.completedSkills.length,
@@ -1194,12 +1897,12 @@
             }
         }
 
-        // ====== FIXED: Scroll to top on navigation ======
         function navigateTo(screen) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             updateState({ screen });
         }
 
+        // ====== BOTTOM NAV RENDER ======
         function renderBottomNav() {
             const isSkill = state.screen === 'skill';
             return `
@@ -1228,7 +1931,578 @@
             `;
         }
 
-        // ====== ENHANCED RENDER FUNCTIONS ======
+        // ====== ENHANCED SKILL RENDER FUNCTION ======
+        function renderNewSkillScreen() {
+            const skill = state.activeSkill;
+            const themeClass = `theme-${state.user.theme}`;
+            const steps = skill.newSteps || [];
+            const idx = steps.indexOf(state.currentStep);
+            
+            let content = '';
+            let stepTitle = skill.name;
+            let stepNumber = idx + 1;
+            let totalSteps = steps.length;
+            
+            // Helper for progress dots
+            const progressDots = steps.map((_, i) => 
+                `<div class="flex-1 h-2 rounded-full ${i <= idx ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'}"></div>`
+            ).join('');
+            
+            // ====== SPECIAL HANDLING FOR SKILL 7 (CHECKIN) ======
+            if (skill.id === 'checkin' && state.currentStep === 'experience') {
+                stepTitle = skill.experience.title;
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">${skill.hook.visual}</div>
+                            <h2 class="text-xl font-bold mb-2">${skill.experience.title}</h2>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 text-center">
+                            <p class="text-lg font-bold text-gray-800 mb-6">How are you right now?</p>
+                            <button onclick="document.getElementById('autoResponse').classList.remove('hidden'); this.classList.add('hidden')" 
+                                    class="w-full bg-gradient-to-r ${skill.color} text-white py-6 rounded-xl font-bold text-2xl shadow-lg hover:opacity-90 transition-all mb-6">
+                                I'm fine
+                            </button>
+                            <p class="text-gray-600 text-sm">Click without thinking. Give your automatic answer.</p>
+                        </div>
+                        
+                        <div id="autoResponse" class="hidden space-y-6">
+                            <div class="bg-white rounded-2xl p-6">
+                                <p class="font-bold text-gray-800 mb-4">Was that actually accurate?</p>
+                                <div class="grid grid-cols-2 gap-2 mb-4">
+                                    ${skill.experience.checkboxes.map(item => `
+                                        <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <input type="checkbox" class="w-5 h-5 ${skill.color.replace('from-', 'text-').replace(' to-', '')} rounded">
+                                            <span class="text-gray-700">${item}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                                
+                                <p class="font-bold text-gray-800 mb-3">${skill.experience.reflectionPrompt}</p>
+                                <input type="text" 
+                                       id="experienceReflection"
+                                       class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-teal-500" 
+                                       placeholder="e.g., 'I just said what I always say'">
+                            </div>
+                            
+                            <button onclick="completeExperienceStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                Continue → Earn ${15 * state.user.comboMultiplier} Coins
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // ====== SPECIAL HANDLING FOR SKILL 6 (EFFECTIVELY) ======
+            else if (skill.id === 'effectively' && state.currentStep === 'practice') {
+                stepTitle = skill.practice.title;
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <h2 class="text-xl font-bold mb-2">${skill.practice.title}</h2>
+                            <p class="opacity-90 text-sm">Discover what you actually want</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6">
+                            <p class="text-gray-700 mb-4">${skill.practice.instructions}</p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mb-6">
+                                ${['To feel heard', 'To stay connected', 'To solve the problem', 'To preserve peace', 'To be understood', 'To move forward together'].map(goal => `
+                                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                        <input type="radio" name="realGoal" value="${goal}" class="w-5 h-5 ${skill.color.replace('from-', 'text-').replace(' to-', '')} rounded">
+                                        <span class="text-gray-700">${goal}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                            
+                            <p class="font-bold text-gray-800 mb-3">${skill.practice.ratingPrompt}</p>
+                            <div class="mb-6">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-700 font-bold">
+                                        ❌
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-700">Ego action: ${getWorksheetValue('ego_action') || 'Prove I was right'}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-700 font-bold">
+                                        ✅
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-700">Effective action:</p>
+                                        <input type="text" 
+                                               id="effectiveAction"
+                                               class="w-full p-3 rounded-lg border border-gray-300 mt-1" 
+                                               placeholder="What would actually work?">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="font-bold text-gray-800 mb-3">${skill.practice.wordPrompt}</p>
+                            <input type="text" 
+                                   id="realGoalInput"
+                                   class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-pink-500" 
+                                   placeholder="e.g., 'connection', 'peace', 'solution'">
+                        </div>
+                        
+                        <button onclick="completePracticeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                            Continue → Earn ${40 * state.user.comboMultiplier} Coins
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // ====== STANDARD STEP RENDERING ======
+            else if (state.currentStep === 'hook') {
+                stepTitle = skill.hook.title;
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white text-center">
+                            <div class="text-5xl mb-4 animate-pulse">${skill.hook.visual}</div>
+                            <h2 class="text-xl font-bold mb-4">${skill.hook.title}</h2>
+                            <p class="text-lg opacity-90 leading-relaxed mb-6">${skill.hook.copy}</p>
+                            <button onclick="completeNewStep()" class="w-full bg-white ${getSkillTextColor(skill.id)} py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                ${skill.hook.cta}
+                            </button>
+                        </div>
+                        <div class="text-center text-gray-600 text-sm">
+                            <p>🎯 Step 1 of 7 • 30 seconds</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'experience') {
+                stepTitle = skill.experience.title;
+                const hasTimer = skill.experience.timer > 0;
+                
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">🧪</div>
+                            <h2 class="text-xl font-bold mb-2">${skill.experience.title}</h2>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            ${skill.experience.instructions.map((inst, i) => `
+                                <div class="flex gap-4 items-start">
+                                    <div class="w-8 h-8 ${getSkillBgColor(skill.id)} rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">
+                                        ${i + 1}
+                                    </div>
+                                    <p class="text-gray-700 pt-1">${inst}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        ${hasTimer ? `
+                            <!-- Timer Section -->
+                            <div id="timerSection" class="bg-white rounded-2xl p-6 text-center">
+                                <div class="text-6xl mb-4 font-bold ${getSkillTextColor(skill.id)}" id="timerDisplay">${skill.experience.timer}</div>
+                                <p class="text-gray-600 mb-4">Seconds remaining...</p>
+                                <button onclick="startTimer(${skill.experience.timer})" class="w-full bg-gradient-to-r ${skill.color} text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all">
+                                    Start ${skill.experience.timer}-Second Timer
+                                </button>
+                            </div>
+                        ` : `
+                            <!-- No Timer Section -->
+                            <div class="bg-white rounded-2xl p-6">
+                                <p class="font-bold text-gray-800 mb-4">Reflect on your experience:</p>
+                                <div class="grid grid-cols-2 gap-2 mb-4">
+                                    ${skill.experience.checkboxes.map(item => `
+                                        <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <input type="checkbox" class="w-5 h-5 ${getSkillTextColor(skill.id)} rounded">
+                                            <span class="text-gray-700">${item}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                                
+                                <p class="font-bold text-gray-800 mb-3">${skill.experience.reflectionPrompt}</p>
+                                <input type="text" 
+                                       id="experienceReflection"
+                                       class="w-full p-4 rounded-xl border-2 border-gray-300 focus:${getSkillBorderColor(skill.id)}" 
+                                       placeholder="Your reflection...">
+                            </div>
+                            
+                            <button onclick="completeExperienceStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                Continue → Earn ${15 * state.user.comboMultiplier} Coins
+                            </button>
+                        `}
+                        
+                        ${hasTimer ? `
+                            <!-- After Timer Experience -->
+                            <div id="postTimerSection" class="hidden space-y-6">
+                                <div class="bg-white rounded-2xl p-6">
+                                    <p class="font-bold text-gray-800 mb-4">What happened?</p>
+                                    <div class="grid grid-cols-2 gap-2 mb-4">
+                                        ${skill.experience.checkboxes.map(item => `
+                                            <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                                                <input type="checkbox" class="w-5 h-5 ${getSkillTextColor(skill.id)} rounded">
+                                                <span class="text-gray-700">${item}</span>
+                                            </label>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <p class="font-bold text-gray-800 mb-3">${skill.experience.reflectionPrompt}</p>
+                                    <input type="text" 
+                                           id="experienceReflection"
+                                           class="w-full p-4 rounded-xl border-2 border-gray-300 focus:${getSkillBorderColor(skill.id)}" 
+                                           placeholder="Your reflection...">
+                                </div>
+                                
+                                <button onclick="completeExperienceStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                    Continue → Earn ${15 * state.user.comboMultiplier} Coins
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'reveal') {
+                stepTitle = skill.reveal.title;
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <div class="text-5xl mb-3">${skill.reveal.visual}</div>
+                            <h2 class="text-xl font-bold mb-2">${skill.reveal.title}</h2>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 whitespace-pre-line leading-relaxed text-gray-700">
+                            ${skill.reveal.copy}
+                        </div>
+                        
+                        <button onclick="completeNewStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                            I See It Now → Earn ${20 * state.user.comboMultiplier} Coins
+                        </button>
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'contrast') {
+                stepTitle = skill.contrast.title;
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <h2 class="text-xl font-bold mb-2">${skill.contrast.title}</h2>
+                            <p class="opacity-90 text-sm">Side-by-side comparison</p>
+                        </div>
+                        
+                        <!-- Mode A -->
+                        <div class="bg-white rounded-2xl p-6 border-2 border-red-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="text-3xl">${getModeEmoji(skill.contrast.modeA.title)}</div>
+                                <div>
+                                    <h3 class="font-bold text-red-700 text-lg">${skill.contrast.modeA.title}</h3>
+                                    <p class="text-red-600 text-sm">The painful default</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                ${skill.contrast.modeA.steps.map((step, i) => `
+                                    <div class="flex gap-3 items-start">
+                                        <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center text-red-700 font-bold text-sm flex-shrink-0 mt-1">
+                                            ${i + 1}
+                                        </div>
+                                        <p class="text-gray-700">${step}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-red-50 rounded-lg">
+                                <p class="font-bold text-red-800 mb-1">Feels like:</p>
+                                <p class="text-red-700">${skill.contrast.modeA.feeling}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Mode B -->
+                        <div class="bg-white rounded-2xl p-6 border-2 border-green-200">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="text-3xl">${getModeEmoji(skill.contrast.modeB.title)}</div>
+                                <div>
+                                    <h3 class="font-bold text-green-700 text-lg">${skill.contrast.modeB.title}</h3>
+                                    <p class="text-green-600 text-sm">The skillful choice</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                ${skill.contrast.modeB.steps.map((step, i) => `
+                                    <div class="flex gap-3 items-start">
+                                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold text-sm flex-shrink-0 mt-1">
+                                            ${i + 1}
+                                        </div>
+                                        <p class="text-gray-700">${step}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                                <p class="font-bold text-green-800 mb-1">Feels like:</p>
+                                <p class="text-green-700">${skill.contrast.modeB.feeling}</p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="completeNewStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                            Practice Skillful Mode → Earn ${25 * state.user.comboMultiplier} Coins
+                        </button>
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'practice') {
+                stepTitle = skill.practice.title;
+                const hasTimer = skill.practice.timer > 0;
+                
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <h2 class="text-xl font-bold mb-2">${skill.practice.title}</h2>
+                            <p class="opacity-90 text-sm">${hasTimer ? '60 seconds of practice' : 'Guided practice'}</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 whitespace-pre-line leading-relaxed text-gray-700">
+                            ${skill.practice.instructions}
+                        </div>
+                        
+                        ${hasTimer ? `
+                            <!-- Practice Timer -->
+                            <div id="practiceTimerSection" class="bg-white rounded-2xl p-6 text-center">
+                                <div class="text-6xl mb-4 font-bold ${getSkillTextColor(skill.id)}" id="practiceTimerDisplay">${skill.practice.timer}</div>
+                                <p class="text-gray-600 mb-2">Focus on the practice...</p>
+                                <div id="practicePrompts" class="min-h-8 mb-4">
+                                    <p class="text-gray-500 italic">Ready when you are</p>
+                                </div>
+                                <button onclick="startPracticeTimer(${skill.practice.timer})" class="w-full bg-gradient-to-r ${skill.color} text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all">
+                                    Start ${skill.practice.timer}-Second Practice
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- After Practice -->
+                        <div id="postPracticeSection" class="${hasTimer ? 'hidden' : ''} space-y-6">
+                            <div class="bg-white rounded-2xl p-6">
+                                <p class="font-bold text-gray-800 mb-4">${skill.practice.ratingPrompt}</p>
+                                <div class="mb-6">
+                                    <input type="range" min="1" max="10" value="5" class="w-full h-3 rounded-lg" id="practiceRating" oninput="document.getElementById('ratingValue').textContent = this.value">
+                                    <div class="flex justify-between mt-2">
+                                        <span class="text-gray-600">Low</span>
+                                        <span id="ratingValue" class="font-black ${getSkillTextColor(skill.id)} text-xl">5</span>
+                                        <span class="text-gray-600">High</span>
+                                    </div>
+                                </div>
+                                
+                                <p class="font-bold text-gray-800 mb-3">${skill.practice.wordPrompt}</p>
+                                <input type="text" 
+                                       id="practiceWord"
+                                       class="w-full p-4 rounded-xl border-2 border-gray-300 focus:${getSkillBorderColor(skill.id)}" 
+                                       placeholder="e.g., 'helpful', 'insightful', 'calming'">
+                            </div>
+                            
+                            <button onclick="completePracticeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                Continue → Earn ${40 * state.user.comboMultiplier} Coins
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'integration') {
+                stepTitle = skill.integration.title;
+                const checks = getPracticeChecks(skill.id);
+                content = `
+                    <div class="space-y-6 fade-in">
+                        <div class="skill-${skill.id} rounded-2xl p-6 text-white">
+                            <h2 class="text-xl font-bold mb-2">${skill.integration.title}</h2>
+                            <p class="opacity-90 text-sm">Take this into your day</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 space-y-6">
+                            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border-2 border-amber-300">
+                                <p class="font-bold text-gray-800 mb-2">${skill.integration.mission}</p>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <p class="font-bold text-gray-700">Examples:</p>
+                                ${skill.integration.examples.map(ex => `
+                                    <div class="p-3 bg-gray-50 rounded-xl text-gray-700">
+                                        ${ex}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                                <p class="text-blue-800 whitespace-pre-line text-sm">${skill.integration.explanation}</p>
+                            </div>
+                            
+                            <!-- Tracker -->
+                            <div class="text-center">
+                                <p class="text-gray-600 mb-3">Tap each time you practice today:</p>
+                                <div class="grid grid-cols-5 gap-2 max-w-xs mx-auto">
+                                    ${Array(skill.integration.trackerGoal).fill().map((_, i) => {
+                                        const checked = checks[i];
+                                        return `
+                                            <div onclick="togglePracticeCheck('${skill.id}', ${i})" 
+                                                 class="practice-checkbox ${checked ? 'checked' : ''} hover:scale-105 transition-transform cursor-pointer">
+                                                ${checked ? '✓' : '+'}
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Goal: ${skill.integration.trackerGoal}+ times • +${skill.integration.trackerBonus} coins each!</p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="completeNewStep()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                            Complete Skill → Earn ${100 * state.user.comboMultiplier} Coins + Badge
+                        </button>
+                    </div>
+                `;
+            }
+            
+            else if (state.currentStep === 'victory') {
+                stepTitle = skill.victory.title;
+                content = `
+                    <div class="space-y-6 text-center fade-in">
+                        <div class="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 rounded-2xl p-8 text-white">
+                            <div class="text-7xl mb-4">${skill.victory.badge.emoji}</div>
+                            <h2 class="text-2xl font-black mb-2">${skill.victory.title}</h2>
+                            <p class="text-lg mb-6">${skill.victory.badge.name} Earned!</p>
+                            <div class="inline-block bg-white/30 px-6 py-3 rounded-2xl">
+                                <span class="text-4xl mr-3">${skill.victory.badge.emoji}</span>
+                                <span class="text-xl font-black">${skill.victory.badge.name}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-2xl p-6 space-y-4">
+                            <h3 class="text-lg font-bold text-gray-800">What You Now Know:</h3>
+                            <div class="space-y-3 text-left text-gray-700">
+                                ${skill.victory.learnings.map(item => `
+                                    <div class="flex gap-3">
+                                        <span class="text-green-500 font-bold">✓</span>
+                                        <span>${item}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border-2 border-purple-200">
+                            <p class="text-gray-800 italic text-lg mb-2">"${skill.victory.quote}"</p>
+                            <p class="text-gray-600 text-sm">— Your new perspective</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="navigateTo('home')" class="py-4 rounded-2xl border-2 border-purple-600 text-purple-600 font-bold text-lg hover:bg-purple-50 transition-all">
+                                ← Home
+                            </button>
+                            <button onclick="goToNextSkill()" class="py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-lg hover:opacity-90 transition-all">
+                                Next Skill →
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="min-h-screen ${themeClass} pb-32 safe-top">
+                    <div class="max-w-md mx-auto p-4">
+                        <!-- Progress Header -->
+                        <div class="bg-white/90 rounded-2xl p-4 sticky top-0 z-10 mb-3">
+                            <div class="flex items-center justify-between mb-4">
+                                <button onclick="navigateTo('home')" class="text-2xl">←</button>
+                                <h1 class="text-lg font-bold text-gray-800">${stepTitle}</h1>
+                                <div class="bg-white/20 px-3 py-2 rounded-full flex items-center gap-2">
+                                    <span class="text-xl">🪙</span>
+                                    <span class="text-gray-800 font-bold">${state.coins}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1 mb-2">
+                                ${progressDots}
+                            </div>
+                            <p class="text-gray-600 text-xs text-center">Step ${stepNumber} of ${totalSteps}</p>
+                        </div>
+                        
+                        <!-- Main Content -->
+                        <div class="bg-white rounded-2xl p-6">
+                            ${content}
+                        </div>
+                    </div>
+                    
+                    ${state.showCoinAnimation ? renderCoinAnimation() : ''}
+                    ${renderBottomNav()}
+                </div>
+            `;
+        }
+
+        // Helper functions for styling
+        function getSkillTextColor(skillId) {
+            const colors = {
+                'observe': 'text-purple-600',
+                'describe': 'text-blue-600',
+                'participate': 'text-green-600',
+                'nonjudgment': 'text-orange-600',
+                'onemindfully': 'text-indigo-600',
+                'effectively': 'text-pink-600',
+                'checkin': 'text-teal-600'
+            };
+            return colors[skillId] || 'text-purple-600';
+        }
+
+        function getSkillBgColor(skillId) {
+            const colors = {
+                'observe': 'bg-gradient-to-br from-purple-500 to-pink-500',
+                'describe': 'bg-gradient-to-br from-blue-500 to-cyan-500',
+                'participate': 'bg-gradient-to-br from-green-500 to-emerald-500',
+                'nonjudgment': 'bg-gradient-to-br from-orange-500 to-red-500',
+                'onemindfully': 'bg-gradient-to-br from-indigo-500 to-purple-500',
+                'effectively': 'bg-gradient-to-br from-pink-500 to-rose-500',
+                'checkin': 'bg-gradient-to-br from-teal-500 to-cyan-500'
+            };
+            return colors[skillId] || 'bg-gradient-to-br from-purple-500 to-pink-500';
+        }
+
+        function getSkillBorderColor(skillId) {
+            const colors = {
+                'observe': 'border-purple-500',
+                'describe': 'border-blue-500',
+                'participate': 'border-green-500',
+                'nonjudgment': 'border-orange-500',
+                'onemindfully': 'border-indigo-500',
+                'effectively': 'border-pink-500',
+                'checkin': 'border-teal-500'
+            };
+            return colors[skillId] || 'border-purple-500';
+        }
+
+        function getModeEmoji(title) {
+            if (title.includes('FIGHTER') || title.includes('DRAMA') || title.includes('GHOST') || title.includes('JUDGE') || title.includes('SCATTERED') || title.includes('EGO') || title.includes('AUTOPILOT')) {
+                return '❌';
+            }
+            return '✅';
+        }
+
+        function goToNextSkill() {
+            const currentIndex = skills.findIndex(s => s.id === state.activeSkill.id);
+            if (currentIndex < skills.length - 1) {
+                startSkill(skills[currentIndex + 1].id);
+            } else {
+                navigateTo('home');
+            }
+        }
+
+        // ====== MAIN SKILL RENDER DISPATCHER ======
+        function renderSkillScreen() {
+            // All skills now use new design
+            if (state.activeSkill && state.activeSkill.newSteps) {
+                return renderNewSkillScreen();
+            }
+            
+            // Fallback
+            return renderHomeScreen();
+        }
+
+        // ====== HOME SCREEN RENDER ======
         function renderHomeScreen() {
             const themeClass = `theme-${state.user.theme}`;
             const completed = state.completedSkills.length;
@@ -1283,7 +2557,7 @@
                             </div>
                             <div class="bg-white/20 rounded-2xl p-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <p class="text-3xl font-bold text-white ${state.user.consecutiveDays >= 3 ? 'streak-flame' : ''}">${state.user.consecutiveDays}</p>
+                                    <p class="text-3xl font-bold text-white">${state.user.consecutiveDays}</p>
                                     ${state.user.consecutiveDays >= 3 ? `<span class="text-2xl">🔥</span>` : ''}
                                 </div>
                                 <p class="text-white/80 text-xs mt-1">Day Streak</p>
@@ -1309,7 +2583,7 @@
                                     </div>
                                     <div class="bg-white/30 rounded-xl p-3 mb-3">
                                         <p class="text-white font-bold mb-1">${randomPractice.name}</p>
-                                        <p class="text-white/80 text-sm">${randomPractice.realWorld.mission}</p>
+                                        <p class="text-white/80 text-sm">${randomPractice.integration?.mission || 'Practice this skill today'}</p>
                                     </div>
                                     <button onclick="startSkill('${randomPractice.id}')" class="w-full bg-white/30 text-white py-2 rounded-xl text-sm font-bold">
                                         Practice Again
@@ -1332,7 +2606,7 @@
                                 
                                 return `
                                     <button onclick="${canAccess ? `startSkill('${skill.id}')` : ''}" 
-                                            class="w-full bg-white rounded-2xl p-4 text-left hover:shadow-lg transition-smooth ${done ? 'border-2 border-green-400' : ''} ${!canAccess ? 'skill-locked' : ''}">
+                                            class="w-full bg-white rounded-2xl p-4 text-left hover:shadow-lg transition-smooth ${done ? 'border-2 border-green-400' : ''} ${!canAccess ? 'opacity-60' : ''}">
                                         <div class="flex gap-3">
                                             <div class="w-14 h-14 bg-gradient-to-br ${skill.color} rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
                                                 ${skill.icon}
@@ -1363,317 +2637,7 @@
             `;
         }
 
-        function renderSkillScreen() {
-            if (!state.activeSkill) return renderHomeScreen();
-            const skill = state.activeSkill;
-            const themeClass = `theme-${state.user.theme}`;
-            const steps = ['intro', 'experience', 'revelation', 'modeA', 'modeB', 'worksheet', 'mission', 'complete'];
-            const idx = steps.indexOf(state.currentStep);
-
-            let content = '';
-
-            if (state.currentStep === 'intro') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white text-center">
-                            <div class="text-5xl mb-4">${skill.icon}</div>
-                            <h2 class="text-2xl font-black mb-2">${skill.name}</h2>
-                            <p class="text-lg opacity-90 mb-4">${skill.tagline}</p>
-                            <div class="bg-white/20 rounded-xl p-4">
-                                <p class="text-base leading-relaxed">${skill.simpleExplain}</p>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6">
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">💡</div>
-                                <div>
-                                    <h3 class="font-bold text-lg mb-2">How This Training Works</h3>
-                                    <p class="text-gray-700 leading-relaxed">You'll first <strong>experience</strong> the old habitual way vs the new skillful way. Then we'll reveal the insight and science behind it. Deep reflection and real-world practice lock it in.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Begin Experience → Earn ${10 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'experience') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">🧪</div>
-                            <h2 class="text-xl font-bold mb-2">${skill.experienceFirst.title}</h2>
-                            <p class="opacity-90">${skill.experienceFirst.subtitle}</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-4">
-                            ${skill.experienceFirst.instructions.map((inst, i) => `
-                                <div class="flex gap-4">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                                        ${i + 1}
-                                    </div>
-                                    <p class="text-gray-700 pt-2 leading-relaxed">${inst}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="bg-white rounded-2xl p-6">
-                            <p class="text-lg font-bold text-gray-800 mb-4">${skill.experienceFirst.prompt}</p>
-                            <textarea 
-                                class="w-full p-4 rounded-xl border-2 border-amber-300 focus:border-amber-500 no-freeze" 
-                                rows="4" 
-                                placeholder="Be completely honest — what did you notice?"
-                                oninput="updateWorksheetData('exp', this.value)"
-                                onblur="syncWorksheetData()"
-                            >${getWorksheetValue('exp')}</textarea>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Continue → Earn ${15 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'revelation') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">💡</div>
-                            <h2 class="text-xl font-bold">${skill.revelation.title}</h2>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6">
-                            <p class="text-gray-700 whitespace-pre-line leading-relaxed">${skill.revelation.insight}</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border-2 border-blue-200">
-                            <h3 class="text-lg font-bold text-blue-900 mb-2">${skill.revelation.analogy.title}</h3>
-                            <p class="text-blue-800 whitespace-pre-line leading-relaxed">${skill.revelation.analogy.text}</p>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            I Get It → Earn ${20 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'modeA') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r from-red-500 to-orange-600 rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">${skill.modeA.emoji}</div>
-                            <h2 class="text-xl font-bold">${skill.modeA.title}</h2>
-                            <p class="opacity-90 text-sm">The old, painful habit most of us default to</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-4">
-                            ${skill.modeA.steps.map((step, i) => `
-                                <div class="flex gap-4 p-3 bg-red-50 rounded-xl">
-                                    <div class="w-8 h-8 bg-red-200 rounded-full flex items-center justify-center text-red-700 font-bold">
-                                        ${i + 1}
-                                    </div>
-                                    <p class="text-gray-800 leading-relaxed">${step}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="bg-red-50 rounded-2xl p-4 border-2 border-red-300">
-                            <p class="font-bold text-red-900 mb-1">Feels like:</p>
-                            <p class="text-red-800">${skill.modeA.feeling}</p>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Show Me the Better Way → Earn ${10 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'modeB') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r ${skill.color} rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">${skill.modeB.emoji}</div>
-                            <h2 class="text-xl font-bold">${skill.modeB.title}</h2>
-                            <p class="opacity-90 text-sm">The skillful, freeing approach</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-4">
-                            ${skill.modeB.steps.map((step, i) => `
-                                <div class="flex gap-4 p-3 bg-green-50 rounded-xl">
-                                    <div class="w-8 h-8 bg-green-200 rounded-full flex items-center justify-center text-green-700 font-bold">
-                                        ${i + 1}
-                                    </div>
-                                    <p class="text-gray-800 leading-relaxed">${step}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="bg-green-50 rounded-2xl p-4 border-2 border-green-300">
-                            <p class="font-bold text-green-900 mb-1">Feels like:</p>
-                            <p class="text-green-800">${skill.modeB.feeling}</p>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Try This Way Now → Earn ${25 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'worksheet') {
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">📝</div>
-                            <h2 class="text-xl font-bold">Deep Reflection Time</h2>
-                            <p class="opacity-90 text-sm">This is where the learning becomes permanent</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-6">
-                            ${skill.worksheet.map((q, i) => {
-                                const key = `q${i}`;
-                                const val = getWorksheetValue(key);
-                                return `
-                                    <div>
-                                        <p class="font-bold text-gray-800 mb-3">${q.q}</p>
-                                        ${q.type === 'textarea' ? `
-                                            <textarea 
-                                                class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500 no-freeze" 
-                                                rows="3" 
-                                                placeholder="Write freely..."
-                                                oninput="updateWorksheetData('${key}', this.value)"
-                                                onblur="syncWorksheetData()"
-                                            >${val}</textarea>
-                                        ` : q.type === 'text' ? `
-                                            <input 
-                                                type="text" 
-                                                class="w-full p-4 rounded-xl border-2 border-gray-300 focus:border-purple-500" 
-                                                value="${val}" 
-                                                oninput="updateWorksheetData('${key}', this.value)"
-                                                onblur="syncWorksheetData()" 
-                                            />
-                                        ` : `
-                                            <div>
-                                                <input 
-                                                    type="range" 
-                                                    min="${q.min}" 
-                                                    max="${q.max}" 
-                                                    class="w-full h-3 rounded-lg" 
-                                                    value="${val || 5}" 
-                                                    oninput="updateWorksheetData('${key}', this.value); syncWorksheetData()" 
-                                                />
-                                                <div class="flex justify-between mt-2">
-                                                    <span class="text-gray-600">${q.min}</span>
-                                                    <span class="font-black text-purple-600 text-xl">${val || 5}</span>
-                                                    <span class="text-gray-600">${q.max}</span>
-                                                </div>
-                                            </div>
-                                        `}
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth">
-                            Submit Reflection → Earn ${40 * state.user.comboMultiplier} Coins
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'mission') {
-                const checks = getPracticeChecks(skill.id);
-                content = `
-                    <div class="space-y-6">
-                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 text-white">
-                            <div class="text-5xl mb-3">🌍</div>
-                            <h2 class="text-xl font-bold">Your Real-World Mission</h2>
-                            <p class="opacity-90 text-sm">Take this skill into your day and feel the difference</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-6">
-                            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-amber-300">
-                                <p class="font-bold text-gray-800">${skill.realWorld.mission}</p>
-                            </div>
-                            <div class="space-y-3">
-                                <p class="font-bold text-gray-700">Helpful examples:</p>
-                                ${skill.realWorld.examples.map(ex => `
-                                    <div class="p-4 bg-gray-50 rounded-xl">
-                                        ${ex}
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="text-center">
-                                <p class="text-gray-600 italic mb-4 text-sm">${skill.realWorld.trackerHint || 'Practice multiple times to build the habit'}</p>
-                                <div class="grid grid-cols-6 gap-2 max-w-xs mx-auto">
-                                    ${Array(12).fill().map((_, i) => {
-                                        const checked = checks[i];
-                                        return `
-                                            <div onclick="togglePracticeCheck('${skill.id}', ${i})" 
-                                                 class="practice-checkbox ${checked ? 'checked' : ''}">
-                                                ${checked ? '✓' : '+'}
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">Tap to mark each practice (+5 coins each!)</p>
-                            </div>
-                        </div>
-                        <button onclick="completeStep()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg transition-smooth flex items-center justify-center gap-3">
-                            <span class="text-2xl">🏆</span>
-                            Master This Skill → Earn ${100 * state.user.comboMultiplier} Coins + Badge
-                        </button>
-                    </div>
-                `;
-            } else if (state.currentStep === 'complete') {
-                content = `
-                    <div class="space-y-6 text-center">
-                        <div class="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-600 rounded-2xl p-8 text-white">
-                            <div class="text-6xl mb-4">🏆</div>
-                            <h2 class="text-2xl font-black mb-4">Skill Mastered!</h2>
-                            <p class="mb-6">You earned coins throughout + a permanent badge</p>
-                            <div class="inline-block bg-white/30 px-6 py-3 rounded-2xl">
-                                <span class="text-4xl mr-3">${skill.badge.emoji}</span>
-                                <span class="text-xl font-black">${skill.badge.name}</span>
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6 space-y-4">
-                            <h3 class="text-lg font-bold text-gray-800">What You've Gained</h3>
-                            <div class="space-y-3 text-left text-gray-700">
-                                <p>✓ Directly experienced the painful habit vs the freeing skill</p>
-                                <p>✓ Understood the deep insight and science behind it</p>
-                                <p>✓ Reflected deeply to make it stick</p>
-                                <p>✓ Received a real-world mission to integrate it</p>
-                                <p>✓ Earned the ${skill.badge.emoji} <strong>${skill.badge.name}</strong> badge forever</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="navigateTo('home')" class="py-4 rounded-2xl border-2 border-purple-600 text-purple-600 font-bold text-lg hover:bg-purple-50 transition-smooth">
-                                ← Home
-                            </button>
-                            <button onclick="navigateTo('shop')" class="py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-lg transition-smooth">
-                                Spend Coins →
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            return `
-                <div class="min-h-screen ${themeClass} pb-32 safe-top">
-                    <div class="max-w-md mx-auto p-4">
-                        <div class="bg-white/90 rounded-2xl p-4 sticky top-0 z-10 mb-3">
-                            <div class="flex items-center justify-between mb-4">
-                                <button onclick="navigateTo('home')" class="text-2xl">←</button>
-                                <h1 class="text-lg font-bold text-gray-800">${skill.name}</h1>
-                                <div class="bg-white/20 px-3 py-2 rounded-full flex items-center gap-2">
-                                    <span class="text-xl">🪙</span>
-                                    <span class="text-gray-800 font-bold">${state.coins}</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-1 mb-2">
-                                ${steps.map((_, i) => `
-                                    <div class="flex-1 h-2 rounded-full ${i <= idx ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'}"></div>
-                                `).join('')}
-                            </div>
-                            <p class="text-gray-600 text-xs text-center">Step ${idx + 1} of ${steps.length}</p>
-                        </div>
-                        <div class="bg-white rounded-2xl p-6">
-                            ${content}
-                        </div>
-                    </div>
-                    ${state.showCoinAnimation ? `
-                        <div class="fixed inset-0 pointer-events-none flex items-center justify-center z-50">
-                            <div class="animate-coin-pop text-center">
-                                <div class="text-7xl mb-3">🪙</div>
-                                <div class="text-4xl font-black text-yellow-400">+${state.coinAmount}</div>
-                                <p class="text-xl text-white mt-3 font-bold">Coins Earned!</p>
-                            </div>
-                        </div>
-                    ` : ''}
-                    ${renderBottomNav()}
-                </div>
-            `;
-        }
-
+        // ====== SHOP SCREEN RENDER ======
         function renderShopScreen() {
             const themeClass = `theme-${state.user.theme}`;
             const ownedThemes = state.inventory.themes.length;
@@ -1773,6 +2737,7 @@
             `;
         }
 
+        // ====== PROFILE SCREEN RENDER ======
         function renderProfileScreen() {
             const themeClass = `theme-${state.user.theme}`;
             const completed = state.completedSkills.length;
@@ -1816,7 +2781,7 @@
                                 </div>
                                 <div class="bg-white/20 rounded-2xl p-4 text-center">
                                     <div class="flex items-center justify-center gap-1">
-                                        <p class="text-3xl font-black text-white ${state.user.consecutiveDays >= 3 ? 'streak-flame' : ''}">${state.user.consecutiveDays}</p>
+                                        <p class="text-3xl font-black text-white">${state.user.consecutiveDays}</p>
                                         ${state.user.consecutiveDays >= 3 ? `<span class="text-2xl">🔥</span>` : ''}
                                     </div>
                                     <p class="text-white/80 mt-1 text-xs">Day Streak</p>
@@ -1872,18 +2837,30 @@
             `;
         }
 
+        // ====== MAIN RENDER FUNCTION ======
         function render() {
             const app = document.getElementById('app');
             if (!app) return;
-            if (state.screen === 'skill') app.innerHTML = renderSkillScreen();
-            else if (state.screen === 'shop') app.innerHTML = renderShopScreen();
-            else if (state.screen === 'profile') app.innerHTML = renderProfileScreen();
-            else app.innerHTML = renderHomeScreen();
+            
+            if (state.screen === 'skill') {
+                app.innerHTML = renderSkillScreen();
+            } else if (state.screen === 'shop') {
+                app.innerHTML = renderShopScreen();
+            } else if (state.screen === 'profile') {
+                app.innerHTML = renderProfileScreen();
+            } else {
+                app.innerHTML = renderHomeScreen();
+            }
         }
 
-        // Initialize
+        // ====== Initialize ======
         loadState();
         updateDailyStreak();
+        
+        // Auto-unlock all skills for testing
+        state.completedSkills = ['observe', 'describe', 'participate', 'nonjudgment'];
+        state.coins = 1000;
+        
         render();
     </script>
 </body>
